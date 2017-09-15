@@ -1,3 +1,6 @@
+#ifndef TOKENISER_H
+#define TOKENISER_H
+
 #include <istream>
 #include <memory>
 
@@ -15,5 +18,8 @@ public:
 private:
 	std::unique_ptr<std::istream> m_stream;
 
+	Tokeniser(const Tokeniser& src) = delete;
+	Tokeniser operator=(const Tokeniser& src) = delete;
 };
 
+#endif
