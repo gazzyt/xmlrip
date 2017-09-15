@@ -12,6 +12,14 @@ Token Tokeniser::GetNextToken()
 	char c;
 	m_stream->get(c);
 	std::cout << c << std::endl;
-	return Token::token_lt;
+
+	switch (c)
+	{
+	case '<':
+		return Token::lt;
+	default:
+		return Token::eof;
+	};
+
 }
 

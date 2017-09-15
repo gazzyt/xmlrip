@@ -15,5 +15,10 @@ int main()
 	Tokeniser tokeniser(std::move(inputStream));
 
 	Token t = tokeniser.GetNextToken();
+	while (t != Token::eof)
+	{
+		std::cout << "token" << std::endl;
+		t = tokeniser.GetNextToken();
+	};
 }
 
