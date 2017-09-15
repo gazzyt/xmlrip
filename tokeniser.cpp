@@ -6,8 +6,8 @@ Tokeniser::Tokeniser(std::unique_ptr<std::istream> stream)
 }
 
 
-token Tokeniser::GetNextToken()
+Token Tokeniser::GetNextToken()
 {
-	return token::token_lt;
+	return Token::token_lt;
 }
 

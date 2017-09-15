@@ -1,18 +1,6 @@
-#include <string>
+#ifndef TOKEN_H
+#define TOKEN_H
 
-class Token
-{
-public:
-	Token(std::string tagName, bool isOpeningTag, bool isClosingTag);
+enum class Token {token_lt, token_gt};
 
-public:
-	bool IsOpeningTag() const;
-	bool IsClosingTag() const;
-	std::string GetTagName() const;
-
-private:
-	std::string m_tagName;
-	bool m_isOpeningTag;
-	bool m_isClosingTag;
-};
-
+#endif

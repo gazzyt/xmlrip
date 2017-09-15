@@ -1,10 +1,10 @@
 #ifndef TOKENISER_H
 #define TOKENISER_H
 
+#include "token.h"
 #include <istream>
 #include <memory>
 
-	enum class token {token_lt, token_gt};
 
 class Tokeniser
 {
@@ -13,7 +13,7 @@ public:
 
 
 public:
-	token GetNextToken();
+	Token GetNextToken();
 
 private:
 	std::unique_ptr<std::istream> m_stream;
