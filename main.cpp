@@ -17,7 +17,7 @@ int main()
 	Token t = tokeniser.GetNextToken();
 	while (t != Token::eof)
 	{
-		std::cout << "token" << std::endl;
+		std::cout << "token: " << GetName(t) << std::endl;
 		t = tokeniser.GetNextToken();
 	};
 }
