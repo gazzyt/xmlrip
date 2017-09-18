@@ -10,16 +10,29 @@ Tokeniser::Tokeniser(std::unique_ptr<std::istream> stream)
 Token Tokeniser::GetNextToken()
 {
 	char c;
-	m_stream->get(c);
-	std::cout << c << std::endl;
 
-	switch (c)
+	while (true)
 	{
-	case '<':
-		return Token::lt;
-	default:
-		return Token::eof;
+		m_stream->get(c);
+		std::cout << c << std::endl;
+		switch (c)
+		{
+		case '<':
+			if (m_stream->peek() == '/')
+			{
+				m_stream->get(c);
+				return Token::lt_slash;
+			}
+			else
+			{
+				return Token::lt;
+			}
+		case '>':
+			return Token::gt;
+		default:
+			if (m_stream->eof())
+				return Token::eof;
+		};
 	};
-
 }
 
