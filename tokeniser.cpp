@@ -27,6 +27,16 @@ Token Tokeniser::GetNextToken()
 			{
 				return Token::lt;
 			}
+		case '/':
+			if (m_stream->peek() == '>')
+			{
+				m_stream->get(c);
+				return Token::slash_gt;
+			}
+			else
+			{
+				std::cerr << "Unexpected character '/'" << std::endl;
+			}
 		case '>':
 			return Token::gt;
 		default:
