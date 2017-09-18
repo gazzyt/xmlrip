@@ -21,27 +21,27 @@ Token Tokeniser::GetNextToken()
 			if (m_stream->peek() == '/')
 			{
 				m_stream->get(c);
-				return Token::lt_slash;
+				return Token(Token::Type::lt_slash);
 			}
 			else
 			{
-				return Token::lt;
+				return Token(Token::Type::lt);
 			}
 		case '/':
 			if (m_stream->peek() == '>')
 			{
 				m_stream->get(c);
-				return Token::slash_gt;
+				return Token(Token::Type::slash_gt);
 			}
 			else
 			{
 				std::cerr << "Unexpected character '/'" << std::endl;
 			}
 		case '>':
-			return Token::gt;
+			return Token(Token::Type::gt);
 		default:
 			if (m_stream->eof())
-				return Token::eof;
+				return Token(Token::Type::eof);
 		};
 	};
 }

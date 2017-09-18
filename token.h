@@ -1,19 +1,32 @@
 #ifndef TOKEN_H
 #define TOKEN_H
 
-enum class Token {lt, lt_slash, gt, slash_gt, eof};
-
-inline const char * GetName(Token t)
+class Token
 {
-	switch (t)
+public:
+	enum class Type {lt, lt_slash, gt, slash_gt, eof};
+
+	Token(Token::Type t) : m_type(t){}
+
+	Token::Type GetType() const
 	{
-	case Token::lt: return "lt";
-	case Token::lt_slash: return "lt_slash";
-	case Token::gt: return "gt";
-	case Token::slash_gt: return "slash_gt";
-	case Token::eof: return "eof";
+		return m_type;
+	}
+
+inline const char * GetName() const
+{
+	switch (m_type)
+	{
+	case Type::lt: return "lt";
+	case Type::lt_slash: return "lt_slash";
+	case Type::gt: return "gt";
+	case Type::slash_gt: return "slash_gt";
+	case Type::eof: return "eof";
 	default: return nullptr;
 	};
 }
+private:
+	Token::Type m_type;
+};
 
 #endif
