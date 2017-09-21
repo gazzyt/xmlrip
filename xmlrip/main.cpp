@@ -10,6 +10,7 @@ int main()
 	if (!inputStream->is_open())
 	{
 		std::cerr << "Failed to open file" << std::endl;
+		return 1;
 	}
 
 	Tokeniser tokeniser(std::move(inputStream));
