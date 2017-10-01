@@ -10,7 +10,9 @@ set(CMAKE_CODELITE_USE_TARGETS "ON" )
 #
 # Configuration
 #
-include( "${CMAKE_SOURCE_DIR}/cmake/build_configuration.cmake" )
+
+ set(CMAKE_CXX_STANDARD 14)
+ include( "${CMAKE_SOURCE_DIR}/cmake/build_configuration.cmake" )
 
 #
 # Dependencies

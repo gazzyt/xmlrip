@@ -47,6 +47,7 @@ include_directories(${source_dir}/include)
 
 set( BUILD_TEST_MANIFEST
     main.cpp
+	tokeniser-test.cpp
 )
 
 set( BUILD_TEST_MANIFEST_HEADERS
