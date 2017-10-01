@@ -1,8 +1,10 @@
 #include "tokeniser.h"
 #include <iostream>
 
-Tokeniser::Tokeniser(std::unique_ptr<std::istream> stream)
-:	m_stream(std::move(stream))
+using namespace std;
+
+Tokeniser::Tokeniser(unique_ptr<istream> stream)
+:	m_stream(move(stream))
 {
 }
 
@@ -14,7 +16,7 @@ Token Tokeniser::GetNextToken()
 	while (true)
 	{
 		m_stream->get(c);
-		std::cout << c << std::endl;
+		cout << c << endl;
 
 		if (c == '<')
 		{
@@ -37,7 +39,7 @@ Token Tokeniser::GetNextToken()
 			}
 			else
 			{
-				std::cerr << "Unexpected character '/'" << std::endl;
+				cerr << "Unexpected character '/'" << endl;
 			}
 		}
 		else if (c == '>')
@@ -49,12 +51,21 @@ Token Tokeniser::GetNextToken()
 			if (m_stream->eof())
 				return Token(Token::Type::eof);
 			
-			return ExtractStringToken();
+			return ExtractStringToken(c);
 		}
 	};
 }
 
-Token Tokeniser::ExtractStringToken()
+Token Tokeniser::ExtractStringToken(char firstChar)
 {
-	return Token(Token::Type::string);
+	string tokenValue{};
+	char c = firstChar;
+	
+	while ((c != '<') && (c != '>'))
+	{
+		tokenValue.push_back(c);
+		m_stream->get(c);
+	};
+	
+	return Token(Token::Type::string, tokenValue);
 }

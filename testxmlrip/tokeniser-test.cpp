@@ -20,5 +20,6 @@ TEST(Tokeniser, CreatesCorrectTokens) {
 	
 	auto token2 = tokeniser.GetNextToken();
 	EXPECT_EQ(token2.GetType(), Token::Type::string);
+	EXPECT_EQ(token2.GetStringValue(), "a");
 }
 

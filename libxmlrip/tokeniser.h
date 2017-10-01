@@ -5,7 +5,6 @@
 #include <istream>
 #include <memory>
 
-
 class Tokeniser
 {
 public:
@@ -21,7 +20,7 @@ private:
 	Tokeniser(const Tokeniser& src) = delete;
 	Tokeniser operator=(const Tokeniser& src) = delete;
 	
-	Token ExtractStringToken();
+	Token ExtractStringToken(char firstChar);
 };
 
 #endif
