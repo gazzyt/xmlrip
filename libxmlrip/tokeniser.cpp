@@ -15,9 +15,9 @@ Token Tokeniser::GetNextToken()
 	{
 		m_stream->get(c);
 		std::cout << c << std::endl;
-		switch (c)
+
+		if (c == '<')
 		{
-		case '<':
 			if (m_stream->peek() == '/')
 			{
 				m_stream->get(c);
@@ -27,7 +27,9 @@ Token Tokeniser::GetNextToken()
 			{
 				return Token(Token::Type::lt);
 			}
-		case '/':
+		}
+		else if (c == '/')
+		{
 			if (m_stream->peek() == '>')
 			{
 				m_stream->get(c);
@@ -37,12 +39,22 @@ Token Tokeniser::GetNextToken()
 			{
 				std::cerr << "Unexpected character '/'" << std::endl;
 			}
-		case '>':
+		}
+		else if (c == '>')
+		{
 			return Token(Token::Type::gt);
-		default:
+		}
+		else
+		{
 			if (m_stream->eof())
 				return Token(Token::Type::eof);
-		};
+			
+			return ExtractStringToken();
+		}
 	};
 }
 
+Token Tokeniser::ExtractStringToken()
+{
+	return Token(Token::Type::string);
+}

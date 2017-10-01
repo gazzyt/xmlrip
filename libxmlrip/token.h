@@ -4,7 +4,7 @@
 class Token
 {
 public:
-	enum class Type {lt, lt_slash, gt, slash_gt, eof};
+	enum class Type {lt, lt_slash, gt, slash_gt, string, eof};
 
 	Token(Token::Type t) : m_type(t){}
 

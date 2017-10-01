@@ -15,7 +15,10 @@ static const string simpleXml = "<a></a>";
 TEST(Tokeniser, CreatesCorrectTokens) {
 	auto xmlStream = make_unique<istringstream>(simpleXml);
 	Tokeniser tokeniser{move(xmlStream)};
-	auto token = tokeniser.GetNextToken();
-    EXPECT_EQ(token.GetType(), Token::Type::lt);
+	auto token1 = tokeniser.GetNextToken();
+    EXPECT_EQ(token1.GetType(), Token::Type::lt);
+	
+	auto token2 = tokeniser.GetNextToken();
+	EXPECT_EQ(token2.GetType(), Token::Type::string);
 }
 

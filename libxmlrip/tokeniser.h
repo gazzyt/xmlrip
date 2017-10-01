@@ -20,6 +20,8 @@ private:
 
 	Tokeniser(const Tokeniser& src) = delete;
 	Tokeniser operator=(const Tokeniser& src) = delete;
+	
+	Token ExtractStringToken();
 };
 
 #endif
