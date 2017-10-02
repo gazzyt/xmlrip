@@ -60,11 +60,14 @@ Token Tokeniser::ExtractStringToken(char firstChar)
 {
 	string tokenValue{};
 	char c = firstChar;
+	char nextChar = m_stream->peek();
+	tokenValue.push_back(c);
 	
-	while ((c != '<') && (c != '>'))
+	while ((nextChar != '<') && (nextChar != '>'))
 	{
-		tokenValue.push_back(c);
 		m_stream->get(c);
+		tokenValue.push_back(c);
+		nextChar = m_stream->peek();
 	};
 	
 	return Token(Token::Type::string, tokenValue);

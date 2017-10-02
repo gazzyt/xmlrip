@@ -1,6 +1,7 @@
 #ifndef TOKEN_H
 #define TOKEN_H
 
+#include <ostream>
 #include <string>
 
 class Token
@@ -20,21 +21,15 @@ public:
 		return m_stringValue;
 	}
 
-inline const char * GetName() const
-{
-	switch (m_type)
-	{
-	case Type::lt: return "lt";
-	case Type::lt_slash: return "lt_slash";
-	case Type::gt: return "gt";
-	case Type::slash_gt: return "slash_gt";
-	case Type::eof: return "eof";
-	default: return nullptr;
-	};
-}
+	const char * GetName() const;
+	
+	bool operator==(const Token& t1) const;
+
 private:
 	Token::Type m_type;
 	std::string m_stringValue;
 };
+
+std::ostream& operator<<(std::ostream& os, const Token& token);
 
 #endif

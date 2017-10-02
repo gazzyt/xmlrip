@@ -3,6 +3,7 @@
 #include "gtest/gtest.h"
 #pragma GCC diagnostic pop
 
+#include <algorithm>
 #include <memory>
 #include <sstream>
 
@@ -11,15 +12,23 @@
 using namespace std;
 
 static const string simpleXml = "<a></a>";
+static const auto simpleXmlTokens = {
+	Token{Token::Type::lt}, 
+	Token{Token::Type::string, "a"},
+	Token{Token::Type::gt}
+};
 
-TEST(Tokeniser, CreatesCorrectTokens) {
+
+TEST(Tokeniser, CreatesCorrectTokensForSimpleXml) {
+	int tokenIndex = 0;
 	auto xmlStream = make_unique<istringstream>(simpleXml);
 	Tokeniser tokeniser{move(xmlStream)};
-	auto token1 = tokeniser.GetNextToken();
-    EXPECT_EQ(token1.GetType(), Token::Type::lt);
 	
-	auto token2 = tokeniser.GetNextToken();
-	EXPECT_EQ(token2.GetType(), Token::Type::string);
-	EXPECT_EQ(token2.GetStringValue(), "a");
+	for_each(begin(simpleXmlTokens), end(simpleXmlTokens), 
+		[&] (const Token& t) 
+		{
+			EXPECT_EQ(t,tokeniser.GetNextToken()) << "Token number " << tokenIndex << " did not have expected value";
+			++tokenIndex;
+		}
+	);
 }
-

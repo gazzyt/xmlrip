@@ -15,6 +15,7 @@ project( "libxmlrip" )
 #
 
 set( BUILD_LIBXMLRIP_MANIFEST
+	token.cpp
     tokeniser.cpp
 )
 
