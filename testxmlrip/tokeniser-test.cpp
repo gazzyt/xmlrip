@@ -15,7 +15,11 @@ static const string simpleXml = "<a></a>";
 static const auto simpleXmlTokens = {
 	Token{Token::Type::lt}, 
 	Token{Token::Type::string, "a"},
-	Token{Token::Type::gt}
+	Token{Token::Type::gt},
+	Token{Token::Type::lt_slash},
+	Token{Token::Type::string, "a"},
+	Token{Token::Type::gt},
+	Token{Token::Type::eof}
 };
 
 

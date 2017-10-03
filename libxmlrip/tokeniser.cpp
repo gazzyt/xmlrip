@@ -16,6 +16,10 @@ Token Tokeniser::GetNextToken()
 	while (true)
 	{
 		m_stream->get(c);
+
+		if (m_stream->eof())
+			return Token(Token::Type::eof);
+			
 		cout << c << endl;
 
 		if (c == '<')
@@ -48,9 +52,6 @@ Token Tokeniser::GetNextToken()
 		}
 		else
 		{
-			if (m_stream->eof())
-				return Token(Token::Type::eof);
-			
 			return ExtractStringToken(c);
 		}
 	};
