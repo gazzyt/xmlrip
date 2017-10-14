@@ -1,14 +1,19 @@
+#ifndef TAG_H
+#define TAG_H
+
 #include <string>
 
-class Token
+class Tag
 {
 public:
-	Token(std::string tagName, bool isOpeningTag, bool isClosingTag);
+	Tag(std::string tagName, bool isOpeningTag, bool isClosingTag);
 
 public:
 	bool IsOpeningTag() const;
 	bool IsClosingTag() const;
 	std::string GetTagName() const;
+
+	bool operator==(const Tag& t1) const;
 
 private:
 	std::string m_tagName;
@@ -16,3 +21,6 @@ private:
 	bool m_isClosingTag;
 };
 
+std::ostream& operator<<(std::ostream& os, const Tag& tag);
+
+#endif

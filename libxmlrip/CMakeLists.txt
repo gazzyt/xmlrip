@@ -17,11 +17,15 @@ project( "libxmlrip" )
 set( BUILD_LIBXMLRIP_MANIFEST
 	token.cpp
     tokeniser.cpp
+    tag.cpp
+    tagreader.cpp
 )
 
 set( BUILD_LIBXMLRIP_MANIFEST_HEADERS
     token.h
     tokeniser.h
+    tag.h
+    tagreader.h
 )
 
 add_library( libxmlrip ${BUILD_LIBXMLRIP_MANIFEST} ${BUILD_LIBXMLRIP_MANIFEST_HEADERS})

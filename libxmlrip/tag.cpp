@@ -1,23 +1,36 @@
-#include "token.h"
+#include "tag.h"
+#include <ostream>
 
-Token::Token(std::string tagName, bool isOpeningTag, bool isClosingTag)
+using namespace std;
+
+Tag::Tag(string tagName, bool isOpeningTag, bool isClosingTag)
 	: m_tagName(tagName), m_isOpeningTag(isOpeningTag), m_isClosingTag(isClosingTag)
 {}
 
 
-bool Token::IsOpeningTag() const
+bool Tag::IsOpeningTag() const
 {
 	return m_isOpeningTag;
 }
 
-bool Token::IsClosingTag() const
+bool Tag::IsClosingTag() const
 {
 	return m_isClosingTag;
 }
 
 
-std::string Token::GetTagName() const
+string Tag::GetTagName() const
 {
 	return m_tagName;
 }
 
+bool Tag::operator==(const Tag& t1) const
+{
+	return (t1.m_tagName == m_tagName) && (t1.m_isOpeningTag == m_isOpeningTag) && (t1.m_isClosingTag == m_isClosingTag);
+}
+
+ostream& operator<<(ostream& os, const Tag& tag)
+{
+	os << "{name:\"" << tag.GetTagName() << "\",isOpeningTag:\"" << tag.IsOpeningTag() << "\",isClosingTag:\"" << tag.IsClosingTag() << "\"}";
+	return os;
+}
