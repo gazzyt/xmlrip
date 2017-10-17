@@ -32,3 +32,10 @@ TEST(TagPredicate, IsMatchReturnsFalseWhenClosingTagNamesMatch) {
     
 	EXPECT_FALSE(testPredicate.IsMatch(testTag));
 }
+
+TEST(TagPredicate, IsMatchReturnsFalseWhenOpeningTagNamesDoNotMatch) {
+    Tag testTag("bb", true, false);
+    TagPredicate testPredicate("aa");
+    
+	EXPECT_FALSE(testPredicate.IsMatch(testTag));
+}
