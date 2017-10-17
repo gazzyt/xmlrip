@@ -77,6 +77,7 @@ target_link_libraries(
     optimized ${binary_dir}/ReleaseLibs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest${Suffix}
     ${Pthread})
 
+add_test(TESTS testxmlrip)
 
 #
 # Install

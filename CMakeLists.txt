@@ -7,6 +7,8 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 set(CMAKE_CODELITE_USE_TARGETS "ON" )
 
+enable_testing()
+
 #
 # Configuration
 #
