@@ -20,6 +20,7 @@ set( BUILD_LIBXMLRIP_MANIFEST
     tag.cpp
     tagreader.cpp
     tagpredicate.cpp
+	tagexpression.cpp
 )
 
 set( BUILD_LIBXMLRIP_MANIFEST_HEADERS
@@ -27,7 +28,8 @@ set( BUILD_LIBXMLRIP_MANIFEST_HEADERS
     tokeniser.h
     tag.h
     tagreader.h
-    tagpredicate.cpp
+    tagpredicate.h
+	tagexpression.h
 )
 
 add_library( libxmlrip ${BUILD_LIBXMLRIP_MANIFEST} ${BUILD_LIBXMLRIP_MANIFEST_HEADERS})
