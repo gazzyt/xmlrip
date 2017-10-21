@@ -14,6 +14,7 @@ public:
 	std::string GetTagName() const;
 
 	bool operator==(const Tag& t1) const;
+	bool IsMatch(const Tag& t1) const;
 
 private:
 	std::string m_tagName;

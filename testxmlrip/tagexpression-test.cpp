@@ -23,3 +23,63 @@ TEST(TagExpression, ProcessTagReturnsFalseWithSingleTagExpressionWhenTagDoesNotM
     
 	EXPECT_FALSE(expr.ProcessTag(testTag));
 }
+
+TEST(TagExpression, ProcessTagReturnsTrueForChildTagsOfFullMatch) {
+	// Arrange
+    TagExpression expr;
+	Tag testTag1("aa", true, false);
+	Tag testTag2("bb", true, false);
+	expr.AddPredicate(TagPredicate{"aa"});
+	
+	// Act
+	expr.ProcessTag(testTag1);
+	auto result = expr.ProcessTag(testTag2);
+    
+	// Assert
+	EXPECT_TRUE(result);
+}
+
+TEST(TagExpression, ProcessTagReturnsTrueForClosingTagOfFullMatch) {
+	// Arrange
+    TagExpression expr;
+	Tag testTag1("aa", true, false);
+	Tag testTag2("aa", false, true);
+	expr.AddPredicate(TagPredicate{"aa"});
+	
+	// Act
+	expr.ProcessTag(testTag1);
+	auto result = expr.ProcessTag(testTag2);
+    
+	// Assert
+	EXPECT_TRUE(result);
+}
+
+TEST(TagExpression, ProcessTagReturnsTrueForMatchingOpenClosingTag) {
+	// Arrange
+    TagExpression expr;
+	Tag testTag1("aa", true, true);
+	expr.AddPredicate(TagPredicate{"aa"});
+	
+	// Act
+	auto result = expr.ProcessTag(testTag1);
+    
+	// Assert
+	EXPECT_TRUE(result);
+}
+
+TEST(TagExpression, ProcessTagReturnsFalseAfterMatchingTagClosed) {
+	// Arrange
+    TagExpression expr;
+	Tag testTag1("aa", true, false);
+	Tag testTag2("aa", false, true);
+	Tag testTag3("bb", true, false);
+	expr.AddPredicate(TagPredicate{"aa"});
+	
+	// Act
+	expr.ProcessTag(testTag1);
+	expr.ProcessTag(testTag2);
+	auto result = expr.ProcessTag(testTag3);
+    
+	// Assert
+	EXPECT_FALSE(result);
+}

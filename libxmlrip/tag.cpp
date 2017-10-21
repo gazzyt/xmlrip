@@ -24,6 +24,11 @@ string Tag::GetTagName() const
 	return m_tagName;
 }
 
+bool Tag::IsMatch(const Tag& t1) const
+{
+	return (t1.m_tagName == m_tagName);
+}
+
 bool Tag::operator==(const Tag& t1) const
 {
 	return (t1.m_tagName == m_tagName) && (t1.m_isOpeningTag == m_isOpeningTag) && (t1.m_isClosingTag == m_isClosingTag);
