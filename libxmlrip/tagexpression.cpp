@@ -13,7 +13,7 @@ void TagExpression::AddPredicate(TagPredicate predicate)
 
 bool TagExpression::ProcessTag(const Tag& tag)
 {
-	auto matchIndex = m_matchingTags.size();
+	const auto matchIndex = m_matchingTags.size();
 	
 	if (tag.IsOpeningTag())
 	{
@@ -32,7 +32,17 @@ bool TagExpression::ProcessTag(const Tag& tag)
 			{
 				m_matchingTags.push(tag);
 			}
-			return true;
+			
+			if (matchIndex == (m_predicates.size() - 1))
+			{
+				// We matched the last predicate
+				return true;
+			}
+			else
+			{
+				// Only a partial match
+				return false;
+			}
 		}
 		else
 		{
@@ -46,7 +56,17 @@ bool TagExpression::ProcessTag(const Tag& tag)
 		{
 			// It does
 			m_matchingTags.pop();
-			return true;
+
+			if (matchIndex == m_predicates.size())
+			{
+				// We matched the last predicate
+				return true;
+			}
+			else
+			{
+				// Only a partial match
+				return false;
+			}
 		}
 		
 		// If we already have a full match for all predicates

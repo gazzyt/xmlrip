@@ -83,3 +83,33 @@ TEST(TagExpression, ProcessTagReturnsFalseAfterMatchingTagClosed) {
 	// Assert
 	EXPECT_FALSE(result);
 }
+
+TEST(TagExpression, ProcessTagProcessesTwoPrecidatesCorrectly) {
+	// Arrange
+    TagExpression expr;
+	Tag openAATag("aa", true, false);
+	Tag closeAATag("aa", false, true);
+	Tag openBBTag("bb", true, false);
+	Tag closeBBTag("bb", false, true);
+	Tag openCCTag("cc", true, false);
+	Tag closeCCTag("cc", false, true);
+	expr.AddPredicate(TagPredicate{"aa"});
+	expr.AddPredicate(TagPredicate{"bb"});
+	
+	// Act
+	// Assert
+	// <aa><bb><cc></cc></bb><cc></cc><bb></bb></aa><bb></bb>
+	EXPECT_FALSE(expr.ProcessTag(openAATag));
+	EXPECT_TRUE(expr.ProcessTag(openBBTag));
+	EXPECT_TRUE(expr.ProcessTag(openCCTag));
+	EXPECT_TRUE(expr.ProcessTag(closeCCTag));
+	EXPECT_TRUE(expr.ProcessTag(closeBBTag));
+	EXPECT_FALSE(expr.ProcessTag(openCCTag));
+	EXPECT_FALSE(expr.ProcessTag(closeCCTag));
+	EXPECT_TRUE(expr.ProcessTag(openBBTag));
+	EXPECT_TRUE(expr.ProcessTag(closeBBTag));
+   	EXPECT_FALSE(expr.ProcessTag(closeAATag));
+	EXPECT_FALSE(expr.ProcessTag(openBBTag));
+	EXPECT_FALSE(expr.ProcessTag(closeBBTag));
+
+}
