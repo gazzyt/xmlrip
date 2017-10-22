@@ -36,6 +36,12 @@ bool Tag::operator==(const Tag& t1) const
 
 ostream& operator<<(ostream& os, const Tag& tag)
 {
-	os << "{name:\"" << tag.GetTagName() << "\",isOpeningTag:\"" << tag.IsOpeningTag() << "\",isClosingTag:\"" << tag.IsClosingTag() << "\"}";
+	auto opening = (tag.IsClosingTag() && !tag.IsOpeningTag()) ? "</" : "<";
+	auto closing = (tag.IsClosingTag() && tag.IsOpeningTag()) ? "/>" : ">";
+
+	os << opening;
+	os << tag.GetTagName();
+	os << closing;
+
 	return os;
 }
