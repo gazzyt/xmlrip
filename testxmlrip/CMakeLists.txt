@@ -51,6 +51,7 @@ set( BUILD_TEST_MANIFEST
     tagreader-test.cpp
     tagpredicate-test.cpp
 	tagexpression-test.cpp
+	tag-test.cpp
 )
 
 set( BUILD_TEST_MANIFEST_HEADERS

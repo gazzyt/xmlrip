@@ -34,7 +34,7 @@ Tag TagReader::GetNextTag()
    		m_stream->get(c);
         
         if (m_stream->eof())
-            return Tag("EOF", false, false);
+            return Tag::FromText("EOF", false, false);
             
         if (c == '/')
         {

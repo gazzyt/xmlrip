@@ -15,6 +15,8 @@ public:
 
 	bool operator==(const Tag& t1) const;
 	bool IsMatch(const Tag& t1) const;
+	
+	static Tag FromText(std::string text, bool isOpeningTag, bool isClosingTag);
 
 private:
 	std::string m_tagName;

@@ -45,3 +45,17 @@ ostream& operator<<(ostream& os, const Tag& tag)
 
 	return os;
 }
+
+Tag Tag::FromText(std::string text, bool isOpeningTag, bool isClosingTag)
+{
+	auto firstSpace = text.find_first_of(' ');
+	
+	if (firstSpace == string::npos)
+	{
+		return Tag(text, isOpeningTag, isClosingTag);
+	}
+	else
+	{
+		return Tag(text.substr(0, firstSpace), isOpeningTag, isClosingTag);
+	}
+}
