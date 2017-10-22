@@ -1,25 +1,36 @@
-#include "tokeniser.h"
+#include "tagreader.h"
+#include "tagexpression.h"
 #include <iostream>
 #include <fstream>
 
+using namespace std;
+
 int main()
 {
-	std::cout << "Hello world" << std::endl;
+	cout << "Hello world" << endl;
 
-	std::unique_ptr<std::ifstream> inputStream(new std::ifstream("test.xml"));
+	unique_ptr<ifstream> inputStream(new ifstream("test.xml"));
 	if (!inputStream->is_open())
 	{
-		std::cerr << "Failed to open file" << std::endl;
+		cerr << "Failed to open file" << endl;
 		return 1;
 	}
 
-	Tokeniser tokeniser(std::move(inputStream));
+	TagReader tagReader(move(inputStream));
+	TagExpression expr{};
+	expr.AddPredicate(TagPredicate{"outer"});
+	expr.AddPredicate(TagPredicate{"inner"});
 
-	Token t = tokeniser.GetNextToken();
-	while (t.GetType() != Token::Type::eof)
+
+	Tag t = tagReader.GetNextTag();
+	while (t.GetTagName() != "EOF")
 	{
-		std::cout << "token: " << t.GetName() << std::endl;
-		t = tokeniser.GetNextToken();
+		if (expr.ProcessTag(t))
+		{
+			cout << t << endl;
+		}
+
+		t = tagReader.GetNextTag();
 	};
 }
 
