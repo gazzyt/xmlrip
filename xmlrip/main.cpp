@@ -5,11 +5,18 @@
 
 using namespace std;
 
-int main()
+void Usage()
 {
-	cout << "Hello world" << endl;
+	cerr << "Usage: xmlrip <path-to-xml-file>" << endl;
+	exit(1);
+}
 
-	unique_ptr<ifstream> inputStream(new ifstream("test.xml"));
+int main(int argc, char** argv)
+{
+	if (argc != 2)
+		Usage();
+	
+	unique_ptr<ifstream> inputStream(new ifstream(argv[1]));
 	if (!inputStream->is_open())
 	{
 		cerr << "Failed to open file" << endl;
