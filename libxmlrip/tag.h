@@ -12,6 +12,7 @@ public:
 	bool IsOpeningTag() const;
 	bool IsClosingTag() const;
 	std::string GetTagName() const;
+	std::string GetAttributeText() const;
 
 	bool operator==(const Tag& t1) const;
 	bool IsMatch(const Tag& t1) const;
@@ -19,7 +20,10 @@ public:
 	static Tag FromText(std::string text, bool isOpeningTag, bool isClosingTag);
 
 private:
+	Tag(std::string tagName, std::string attributeText, bool isOpeningTag, bool isClosingTag);
+	
 	std::string m_tagName;
+	std::string m_attributeText;
 	bool m_isOpeningTag;
 	bool m_isClosingTag;
 };
