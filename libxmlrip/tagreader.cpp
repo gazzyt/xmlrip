@@ -42,7 +42,7 @@ Tag TagReader::GetNextTag()
         }
         else if (c == '>')
         {
-            return Tag(tagName, startTag, endTag);
+            return Tag::FromText(tagName, startTag, endTag);
         }
         else
         {
