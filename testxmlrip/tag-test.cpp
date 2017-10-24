@@ -33,4 +33,5 @@ TEST(Tag, CreatesCorrectTagFromNameAndAttributes) {
 	EXPECT_TRUE(tag.IsOpeningTag());
 	EXPECT_TRUE(tag.IsClosingTag());
 	EXPECT_EQ("aa", tag.GetTagName());
+	EXPECT_EQ(" att=3", tag.GetAttributeText());
 }
