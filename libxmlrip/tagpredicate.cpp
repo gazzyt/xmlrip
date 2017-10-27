@@ -13,3 +13,7 @@ bool TagPredicate::IsMatch(const Tag& tag) const
 	return (m_tagName == tag.GetTagName() && tag.IsOpeningTag());
 }
 
+const string& TagPredicate::GetTagName() const
+{
+	return m_tagName;
+}

@@ -7,13 +7,13 @@ using namespace std;
 
 void Usage()
 {
-	cerr << "Usage: xmlrip <path-to-xml-file>" << endl;
+	cerr << "Usage: xmlrip <path-to-xml-file> <xpath>" << endl;
 	exit(1);
 }
 
 int main(int argc, char** argv)
 {
-	if (argc != 2)
+	if (argc != 3)
 		Usage();
 	
 	unique_ptr<ifstream> inputStream(new ifstream(argv[1]));
@@ -24,15 +24,13 @@ int main(int argc, char** argv)
 	}
 
 	TagReader tagReader(move(inputStream));
-	TagExpression expr{};
-	expr.AddPredicate(TagPredicate{"outer"});
-	expr.AddPredicate(TagPredicate{"inner"});
+	auto expr = TagExpression::FromText(argv[2]);
 
 
 	Tag t = tagReader.GetNextTag();
 	while (t.GetTagName() != "EOF")
 	{
-		if (expr.ProcessTag(t))
+		if (expr->ProcessTag(t))
 		{
 			cout << t << endl;
 		}

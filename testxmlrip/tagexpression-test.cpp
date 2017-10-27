@@ -113,3 +113,32 @@ TEST(TagExpression, ProcessTagProcessesTwoPrecidatesCorrectly) {
 	EXPECT_FALSE(expr.ProcessTag(closeBBTag));
 
 }
+
+TEST(TagExpression, FromTextCreatesSingleItemExpressionCorrectly) {
+	// Arrange
+	
+	// Act
+	auto expr = TagExpression::FromText("aa");
+	
+	// Assert
+	ASSERT_TRUE((bool)expr);
+
+	auto predicates = expr->GetPredicates();
+	EXPECT_EQ(1U, predicates.size());
+	EXPECT_EQ("aa", predicates[0].GetTagName());
+}
+
+TEST(TagExpression, FromTextCreatesTwoItemExpressionCorrectly) {
+	// Arrange
+	
+	// Act
+	auto expr = TagExpression::FromText("aa/bb");
+	
+	// Assert
+	ASSERT_TRUE((bool)expr);
+
+	auto predicates = expr->GetPredicates();
+	EXPECT_EQ(2U, predicates.size());
+	EXPECT_EQ("aa", predicates[0].GetTagName());
+	EXPECT_EQ("bb", predicates[1].GetTagName());
+}

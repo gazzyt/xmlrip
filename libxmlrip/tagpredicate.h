@@ -12,6 +12,7 @@ public:
 
 public:
 	bool IsMatch(const Tag& tag) const;
+	const std::string& GetTagName() const;
 
 private:
 	std::string m_tagName;

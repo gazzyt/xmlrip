@@ -1,4 +1,5 @@
 #include "tagexpression.h"
+#include "stringutils.h"
 
 using namespace std;
 
@@ -9,6 +10,11 @@ TagExpression::TagExpression()
 void TagExpression::AddPredicate(TagPredicate predicate)
 {
 	m_predicates.push_back(predicate);
+}
+
+const vector<TagPredicate>& TagExpression::GetPredicates() const
+{
+	return m_predicates;
 }
 
 bool TagExpression::ProcessTag(const Tag& tag)
@@ -79,4 +85,17 @@ bool TagExpression::ProcessTag(const Tag& tag)
 	}
 	
 	return false; // We only get here if that tag is neither opening nor closing
+}
+
+unique_ptr<TagExpression> TagExpression::FromText(string text)
+{
+	auto retval = make_unique<TagExpression>();
+	auto tagNames = split(text, '/');
+	
+	for ( auto tagName : tagNames)
+	{
+		retval->AddPredicate(TagPredicate(tagName));
+	}
+	
+	return retval;
 }
