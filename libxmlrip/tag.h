@@ -6,7 +6,7 @@
 class Tag
 {
 public:
-	Tag(std::string tagName, bool isOpeningTag, bool isClosingTag);
+	Tag(std::string tagName, bool isOpeningTag, bool isClosingTag) noexcept;
 
 public:
 	bool IsOpeningTag() const;
@@ -20,7 +20,7 @@ public:
 	static Tag FromText(std::string text, bool isOpeningTag, bool isClosingTag);
 
 private:
-	Tag(std::string tagName, std::string attributeText, bool isOpeningTag, bool isClosingTag);
+	Tag(std::string tagName, std::string attributeText, bool isOpeningTag, bool isClosingTag) noexcept;
 	
 	std::string m_tagName;
 	std::string m_attributeText;
