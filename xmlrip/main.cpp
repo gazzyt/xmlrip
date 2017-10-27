@@ -1,7 +1,10 @@
-#include "tagreader.h"
-#include "tagexpression.h"
+#include <algorithm>
 #include <iostream>
 #include <fstream>
+
+#include "tagreader.h"
+#include "tagreader-iterator.h"
+#include "tagexpression.h"
 
 using namespace std;
 
@@ -24,18 +27,19 @@ int main(int argc, char** argv)
 	}
 
 	TagReader tagReader(move(inputStream));
+	TagReader_iterator beginIter{tagReader};
+	TagReader_iterator endIter{};
 	auto expr = TagExpression::FromText(argv[2]);
 
-
-	Tag t = tagReader.GetNextTag();
-	while (t.GetTagName() != "EOF")
-	{
-		if (expr->ProcessTag(t))
+	for_each(beginIter, endIter, 
+		[&] (const Tag& t) 
 		{
-			cout << t << endl;
+			if (expr->ProcessTag(t))
+			{
+				cout << t << endl;
+			}
 		}
-
-		t = tagReader.GetNextTag();
-	};
+	);
+	
 }
 
