@@ -19,7 +19,6 @@ static const auto simpleXmlTags = {
 
 
 TEST(TagReader_iterator, CreatesCorrectTokensForSimpleXml) {
-	int tagIndex = 0;
 	auto xmlStream = make_unique<istringstream>(simpleXml);
 	TagReader tagReader{move(xmlStream)};
 	TagReader_iterator beginIter{tagReader};
