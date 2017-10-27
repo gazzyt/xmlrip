@@ -6,6 +6,7 @@
 class Tag
 {
 public:
+	Tag() noexcept;
 	Tag(std::string tagName, bool isOpeningTag, bool isClosingTag) noexcept;
 
 public:

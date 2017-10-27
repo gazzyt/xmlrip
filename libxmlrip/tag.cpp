@@ -3,6 +3,10 @@
 
 using namespace std;
 
+Tag::Tag() noexcept
+	: m_tagName{}, m_attributeText{}, m_isOpeningTag{false}, m_isClosingTag{false}
+{}
+
 Tag::Tag(string tagName, bool isOpeningTag, bool isClosingTag) noexcept
 	: m_tagName(tagName), m_attributeText{}, m_isOpeningTag(isOpeningTag), m_isClosingTag(isClosingTag)
 {}

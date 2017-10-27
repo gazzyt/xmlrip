@@ -49,6 +49,7 @@ set( BUILD_TEST_MANIFEST
     main.cpp
 	tokeniser-test.cpp
     tagreader-test.cpp
+    tagreader-iterator-test.cpp
     tagpredicate-test.cpp
 	tagexpression-test.cpp
 	tag-test.cpp

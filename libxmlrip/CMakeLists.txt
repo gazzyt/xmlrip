@@ -22,6 +22,7 @@ set( BUILD_LIBXMLRIP_MANIFEST
     tagpredicate.cpp
 	tagexpression.cpp
 	stringutils.cpp
+	tagreader-iterator.cpp
 )
 
 set( BUILD_LIBXMLRIP_MANIFEST_HEADERS
@@ -32,6 +33,7 @@ set( BUILD_LIBXMLRIP_MANIFEST_HEADERS
     tagpredicate.h
 	tagexpression.h
 	stringutils.h
+	tagreader-iterator.h
 )
 
 add_library( libxmlrip ${BUILD_LIBXMLRIP_MANIFEST} ${BUILD_LIBXMLRIP_MANIFEST_HEADERS})
