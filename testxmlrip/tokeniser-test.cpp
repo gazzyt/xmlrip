@@ -7,27 +7,32 @@
 #include <memory>
 #include <sstream>
 
-#include "tagreader.h"
+#include "tokeniser.h"
 
 using namespace std;
 
 static const string simpleXml = "<a></a>";
-static const auto simpleXmlTags = {
-	Tag{"a", true, false}, 
-	Tag{"a", false, true}
+static const auto simpleXmlTokens = {
+	Token{Token::Type::lt}, 
+	Token{Token::Type::string, "a"},
+	Token{Token::Type::gt},
+	Token{Token::Type::lt_slash},
+	Token{Token::Type::string, "a"},
+	Token{Token::Type::gt},
+	Token{Token::Type::eof}
 };
 
 
-TEST(TagReader, CreatesCorrectTokensForSimpleXml) {
-	int tagIndex = 0;
+TEST(Tokeniser, CreatesCorrectTokensForSimpleXml) {
+	int tokenIndex = 0;
 	auto xmlStream = make_unique<istringstream>(simpleXml);
-	TagReader tagReader{move(xmlStream)};
+	Tokeniser tokeniser{move(xmlStream)};
 	
-	for_each(begin(simpleXmlTags), end(simpleXmlTags), 
-		[&] (const Tag& t) 
+	for_each(begin(simpleXmlTokens), end(simpleXmlTokens), 
+		[&] (const Token& t) 
 		{
-			EXPECT_EQ(t,tagReader.GetNextTag()) << "Tag number " << tagIndex << " did not have expected value";
-			++tagIndex;
+			EXPECT_EQ(t,tokeniser.GetNextToken()) << "Token number " << tokenIndex << " did not have expected value";
+			++tokenIndex;
 		}
 	);
 }
