@@ -1,27 +1,27 @@
-#include "tagexpression.h"
+#include "xmlexpression.h"
 #include "stringutils.h"
 
 using namespace std;
 
-TagExpression::TagExpression()
-:	m_predicates{}, m_matchingTags{}
+XmlExpression::XmlExpression()
+:	m_predicates{}, m_matchingElements{}
 {}
 
-void TagExpression::AddPredicate(TagPredicate predicate)
+void XmlExpression::AddPredicate(XmlPredicate predicate)
 {
 	m_predicates.push_back(predicate);
 }
 
-const vector<TagPredicate>& TagExpression::GetPredicates() const
+const vector<XmlPredicate>& XmlExpression::GetPredicates() const
 {
 	return m_predicates;
 }
 
-bool TagExpression::ProcessTag(const Tag& tag)
+bool XmlExpression::ProcessElement(const XmlElement& elem)
 {
-	const auto matchIndex = m_matchingTags.size();
+	const auto matchIndex = m_matchingElements.size();
 	
-	if (tag.IsOpeningTag())
+	if (elem.IsOpeningTag())
 	{
 	
 		// If we already have a full match for all predicates
@@ -32,11 +32,11 @@ bool TagExpression::ProcessTag(const Tag& tag)
 	
 		auto nextPredicate = m_predicates[matchIndex];
 		
-		if (nextPredicate.IsMatch(tag))
+		if (nextPredicate.IsMatch(elem))
 		{
-			if (!tag.IsClosingTag())
+			if (!elem.IsClosingTag())
 			{
-				m_matchingTags.push(tag);
+				m_matchingElements.push(elem);
 			}
 			
 			if (matchIndex == (m_predicates.size() - 1))
@@ -55,13 +55,13 @@ bool TagExpression::ProcessTag(const Tag& tag)
 			return false;
 		}
 	}
-	else if (tag.IsClosingTag())
+	else if (elem.IsClosingTag())
 	{
 		// Does this closing tag close the last matched tag?
-		if ((matchIndex > 0) && m_matchingTags.top().IsMatch(tag))
+		if ((matchIndex > 0) && m_matchingElements.top().IsMatch(elem))
 		{
 			// It does
-			m_matchingTags.pop();
+			m_matchingElements.pop();
 
 			if (matchIndex == m_predicates.size())
 			{
@@ -87,14 +87,14 @@ bool TagExpression::ProcessTag(const Tag& tag)
 	return false; // We only get here if that tag is neither opening nor closing
 }
 
-unique_ptr<TagExpression> TagExpression::FromText(string text)
+unique_ptr<XmlExpression> XmlExpression::FromText(string text)
 {
-	auto retval = make_unique<TagExpression>();
+	auto retval = make_unique<XmlExpression>();
 	auto tagNames = split(text, '/');
 	
 	for ( auto tagName : tagNames)
 	{
-		retval->AddPredicate(TagPredicate(tagName));
+		retval->AddPredicate(XmlPredicate(tagName));
 	}
 	
 	return retval;

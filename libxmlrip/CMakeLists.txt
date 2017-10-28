@@ -17,23 +17,23 @@ project( "libxmlrip" )
 set( BUILD_LIBXMLRIP_MANIFEST
 	token.cpp
     tokeniser.cpp
-    tag.cpp
-    tagreader.cpp
-    tagpredicate.cpp
-	tagexpression.cpp
+    xmlelement.cpp
+    xmlelementreader.cpp
+    xmlpredicate.cpp
+	xmlexpression.cpp
 	stringutils.cpp
-	tagreader-iterator.cpp
+	xmlelementreader-iterator.cpp
 )
 
 set( BUILD_LIBXMLRIP_MANIFEST_HEADERS
     token.h
     tokeniser.h
-    tag.h
-    tagreader.h
-    tagpredicate.h
-	tagexpression.h
+    xmlelement.h
+    xmlelementreader.h
+    xmlpredicate.h
+	xmlexpression.h
 	stringutils.h
-	tagreader-iterator.h
+	xmlelementreader-iterator.h
 )
 
 add_library( libxmlrip ${BUILD_LIBXMLRIP_MANIFEST} ${BUILD_LIBXMLRIP_MANIFEST_HEADERS})

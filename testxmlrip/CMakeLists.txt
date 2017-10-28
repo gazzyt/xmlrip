@@ -48,11 +48,11 @@ include_directories(${source_dir}/include)
 set( BUILD_TEST_MANIFEST
     main.cpp
 	tokeniser-test.cpp
-    tagreader-test.cpp
-    tagreader-iterator-test.cpp
-    tagpredicate-test.cpp
-	tagexpression-test.cpp
-	tag-test.cpp
+    xmlelementreader-test.cpp
+    xmlelementreader-iterator-test.cpp
+    xmlpredicate-test.cpp
+	xmlexpression-test.cpp
+	xmlelement-test.cpp
 )
 
 set( BUILD_TEST_MANIFEST_HEADERS

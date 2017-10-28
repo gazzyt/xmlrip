@@ -1,15 +1,15 @@
-#include "tagreader.h"
+#include "xmlelementreader.h"
 #include <iostream>
 
 using namespace std;
 
-TagReader::TagReader(unique_ptr<istream> stream)
+XmlElementReader::XmlElementReader(unique_ptr<istream> stream)
 :	m_stream(move(stream))
 {
 }
 
 
-Tag TagReader::GetNextTag()
+XmlElement XmlElementReader::GetNextElement()
 {
     string tagName;
     char c;
@@ -34,7 +34,7 @@ Tag TagReader::GetNextTag()
    		m_stream->get(c);
         
         if (m_stream->eof())
-            return Tag::FromText("EOF", false, false);
+            return XmlElement::FromText("EOF", false, false);
             
         if (c == '/')
         {
@@ -42,7 +42,7 @@ Tag TagReader::GetNextTag()
         }
         else if (c == '>')
         {
-            return Tag::FromText(tagName, startTag, endTag);
+            return XmlElement::FromText(tagName, startTag, endTag);
         }
         else
         {
@@ -50,6 +50,5 @@ Tag TagReader::GetNextTag()
         }
     };
     
-    //return Tag("dummy",true, true);
 }
 

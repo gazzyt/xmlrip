@@ -2,9 +2,9 @@
 #include <iostream>
 #include <fstream>
 
-#include "tagreader.h"
-#include "tagreader-iterator.h"
-#include "tagexpression.h"
+#include "xmlelementreader.h"
+#include "xmlelementreader-iterator.h"
+#include "xmlexpression.h"
 
 using namespace std;
 
@@ -26,17 +26,17 @@ int main(int argc, char** argv)
 		return 1;
 	}
 
-	TagReader tagReader(move(inputStream));
-	TagReader_iterator beginIter{tagReader};
-	TagReader_iterator endIter{};
-	auto expr = TagExpression::FromText(argv[2]);
+	XmlElementReader elemReader(move(inputStream));
+	XmlElementReader_iterator beginIter{elemReader};
+	XmlElementReader_iterator endIter{};
+	auto expr = XmlExpression::FromText(argv[2]);
 
 	for_each(beginIter, endIter, 
-		[&] (const Tag& t) 
+		[&] (const XmlElement& elem) 
 		{
-			if (expr->ProcessTag(t))
+			if (expr->ProcessElement(elem))
 			{
-				cout << t << endl;
+				cout << elem << endl;
 			}
 		}
 	);
