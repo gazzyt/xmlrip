@@ -6,7 +6,7 @@
 class XmlElement
 {
 public:
-	enum class Type {tag};
+	enum class Type {tag, declaration};
 	
 	XmlElement() noexcept;
 	XmlElement(Type type, std::string tagName, bool isOpeningTag, bool isClosingTag) noexcept;

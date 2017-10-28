@@ -15,6 +15,9 @@ public:
 	XmlElement GetNextElement();
 
 private:
+	XmlElement ReadTag();
+	XmlElement ReadDeclaration();
+	
 	std::unique_ptr<std::istream> m_stream;
 
 	XmlElementReader(const XmlElementReader& src) = delete;

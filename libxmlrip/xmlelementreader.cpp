@@ -1,5 +1,7 @@
-#include "xmlelementreader.h"
+#include <cassert>
 #include <iostream>
+
+#include "xmlelementreader.h"
 
 using namespace std;
 
@@ -13,11 +15,29 @@ XmlElement XmlElementReader::GetNextElement()
 {
     string tagName;
     char c;
-    bool startTag = false;
-    bool endTag = false;
     
     m_stream->ignore(1, '<');
+	
     
+    if (m_stream->peek() == '?')
+    {
+		m_stream->get(c);
+		return ReadDeclaration();
+    }
+    else
+    {
+		return ReadTag();
+    }
+    
+}
+
+XmlElement XmlElementReader::ReadTag()
+{
+    string tagName;
+    char c;
+    bool startTag = false;
+    bool endTag = false;
+
     if (m_stream->peek() == '/')
     {
 		m_stream->get(c);
@@ -49,6 +69,29 @@ XmlElement XmlElementReader::GetNextElement()
             tagName += c;
         }
     };
-    
 }
 
+XmlElement XmlElementReader::ReadDeclaration()
+{
+    string text;
+    char c;
+
+    while(true)
+    {
+   		m_stream->get(c);
+        
+        if (m_stream->eof())
+            return XmlElement::FromText("EOF", false, false);
+            
+        if (c == '?')
+        {
+			m_stream->get(c);
+			assert(c == '>');
+			return XmlElement{XmlElement::Type::declaration, text, true, true};
+        }
+        else
+        {
+            text += c;
+        }
+    };
+}

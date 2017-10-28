@@ -49,7 +49,7 @@ bool XmlElement::IsMatch(const XmlElement& e1) const
 
 bool XmlElement::operator==(const XmlElement& e1) const
 {
-	return (e1.m_tagName == m_tagName) && (e1.m_isOpeningTag == m_isOpeningTag) && (e1.m_isClosingTag == m_isClosingTag);
+	return (e1.m_type == m_type) && (e1.m_tagName == m_tagName) && (e1.m_isOpeningTag == m_isOpeningTag) && (e1.m_isClosingTag == m_isClosingTag);
 }
 
 ostream& operator<<(ostream& os, const XmlElement& elem)
