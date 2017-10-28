@@ -54,13 +54,24 @@ bool XmlElement::operator==(const XmlElement& e1) const
 
 ostream& operator<<(ostream& os, const XmlElement& elem)
 {
-	auto opening = (elem.IsClosingTag() && !elem.IsOpeningTag()) ? "</" : "<";
-	auto closing = (elem.IsClosingTag() && elem.IsOpeningTag()) ? "/>" : ">";
+	switch (elem.GetType())
+	{
+		case XmlElement::Type::tag:
+		{
+			auto opening = (elem.IsClosingTag() && !elem.IsOpeningTag()) ? "</" : "<";
+			auto closing = (elem.IsClosingTag() && elem.IsOpeningTag()) ? "/>" : ">";
 
-	os << opening;
-	os << elem.GetTagName();
-	os << elem.GetAttributeText();
-	os << closing;
+			os << opening;
+			os << elem.GetTagName();
+			os << elem.GetAttributeText();
+			os << closing;
+		}
+		break;
+			
+		case XmlElement::Type::declaration:
+			os << "<?" << elem.GetTagName() << "?>";
+			break;
+	};
 
 	return os;
 }
