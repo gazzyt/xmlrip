@@ -5,16 +5,21 @@
 using namespace std;
 
 XmlElement::XmlElement() noexcept
-	: m_tagName{}, m_attributeText{}, m_isOpeningTag{false}, m_isClosingTag{false}
+	: m_type{Type::tag}, m_tagName{}, m_attributeText{}, m_isOpeningTag{false}, m_isClosingTag{false}
 {}
 
-XmlElement::XmlElement(string tagName, bool isOpeningTag, bool isClosingTag) noexcept
-	: m_tagName(tagName), m_attributeText{}, m_isOpeningTag(isOpeningTag), m_isClosingTag(isClosingTag)
+XmlElement::XmlElement(XmlElement::Type type, string tagName, bool isOpeningTag, bool isClosingTag) noexcept
+	: m_type{type}, m_tagName(tagName), m_attributeText{}, m_isOpeningTag(isOpeningTag), m_isClosingTag(isClosingTag)
 {}
 
-XmlElement::XmlElement(string tagName, string attributeText, bool isOpeningTag, bool isClosingTag) noexcept
-	: m_tagName(tagName), m_attributeText{attributeText}, m_isOpeningTag(isOpeningTag), m_isClosingTag(isClosingTag)
+XmlElement::XmlElement(XmlElement::Type type, string tagName, string attributeText, bool isOpeningTag, bool isClosingTag) noexcept
+	: m_type{type}, m_tagName(tagName), m_attributeText{attributeText}, m_isOpeningTag(isOpeningTag), m_isClosingTag(isClosingTag)
 {}
+
+XmlElement::Type XmlElement::GetType() const
+{
+	return m_type;
+}
 
 bool XmlElement::IsOpeningTag() const
 {
@@ -66,10 +71,10 @@ XmlElement XmlElement::FromText(std::string text, bool isOpeningTag, bool isClos
 	
 	if (firstSpace == string::npos)
 	{
-		return XmlElement(text, isOpeningTag, isClosingTag);
+		return XmlElement(Type::tag, text, isOpeningTag, isClosingTag);
 	}
 	else
 	{
-		return XmlElement(text.substr(0, firstSpace), text.substr(firstSpace), isOpeningTag, isClosingTag);
+		return XmlElement(Type::tag, text.substr(0, firstSpace), text.substr(firstSpace), isOpeningTag, isClosingTag);
 	}
 }

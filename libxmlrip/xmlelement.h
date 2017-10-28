@@ -6,10 +6,13 @@
 class XmlElement
 {
 public:
+	enum class Type {tag};
+	
 	XmlElement() noexcept;
-	XmlElement(std::string tagName, bool isOpeningTag, bool isClosingTag) noexcept;
+	XmlElement(Type type, std::string tagName, bool isOpeningTag, bool isClosingTag) noexcept;
 
 public:
+	XmlElement::Type GetType() const;
 	bool IsOpeningTag() const;
 	bool IsClosingTag() const;
 	std::string GetTagName() const;
@@ -21,8 +24,9 @@ public:
 	static XmlElement FromText(std::string text, bool isOpeningTag, bool isClosingTag);
 
 private:
-	XmlElement(std::string tagName, std::string attributeText, bool isOpeningTag, bool isClosingTag) noexcept;
+	XmlElement(Type type, std::string tagName, std::string attributeText, bool isOpeningTag, bool isClosingTag) noexcept;
 	
+	XmlElement::Type m_type;
 	std::string m_tagName;
 	std::string m_attributeText;
 	bool m_isOpeningTag;

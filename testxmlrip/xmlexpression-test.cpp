@@ -10,7 +10,7 @@ using namespace std;
 
 TEST(XmlExpression, ProcessTagReturnsTrueWithSingleTagExpressionWhenTagMatches) {
     XmlExpression expr;
-	XmlElement testElement("aa", true, false);
+	XmlElement testElement(XmlElement::Type::tag, "aa", true, false);
 	expr.AddPredicate(XmlPredicate{"aa"});
     
 	EXPECT_TRUE(expr.ProcessElement(testElement));
@@ -18,7 +18,7 @@ TEST(XmlExpression, ProcessTagReturnsTrueWithSingleTagExpressionWhenTagMatches) 
 
 TEST(XmlExpression, ProcessTagReturnsFalseWithSingleTagExpressionWhenTagDoesNotMatch) {
     XmlExpression expr;
-	XmlElement testElement("bb", true, false);
+	XmlElement testElement(XmlElement::Type::tag, "bb", true, false);
 	expr.AddPredicate(XmlPredicate{"aa"});
     
 	EXPECT_FALSE(expr.ProcessElement(testElement));
@@ -27,8 +27,8 @@ TEST(XmlExpression, ProcessTagReturnsFalseWithSingleTagExpressionWhenTagDoesNotM
 TEST(XmlExpression, ProcessTagReturnsTrueForChildTagsOfFullMatch) {
 	// Arrange
     XmlExpression expr;
-	XmlElement testElement1("aa", true, false);
-	XmlElement testElement2("bb", true, false);
+	XmlElement testElement1(XmlElement::Type::tag, "aa", true, false);
+	XmlElement testElement2(XmlElement::Type::tag, "bb", true, false);
 	expr.AddPredicate(XmlPredicate{"aa"});
 	
 	// Act
@@ -42,8 +42,8 @@ TEST(XmlExpression, ProcessTagReturnsTrueForChildTagsOfFullMatch) {
 TEST(XmlExpression, ProcessTagReturnsTrueForClosingTagOfFullMatch) {
 	// Arrange
     XmlExpression expr;
-	XmlElement testElement1("aa", true, false);
-	XmlElement testElement2("aa", false, true);
+	XmlElement testElement1(XmlElement::Type::tag, "aa", true, false);
+	XmlElement testElement2(XmlElement::Type::tag, "aa", false, true);
 	expr.AddPredicate(XmlPredicate{"aa"});
 	
 	// Act
@@ -57,7 +57,7 @@ TEST(XmlExpression, ProcessTagReturnsTrueForClosingTagOfFullMatch) {
 TEST(XmlExpression, ProcessTagReturnsTrueForMatchingOpenClosingTag) {
 	// Arrange
     XmlExpression expr;
-	XmlElement testElement1("aa", true, true);
+	XmlElement testElement1(XmlElement::Type::tag, "aa", true, true);
 	expr.AddPredicate(XmlPredicate{"aa"});
 	
 	// Act
@@ -70,9 +70,9 @@ TEST(XmlExpression, ProcessTagReturnsTrueForMatchingOpenClosingTag) {
 TEST(XmlExpression, ProcessTagReturnsFalseAfterMatchingTagClosed) {
 	// Arrange
     XmlExpression expr;
-	XmlElement testElement1("aa", true, false);
-	XmlElement testElement2("aa", false, true);
-	XmlElement testElement3("bb", true, false);
+	XmlElement testElement1(XmlElement::Type::tag, "aa", true, false);
+	XmlElement testElement2(XmlElement::Type::tag, "aa", false, true);
+	XmlElement testElement3(XmlElement::Type::tag, "bb", true, false);
 	expr.AddPredicate(XmlPredicate{"aa"});
 	
 	// Act
@@ -87,12 +87,12 @@ TEST(XmlExpression, ProcessTagReturnsFalseAfterMatchingTagClosed) {
 TEST(XmlExpression, ProcessTagProcessesTwoPrecidatesCorrectly) {
 	// Arrange
     XmlExpression expr;
-	XmlElement openAATag("aa", true, false);
-	XmlElement closeAATag("aa", false, true);
-	XmlElement openBBTag("bb", true, false);
-	XmlElement closeBBTag("bb", false, true);
-	XmlElement openCCTag("cc", true, false);
-	XmlElement closeCCTag("cc", false, true);
+	XmlElement openAATag(XmlElement::Type::tag, "aa", true, false);
+	XmlElement closeAATag(XmlElement::Type::tag, "aa", false, true);
+	XmlElement openBBTag(XmlElement::Type::tag, "bb", true, false);
+	XmlElement closeBBTag(XmlElement::Type::tag, "bb", false, true);
+	XmlElement openCCTag(XmlElement::Type::tag, "cc", true, false);
+	XmlElement closeCCTag(XmlElement::Type::tag, "cc", false, true);
 	expr.AddPredicate(XmlPredicate{"aa"});
 	expr.AddPredicate(XmlPredicate{"bb"});
 	

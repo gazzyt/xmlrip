@@ -13,8 +13,8 @@ using namespace std;
 
 static const string simpleXml = "<a></a>";
 static const auto simpleXmlElements = {
-	XmlElement{"a", true, false}, 
-	XmlElement{"a", false, true}
+	XmlElement{XmlElement::Type::tag, "a", true, false}, 
+	XmlElement{XmlElement::Type::tag, "a", false, true}
 };
 
 
