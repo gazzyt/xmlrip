@@ -19,6 +19,19 @@ const vector<XmlPredicate>& XmlExpression::GetPredicates() const
 
 bool XmlExpression::ProcessElement(const XmlElement& elem)
 {
+	switch (elem.GetType())
+	{
+		case XmlElement::Type::tag:
+			return ProcessTag(elem);
+			
+		// Skip these types as not interesting
+		default:
+			return false;
+	};
+}
+
+bool XmlExpression::ProcessTag(const XmlElement& elem)
+{
 	const auto matchIndex = m_matchingElements.size();
 	
 	if (elem.IsOpeningTag())
