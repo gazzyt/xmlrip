@@ -6,7 +6,7 @@
 class XmlElement
 {
 public:
-	enum class Type {tag, declaration, comment};
+	enum class Type {tag, declaration, comment, text};
 	enum Format : long {xml = 0L, verbose};
 	
 	XmlElement() noexcept;

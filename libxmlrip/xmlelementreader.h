@@ -18,7 +18,8 @@ private:
 	XmlElement ReadTag();
 	XmlElement ReadDeclaration();
 	XmlElement ReadComment();
-	
+	std::string ReadText();
+
 	std::unique_ptr<std::istream> m_stream;
 
 	XmlElementReader(const XmlElementReader& src) = delete;

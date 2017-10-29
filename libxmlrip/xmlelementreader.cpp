@@ -1,5 +1,6 @@
 #include <cassert>
 #include <iostream>
+#include <sstream>
 
 #include "xmlelementreader.h"
 
@@ -16,14 +17,28 @@ XmlElement XmlElementReader::GetNextElement()
     string tagName;
     char c;
     
-    m_stream->ignore(1, '<');
+	if (m_stream->peek() != '<')
+	{
+		string text = ReadText();
+		if (!text.empty())
+		{
+			return XmlElement{XmlElement::Type::text, text, true, true};
+		}
+	}
+
+	if (m_stream->eof())
+	{
+        return XmlElement::FromText("EOF", false, false);
+	}
 	
-    
-    if (m_stream->peek() == '?')
-    {
+	m_stream->get(c);
+	assert(c == '<');
+	
+	if (m_stream->peek() == '?')
+	{
 		m_stream->get(c);
 		return ReadDeclaration();
-    }
+	}
 	else if (m_stream->peek() == '!')
 	{
 		m_stream->get(c);
@@ -33,11 +48,10 @@ XmlElement XmlElementReader::GetNextElement()
 		assert(c == '-');
 		return ReadComment();
 	}
-    else
-    {
+	else
+	{
 		return ReadTag();
-    }
-    
+	}
 }
 
 XmlElement XmlElementReader::ReadTag()
@@ -135,4 +149,14 @@ XmlElement XmlElementReader::ReadComment()
             text += c[0];
         }
     };
+}
+
+string XmlElementReader::ReadText()
+{
+    string text;
+	stringbuf buffer;
+	
+	m_stream->get(buffer, '<');
+	
+	return buffer.str();
 }

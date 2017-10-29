@@ -99,6 +99,10 @@ void XmlElement::PrintAsXml(std::ostream& os) const
 		case XmlElement::Type::comment:
 			os << "<!--" << GetTagName() << "-->";
 			break;
+			
+		case XmlElement::Type::text:
+			os << GetTagName();
+			break;
 	};
 }
 
