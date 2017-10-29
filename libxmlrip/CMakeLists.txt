@@ -23,6 +23,7 @@ set( BUILD_LIBXMLRIP_MANIFEST
 	xmlexpression.cpp
 	stringutils.cpp
 	xmlelementreader-iterator.cpp
+	customstreamflags.cpp
 )
 
 set( BUILD_LIBXMLRIP_MANIFEST_HEADERS
@@ -34,6 +35,7 @@ set( BUILD_LIBXMLRIP_MANIFEST_HEADERS
 	xmlexpression.h
 	stringutils.h
 	xmlelementreader-iterator.h
+	customstreamflags.h
 )
 
 add_library( libxmlrip ${BUILD_LIBXMLRIP_MANIFEST} ${BUILD_LIBXMLRIP_MANIFEST_HEADERS})

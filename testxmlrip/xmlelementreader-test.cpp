@@ -8,6 +8,7 @@
 #include <sstream>
 
 #include "xmlelementreader.h"
+#include "customprinters.h"
 
 using namespace std;
 
@@ -21,6 +22,13 @@ static const string simpleXmlWithDeclaration = "<?xml version=\"1.0\"?><a></a>";
 static const auto simpleXmlWithDeclarationElements = {
 	XmlElement{XmlElement::Type::declaration, "xml version=\"1.0\"", true, true}, 
 	XmlElement{XmlElement::Type::tag, "a", true, false},
+	XmlElement{XmlElement::Type::tag, "a", false, true}
+};
+
+static const string simpleXmlWithComment = "<a><!--comment--></a>";
+static const auto simpleXmlWithCommentElements = {
+	XmlElement{XmlElement::Type::tag, "a", true, false}, 
+	XmlElement{XmlElement::Type::comment, "comment", true, true}, 
 	XmlElement{XmlElement::Type::tag, "a", false, true}
 };
 
@@ -44,6 +52,20 @@ TEST(XmlElementReader, CreatesCorrectElementsForSimpleXmlWithDeclaration) {
 	XmlElementReader elementReader{move(xmlStream)};
 	
 	for_each(begin(simpleXmlWithDeclarationElements), end(simpleXmlWithDeclarationElements), 
+		[&] (const XmlElement& elem) 
+		{
+			EXPECT_EQ(elem, elementReader.GetNextElement()) << "Element number " << elementIndex << " did not have expected value";
+			++elementIndex;
+		}
+	);
+}
+
+TEST(XmlElementReader, CreatesCorrectElementsForSimpleXmlWithComment) {
+	int elementIndex = 0;
+	auto xmlStream = make_unique<istringstream>(simpleXmlWithComment);
+	XmlElementReader elementReader{move(xmlStream)};
+	
+	for_each(begin(simpleXmlWithCommentElements), end(simpleXmlWithCommentElements), 
 		[&] (const XmlElement& elem) 
 		{
 			EXPECT_EQ(elem, elementReader.GetNextElement()) << "Element number " << elementIndex << " did not have expected value";

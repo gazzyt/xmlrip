@@ -6,7 +6,8 @@
 class XmlElement
 {
 public:
-	enum class Type {tag, declaration};
+	enum class Type {tag, declaration, comment};
+	enum Format : long {xml = 0L, verbose};
 	
 	XmlElement() noexcept;
 	XmlElement(Type type, std::string tagName, bool isOpeningTag, bool isClosingTag) noexcept;
@@ -23,6 +24,13 @@ public:
 	
 	static XmlElement FromText(std::string text, bool isOpeningTag, bool isClosingTag);
 
+	void Print(std::ostream& os) const;
+	void PrintAsXml(std::ostream& os) const;
+	void PrintAsVerbose(std::ostream& os) const;
+
+	static std::ostream& XmlFormat(std::ostream &stream);
+	static std::ostream& VerboseFormat(std::ostream &stream);
+
 private:
 	XmlElement(Type type, std::string tagName, std::string attributeText, bool isOpeningTag, bool isClosingTag) noexcept;
 	
@@ -31,6 +39,7 @@ private:
 	std::string m_attributeText;
 	bool m_isOpeningTag;
 	bool m_isClosingTag;
+	static int m_formatIndex;
 };
 
 std::ostream& operator<<(std::ostream& os, const XmlElement& elem);

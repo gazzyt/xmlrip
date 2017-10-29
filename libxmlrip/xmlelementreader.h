@@ -17,6 +17,7 @@ public:
 private:
 	XmlElement ReadTag();
 	XmlElement ReadDeclaration();
+	XmlElement ReadComment();
 	
 	std::unique_ptr<std::istream> m_stream;
 

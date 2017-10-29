@@ -24,6 +24,15 @@ XmlElement XmlElementReader::GetNextElement()
 		m_stream->get(c);
 		return ReadDeclaration();
     }
+	else if (m_stream->peek() == '!')
+	{
+		m_stream->get(c);
+		m_stream->get(c);
+		assert(c == '-');
+		m_stream->get(c);
+		assert(c == '-');
+		return ReadComment();
+	}
     else
     {
 		return ReadTag();
@@ -92,6 +101,38 @@ XmlElement XmlElementReader::ReadDeclaration()
         else
         {
             text += c;
+        }
+    };
+}
+
+XmlElement XmlElementReader::ReadComment()
+{
+    string text;
+    char c[3];
+
+    while(true)
+    {
+   		m_stream->get(c[0]);
+        
+        if (m_stream->eof())
+            return XmlElement::FromText("EOF", false, false);
+            
+        if (c[0] == '-')
+        {
+			m_stream->get(c[1]);
+			m_stream->get(c[2]);
+			if(c[1] == '-' && c[2] == '>')
+			{
+				return XmlElement{XmlElement::Type::comment, text, true, true};
+			}
+			else
+			{
+				text.append(begin(c), begin(c) + 3);
+			}
+        }
+        else
+        {
+            text += c[0];
         }
     };
 }

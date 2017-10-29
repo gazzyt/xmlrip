@@ -1,8 +1,11 @@
 #include <ostream>
 
 #include "xmlelement.h"
+#include "customstreamflags.h"
 
 using namespace std;
+
+int XmlElement::m_formatIndex = CustomStreamFlags::CreateFlag();
 
 XmlElement::XmlElement() noexcept
 	: m_type{Type::tag}, m_tagName{}, m_attributeText{}, m_isOpeningTag{false}, m_isClosingTag{false}
@@ -54,26 +57,55 @@ bool XmlElement::operator==(const XmlElement& e1) const
 
 ostream& operator<<(ostream& os, const XmlElement& elem)
 {
-	switch (elem.GetType())
+	elem.Print(os);
+	
+	return os;
+}
+
+void XmlElement::Print(std::ostream& os) const
+{
+	switch (CustomStreamFlags::GetIWordValue(os, m_formatIndex))
+	{
+		case XmlElement::xml:
+			PrintAsXml(os);
+			break;
+			
+		case XmlElement::verbose:
+			PrintAsVerbose(os);
+			break;
+	};
+}
+
+void XmlElement::PrintAsXml(std::ostream& os) const
+{
+	switch (GetType())
 	{
 		case XmlElement::Type::tag:
 		{
-			auto opening = (elem.IsClosingTag() && !elem.IsOpeningTag()) ? "</" : "<";
-			auto closing = (elem.IsClosingTag() && elem.IsOpeningTag()) ? "/>" : ">";
+			auto opening = (IsClosingTag() && !IsOpeningTag()) ? "</" : "<";
+			auto closing = (IsClosingTag() && IsOpeningTag()) ? "/>" : ">";
 
 			os << opening;
-			os << elem.GetTagName();
-			os << elem.GetAttributeText();
+			os << GetTagName();
+			os << GetAttributeText();
 			os << closing;
 		}
 		break;
 			
 		case XmlElement::Type::declaration:
-			os << "<?" << elem.GetTagName() << "?>";
+			os << "<?" << GetTagName() << "?>";
+			break;
+
+		case XmlElement::Type::comment:
+			os << "<!--" << GetTagName() << "-->";
 			break;
 	};
+}
 
-	return os;
+void XmlElement::PrintAsVerbose(std::ostream& os) const
+{
+	os << "{type:\"" << static_cast<underlying_type<Type>::type>(m_type) << "\",TagName:\"" << m_tagName << "\",IsOpeningTag:" << m_isOpeningTag;
+	os << ",IsClosingTag:" << m_isClosingTag << ",AttributeText:\"" << m_attributeText << "\"}";
 }
 
 XmlElement XmlElement::FromText(std::string text, bool isOpeningTag, bool isClosingTag)
@@ -88,4 +120,16 @@ XmlElement XmlElement::FromText(std::string text, bool isOpeningTag, bool isClos
 	{
 		return XmlElement(Type::tag, text.substr(0, firstSpace), text.substr(firstSpace), isOpeningTag, isClosingTag);
 	}
+}
+
+ostream& XmlElement::XmlFormat(ostream &stream)
+{
+	CustomStreamFlags::SetIWordValue(stream, m_formatIndex, Format::xml);
+	return(stream);
+}
+
+ostream& XmlElement::VerboseFormat(ostream &stream)
+{
+	CustomStreamFlags::SetIWordValue(stream, m_formatIndex, Format::verbose);
+	return(stream);
 }
