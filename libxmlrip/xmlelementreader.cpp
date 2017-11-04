@@ -2,6 +2,7 @@
 #include <iostream>
 #include <sstream>
 
+#include "stringutils.h"
 #include "xmlelementreader.h"
 
 using namespace std;
@@ -158,5 +159,5 @@ string XmlElementReader::ReadText()
 	
 	m_stream->get(buffer, '<');
 	
-	return buffer.str();
+	return trim(buffer.str());
 }

@@ -22,6 +22,7 @@ bool XmlExpression::ProcessElement(const XmlElement& elem)
 	switch (elem.GetType())
 	{
 		case XmlElement::Type::tag:
+		case XmlElement::Type::text:
 			return ProcessTag(elem);
 			
 		// Skip these types as not interesting

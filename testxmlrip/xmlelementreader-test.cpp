@@ -4,6 +4,7 @@
 #pragma GCC diagnostic pop
 
 #include <algorithm>
+#include <iterator>
 #include <memory>
 #include <sstream>
 
@@ -12,8 +13,16 @@
 
 using namespace std;
 
+template <class ELEMSTYPE> static void TextToElementsTestHelper(const string& xmlText, const ELEMSTYPE& expectedElements);
+
 static const string simpleXml = "<a></a>";
 static const auto simpleXmlElements = {
+	XmlElement{XmlElement::Type::tag, "a", true, false}, 
+	XmlElement{XmlElement::Type::tag, "a", false, true}
+};
+
+static const string simpleXmlWithLineBreaks = "<a>\n</a>\n";
+static const auto simpleXmlWithLineBreaksElements = {
 	XmlElement{XmlElement::Type::tag, "a", true, false}, 
 	XmlElement{XmlElement::Type::tag, "a", false, true}
 };
@@ -40,53 +49,31 @@ static const auto simpleXmlWithTextElements = {
 };
 
 TEST(XmlElementReader, CreatesCorrectElementsForSimpleXml) {
-	int elementIndex = 0;
-	auto xmlStream = make_unique<istringstream>(simpleXml);
-	XmlElementReader elementReader{move(xmlStream)};
-	
-	for_each(begin(simpleXmlElements), end(simpleXmlElements), 
-		[&] (const XmlElement& elem) 
-		{
-			EXPECT_EQ(elem, elementReader.GetNextElement()) << "Element number " << elementIndex << " did not have expected value";
-			++elementIndex;
-		}
-	);
+	TextToElementsTestHelper(simpleXml, simpleXmlElements);
 }
 
 TEST(XmlElementReader, CreatesCorrectElementsForSimpleXmlWithDeclaration) {
-	int elementIndex = 0;
-	auto xmlStream = make_unique<istringstream>(simpleXmlWithDeclaration);
-	XmlElementReader elementReader{move(xmlStream)};
-	
-	for_each(begin(simpleXmlWithDeclarationElements), end(simpleXmlWithDeclarationElements), 
-		[&] (const XmlElement& elem) 
-		{
-			EXPECT_EQ(elem, elementReader.GetNextElement()) << "Element number " << elementIndex << " did not have expected value";
-			++elementIndex;
-		}
-	);
+	TextToElementsTestHelper(simpleXmlWithDeclaration, simpleXmlWithDeclarationElements);
 }
 
 TEST(XmlElementReader, CreatesCorrectElementsForSimpleXmlWithComment) {
-	int elementIndex = 0;
-	auto xmlStream = make_unique<istringstream>(simpleXmlWithComment);
-	XmlElementReader elementReader{move(xmlStream)};
-	
-	for_each(begin(simpleXmlWithCommentElements), end(simpleXmlWithCommentElements), 
-		[&] (const XmlElement& elem) 
-		{
-			EXPECT_EQ(elem, elementReader.GetNextElement()) << "Element number " << elementIndex << " did not have expected value";
-			++elementIndex;
-		}
-	);
+	TextToElementsTestHelper(simpleXmlWithComment, simpleXmlWithCommentElements);
 }
 
 TEST(XmlElementReader, CreatesCorrectElementsForSimpleXmlWithText) {
+	TextToElementsTestHelper(simpleXmlWithText, simpleXmlWithTextElements);
+}
+
+TEST(XmlElementReader, CreatesCorrectElementsForSimpleXmlWithLineBreaks) {
+	TextToElementsTestHelper(simpleXmlWithLineBreaks, simpleXmlWithLineBreaksElements);
+}
+
+template <class ELEMSTYPE> static void TextToElementsTestHelper(const string& xmlText, const ELEMSTYPE& expectedElements) {
 	int elementIndex = 0;
-	auto xmlStream = make_unique<istringstream>(simpleXmlWithText);
+	auto xmlStream = make_unique<istringstream>(xmlText);
 	XmlElementReader elementReader{move(xmlStream)};
 	
-	for_each(begin(simpleXmlWithTextElements), end(simpleXmlWithTextElements), 
+	for_each(begin(expectedElements), end(expectedElements), 
 		[&] (const XmlElement& elem) 
 		{
 			EXPECT_EQ(elem, elementReader.GetNextElement()) << "Element number " << elementIndex << " did not have expected value";
