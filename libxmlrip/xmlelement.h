@@ -2,12 +2,12 @@
 #define XMLELEMENT_H
 
 #include <string>
+#include <vector>
 
 class XmlElement
 {
 public:
 	enum class Type {tag, declaration, comment, text};
-	enum Format : long {xml = 0L, verbose};
 	
 	XmlElement() noexcept;
 	XmlElement(Type type, std::string tagName, bool isOpeningTag, bool isClosingTag) noexcept;
@@ -28,8 +28,6 @@ public:
 	void PrintAsXml(std::ostream& os) const;
 	void PrintAsVerbose(std::ostream& os) const;
 
-	static std::ostream& XmlFormat(std::ostream &stream);
-	static std::ostream& VerboseFormat(std::ostream &stream);
 
 private:
 	XmlElement(Type type, std::string tagName, std::string attributeText, bool isOpeningTag, bool isClosingTag) noexcept;
@@ -39,7 +37,6 @@ private:
 	std::string m_attributeText;
 	bool m_isOpeningTag;
 	bool m_isClosingTag;
-	static int m_formatIndex;
 };
 
 std::ostream& operator<<(std::ostream& os, const XmlElement& elem);

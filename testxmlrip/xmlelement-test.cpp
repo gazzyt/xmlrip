@@ -5,6 +5,9 @@
 
 #include <sstream>
 
+#include "xmlstreammodifiers.h"
+#include "customprinters.h"
+
 #include "xmlelement.h"
 
 using namespace std;
@@ -55,7 +58,7 @@ TEST(XmlElement, PrintsAsXml)
 	// Arrange
 	XmlElement element{XmlElement::Type::tag, "aa", true, false};
 	ostringstream stream;
-	stream << XmlElement::XmlFormat;
+	stream << XmlStreamModifiers::XmlFormat;
 	
 	// Act
 	stream << element << endl;
@@ -69,7 +72,7 @@ TEST(XmlElement, PrintsAsVerbose)
 	// Arrange
 	XmlElement element{XmlElement::Type::tag, "aa", true, false};
 	ostringstream stream;
-	stream << XmlElement::VerboseFormat;
+	stream << XmlStreamModifiers::VerboseFormat;
 	
 	// Act
 	stream << element << endl;

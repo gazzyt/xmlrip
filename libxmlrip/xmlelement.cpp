@@ -1,11 +1,9 @@
 #include <ostream>
 
 #include "xmlelement.h"
-#include "customstreamflags.h"
+#include "xmlstreammodifiers.h"
 
 using namespace std;
-
-int XmlElement::m_formatIndex = CustomStreamFlags::CreateFlag();
 
 XmlElement::XmlElement() noexcept
 	: m_type{Type::tag}, m_tagName{}, m_attributeText{}, m_isOpeningTag{false}, m_isClosingTag{false}
@@ -64,13 +62,13 @@ ostream& operator<<(ostream& os, const XmlElement& elem)
 
 void XmlElement::Print(std::ostream& os) const
 {
-	switch (CustomStreamFlags::GetIWordValue(os, m_formatIndex))
+	switch (XmlStreamModifiers::GetCurrentOutputFormat(os))
 	{
-		case XmlElement::xml:
+		case XmlStreamModifiers::xml:
 			PrintAsXml(os);
 			break;
 			
-		case XmlElement::verbose:
+		case XmlStreamModifiers::verbose:
 			PrintAsVerbose(os);
 			break;
 	};
@@ -126,14 +124,3 @@ XmlElement XmlElement::FromText(std::string text, bool isOpeningTag, bool isClos
 	}
 }
 
-ostream& XmlElement::XmlFormat(ostream &stream)
-{
-	CustomStreamFlags::SetIWordValue(stream, m_formatIndex, Format::xml);
-	return(stream);
-}
-
-ostream& XmlElement::VerboseFormat(ostream &stream)
-{
-	CustomStreamFlags::SetIWordValue(stream, m_formatIndex, Format::verbose);
-	return(stream);
-}

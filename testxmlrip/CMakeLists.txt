@@ -53,6 +53,7 @@ set( BUILD_TEST_MANIFEST
     xmlpredicate-test.cpp
 	xmlexpression-test.cpp
 	xmlelement-test.cpp
+	xmlattribute-test.cpp
 )
 
 set( BUILD_TEST_MANIFEST_HEADERS
