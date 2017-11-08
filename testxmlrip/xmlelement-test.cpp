@@ -28,6 +28,20 @@ TEST(XmlElement, CreatesCorrectElementFromNameOnly) {
 
 TEST(XmlElement, CreatesCorrectElementFromNameAndAttributes) {
 	// Arrange
+	string tagText{"aa att=3 btt=4"};
+	
+	// Act
+	XmlElement element = XmlElement::FromText(tagText, true, true);
+	
+	// Assert
+	EXPECT_TRUE(element.IsOpeningTag());
+	EXPECT_TRUE(element.IsClosingTag());
+	EXPECT_EQ("aa", element.GetTagName());
+	EXPECT_EQ("att=3 btt=4", element.GetAttributeText());
+}
+
+TEST(XmlElement, CreatesCorrectElementFromNameAndAttribute) {
+	// Arrange
 	string tagText{"aa att=3"};
 	
 	// Act

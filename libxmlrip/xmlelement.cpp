@@ -151,6 +151,8 @@ vector<XmlAttribute> XmlElement::ReadAttributes(string text)
 			{
 				// we just finished reading the value of an attribute
 				attrs.push_back(XmlAttribute{move(attrName), move(attrValue)});
+				attrName.clear();
+				attrValue.clear();
 				currentTarget = &attrName;
 			}
 		}
