@@ -139,6 +139,7 @@ void XmlElement::PrintAsVerbose(ostream& os) const
 vector<XmlAttribute> XmlElement::ReadAttributes(string text)
 {
 	auto attrs = vector<XmlAttribute>{};
+	bool readingQuotedString = false;
 	string attrName;
 	string attrValue;
 	string* currentTarget = &attrName;
@@ -147,7 +148,11 @@ vector<XmlAttribute> XmlElement::ReadAttributes(string text)
 	{
 		if (isspace(ch))
 		{
-			if (currentTarget == &attrValue && attrValue.length() > 0)
+			if (readingQuotedString)
+			{
+				currentTarget->push_back(ch);
+			}
+			else if (currentTarget == &attrValue && attrValue.length() > 0)
 			{
 				// we just finished reading the value of an attribute
 				attrs.push_back(XmlAttribute{move(attrName), move(attrValue)});
@@ -156,16 +161,18 @@ vector<XmlAttribute> XmlElement::ReadAttributes(string text)
 				currentTarget = &attrName;
 			}
 		}
+		else if (ch == '=')
+		{
+			currentTarget = &attrValue;
+		}
+		else if (ch == '"')
+		{
+			readingQuotedString = !readingQuotedString;
+			currentTarget->push_back(ch);
+		}
 		else
 		{
-			if (ch == '=')
-			{
-				currentTarget = &attrValue;
-			}
-			else
-			{
-				currentTarget->push_back(ch);
-			}
+			currentTarget->push_back(ch);
 		}
 	}
 

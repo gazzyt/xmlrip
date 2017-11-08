@@ -54,6 +54,20 @@ TEST(XmlElement, CreatesCorrectElementFromNameAndAttribute) {
 	EXPECT_EQ("att=3", element.GetAttributeText());
 }
 
+TEST(XmlElement, CreatesCorrectElementFromNameAndQuotedAttributes) {
+	// Arrange
+	string tagText{"aa att=\"la la\" btt=\"bing bong\""};
+	
+	// Act
+	XmlElement element = XmlElement::FromText(tagText, true, true);
+	
+	// Assert
+	EXPECT_TRUE(element.IsOpeningTag());
+	EXPECT_TRUE(element.IsClosingTag());
+	EXPECT_EQ("aa", element.GetTagName());
+	EXPECT_EQ("att=\"la la\" btt=\"bing bong\"", element.GetAttributeText());
+}
+
 TEST(XmlElement, GetAttributeValueReturnsCorrectValueWhenAttributeExists) {
 	// Arrange
 	vector<XmlAttribute> attrs = {XmlAttribute{"at1", "at1value"}};
