@@ -11,8 +11,8 @@ public:
 	XmlAttribute(std::string&& attrName, std::string&& attrValue) noexcept;
 
 public:
-	std::string GetName() const;
-	std::string GetValue() const;
+	const std::string& GetName() const;
+	const std::string& GetValue() const;
 
 	bool operator==(const XmlAttribute& rhs) const;
 	

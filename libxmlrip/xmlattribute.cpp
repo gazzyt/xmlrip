@@ -11,12 +11,12 @@ XmlAttribute::XmlAttribute(string&& attrName, string&& attrValue) noexcept
 {}
 
 
-string XmlAttribute::GetName() const
+const string& XmlAttribute::GetName() const
 {
 	return m_name;
 }
 
-string XmlAttribute::GetValue() const
+const string& XmlAttribute::GetValue() const
 {
 	return m_value;
 }
