@@ -76,3 +76,27 @@ TEST(XmlPredicate, IsMatchReturnsFalseWhenOpeningClosingTagNamesDoNotMatch) {
     
 	EXPECT_FALSE(testPredicate.IsMatch(testElement));
 }
+
+TEST(XmlPredicate, IsMatchReturnsTrueWhenOpeningTagNamesAndAttributesMatch) {
+    // Arrange
+	XmlElement testElement(XmlElement::Type::tag, "aa", vector<XmlAttribute>{XmlAttribute{"attr", "val"}}, true, false);
+    XmlPredicate testPredicate("aa", make_unique<XmlAttribute>("attr", "val"));
+    
+	EXPECT_TRUE(testPredicate.IsMatch(testElement));
+}
+
+TEST(XmlPredicate, IsMatchReturnsFalseWhenAttributeValueNotMatch) {
+    // Arrange
+	XmlElement testElement(XmlElement::Type::tag, "aa", vector<XmlAttribute>{XmlAttribute{"attr", "val"}}, true, false);
+    XmlPredicate testPredicate("aa", make_unique<XmlAttribute>("attr", "valxx"));
+    
+	EXPECT_FALSE(testPredicate.IsMatch(testElement));
+}
+
+TEST(XmlPredicate, IsMatchReturnsFalseWhenAttributeNameNotMatch) {
+    // Arrange
+	XmlElement testElement(XmlElement::Type::tag, "aa", vector<XmlAttribute>{XmlAttribute{"attr", "val"}}, true, false);
+    XmlPredicate testPredicate("aa", make_unique<XmlAttribute>("attrxx", "val"));
+    
+	EXPECT_FALSE(testPredicate.IsMatch(testElement));
+}
