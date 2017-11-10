@@ -37,6 +37,7 @@ set( BUILD_LIBXMLRIP_MANIFEST_HEADERS
     xmlpredicate.h
 	xmlexpression.h
 	stringutils.h
+	memoryutils.h
 	xmlelementreader-iterator.h
 	customstreamflags.h
 	xmlstreammodifiers.h

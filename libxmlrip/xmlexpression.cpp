@@ -44,7 +44,7 @@ bool XmlExpression::ProcessTag(const XmlElement& elem)
 			return true;
 		}
 	
-		auto nextPredicate = m_predicates[matchIndex];
+		auto& nextPredicate = m_predicates[matchIndex];
 		
 		if (nextPredicate.IsMatch(elem))
 		{
