@@ -46,6 +46,51 @@ XmlPredicate XmlPredicate::FromText(string text)
 	{
 		throw XPathException("Cannot create predicate from empty string");
 	}
+
+	bool readingQuotedString = false;
+	string tagName;
+	string attrName;
+	string attrValue;
+	string* currentTarget = &tagName;
 	
-	return XmlPredicate(text);
+	for (char ch : text)
+	{
+		if (isspace(ch))
+		{
+			if (readingQuotedString)
+			{
+				currentTarget->push_back(ch);
+			}
+		}
+		else if (ch == '[')
+		{
+			currentTarget = &attrName;
+		}
+		else if (ch == ']')
+		{
+		}
+		else if (ch == '=')
+		{
+			currentTarget = &attrValue;
+		}
+		else if (ch == '"')
+		{
+			readingQuotedString = !readingQuotedString;
+			currentTarget->push_back(ch);
+		}
+		else
+		{
+			currentTarget->push_back(ch);
+		}
+	}
+
+	if (attrName.length() > 0)
+	{
+		return XmlPredicate{tagName, make_unique<XmlAttribute>(move(attrName), move(attrValue))};
+	}
+	else
+	{
+		return XmlPredicate{tagName};
+	}
 }
+

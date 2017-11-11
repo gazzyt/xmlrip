@@ -118,3 +118,15 @@ TEST(XmlPredicate, FromTextThrowsWithEmptyString) {
 	// Act
 	EXPECT_THROW(XmlPredicate::FromText(""), XPathException);
 }
+
+TEST(XmlPredicate, FromTextReturnsPredicateForSimpleTagNameWithAttribute) {
+    // Arrange
+	
+	// Act
+	XmlPredicate pred = XmlPredicate::FromText("simpletagname[attr=\"val\"]");
+    
+	EXPECT_EQ("simpletagname", pred.GetTagName());
+	ASSERT_NE(nullptr, pred.GetAttributePredicate());
+	EXPECT_EQ("attr", pred.GetAttributePredicate()->GetName());
+	EXPECT_EQ("\"val\"", pred.GetAttributePredicate()->GetValue());
+}
