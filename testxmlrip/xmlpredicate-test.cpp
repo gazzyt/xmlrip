@@ -8,6 +8,7 @@
 #include <sstream>
 
 #include "xmlpredicate.h"
+#include "exception/xpathexception.h"
 
 using namespace std;
 
@@ -109,4 +110,11 @@ TEST(XmlPredicate, FromTextReturnsPredicateForSimpleTagName) {
     
 	EXPECT_EQ("simpletagname", pred.GetTagName());
 	EXPECT_EQ(nullptr, pred.GetAttributePredicate());
+}
+
+TEST(XmlPredicate, FromTextThrowsWithEmptyString) {
+    // Arrange
+	
+	// Act
+	EXPECT_THROW(XmlPredicate::FromText(""), XPathException);
 }

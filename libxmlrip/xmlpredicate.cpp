@@ -2,6 +2,7 @@
 
 #include "memoryutils.h"
 #include "xmlpredicate.h"
+#include "exception/xpathexception.h"
 
 using namespace std;
 
@@ -41,6 +42,10 @@ const XmlAttribute* XmlPredicate::GetAttributePredicate() const
 
 XmlPredicate XmlPredicate::FromText(string text)
 {
+	if (text.empty())
+	{
+		throw XPathException("Cannot create predicate from empty string");
+	}
 	
 	return XmlPredicate(text);
 }
