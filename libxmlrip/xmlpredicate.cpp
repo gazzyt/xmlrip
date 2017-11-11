@@ -38,3 +38,9 @@ const XmlAttribute* XmlPredicate::GetAttributePredicate() const
 {
 	return m_attributePredicate.get();
 }
+
+XmlPredicate XmlPredicate::FromText(string text)
+{
+	
+	return XmlPredicate(text);
+}

@@ -100,3 +100,13 @@ TEST(XmlPredicate, IsMatchReturnsFalseWhenAttributeNameNotMatch) {
     
 	EXPECT_FALSE(testPredicate.IsMatch(testElement));
 }
+
+TEST(XmlPredicate, FromTextReturnsPredicateForSimpleTagName) {
+    // Arrange
+	
+	// Act
+	XmlPredicate pred = XmlPredicate::FromText("simpletagname");
+    
+	EXPECT_EQ("simpletagname", pred.GetTagName());
+	EXPECT_EQ(nullptr, pred.GetAttributePredicate());
+}

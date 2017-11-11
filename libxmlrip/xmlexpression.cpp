@@ -108,7 +108,7 @@ unique_ptr<XmlExpression> XmlExpression::FromText(string text)
 	
 	for ( auto tagName : tagNames)
 	{
-		retval->AddPredicate(XmlPredicate(tagName));
+		retval->AddPredicate(XmlPredicate::FromText(tagName));
 	}
 	
 	return retval;
