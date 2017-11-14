@@ -1,22 +1,21 @@
+#include <algorithm>
 #include <ostream>
 
 #include "xmlelement.h"
-#include "customstreamflags.h"
+#include "xmlstreammodifiers.h"
 
 using namespace std;
 
-int XmlElement::m_formatIndex = CustomStreamFlags::CreateFlag();
-
 XmlElement::XmlElement() noexcept
-	: m_type{Type::tag}, m_tagName{}, m_attributeText{}, m_isOpeningTag{false}, m_isClosingTag{false}
+	: m_type{Type::tag}, m_tagName{}, m_attributes{}, m_isOpeningTag{false}, m_isClosingTag{false}
 {}
 
 XmlElement::XmlElement(XmlElement::Type type, string tagName, bool isOpeningTag, bool isClosingTag) noexcept
-	: m_type{type}, m_tagName(tagName), m_attributeText{}, m_isOpeningTag(isOpeningTag), m_isClosingTag(isClosingTag)
+	: m_type{type}, m_tagName{tagName}, m_attributes{}, m_isOpeningTag{isOpeningTag}, m_isClosingTag{isClosingTag}
 {}
 
-XmlElement::XmlElement(XmlElement::Type type, string tagName, string attributeText, bool isOpeningTag, bool isClosingTag) noexcept
-	: m_type{type}, m_tagName(tagName), m_attributeText{attributeText}, m_isOpeningTag(isOpeningTag), m_isClosingTag(isClosingTag)
+XmlElement::XmlElement(XmlElement::Type type, string tagName, vector<XmlAttribute>&& attributes, bool isOpeningTag, bool isClosingTag) noexcept
+	: m_type{type}, m_tagName{tagName}, m_attributes{attributes}, m_isOpeningTag{isOpeningTag}, m_isClosingTag{isClosingTag}
 {}
 
 XmlElement::Type XmlElement::GetType() const
@@ -42,7 +41,32 @@ string XmlElement::GetTagName() const
 
 string XmlElement::GetAttributeText() const
 {
-	return m_attributeText;
+	string attrText;
+	
+	for (auto attr : m_attributes)
+	{
+		if (attrText.length() != 0)
+		{
+			attrText += " ";
+		}
+		
+		attrText += attr.GetName() + "=" + attr.GetValue();
+	}
+	
+	return attrText;
+}
+
+const string* XmlElement::GetAttributeValue(const string& attrName) const
+{
+	auto iter = find_if(m_attributes.begin(), m_attributes.end(), [attrName] (XmlAttribute attr) {return attr.GetName() == attrName;});
+	if (iter == m_attributes.end())
+	{
+		return nullptr;
+	}
+	else
+	{
+		return &iter->GetValue();
+	}
 }
 
 bool XmlElement::IsMatch(const XmlElement& e1) const
@@ -62,21 +86,21 @@ ostream& operator<<(ostream& os, const XmlElement& elem)
 	return os;
 }
 
-void XmlElement::Print(std::ostream& os) const
+void XmlElement::Print(ostream& os) const
 {
-	switch (CustomStreamFlags::GetIWordValue(os, m_formatIndex))
+	switch (XmlStreamModifiers::GetCurrentOutputFormat(os))
 	{
-		case XmlElement::xml:
+		case XmlStreamModifiers::xml:
 			PrintAsXml(os);
 			break;
 			
-		case XmlElement::verbose:
+		case XmlStreamModifiers::verbose:
 			PrintAsVerbose(os);
 			break;
 	};
 }
 
-void XmlElement::PrintAsXml(std::ostream& os) const
+void XmlElement::PrintAsXml(ostream& os) const
 {
 	switch (GetType())
 	{
@@ -87,7 +111,7 @@ void XmlElement::PrintAsXml(std::ostream& os) const
 
 			os << opening;
 			os << GetTagName();
-			os << GetAttributeText();
+			os << ' ' << GetAttributeText();
 			os << closing;
 		}
 		break;
@@ -106,13 +130,61 @@ void XmlElement::PrintAsXml(std::ostream& os) const
 	};
 }
 
-void XmlElement::PrintAsVerbose(std::ostream& os) const
+void XmlElement::PrintAsVerbose(ostream& os) const
 {
 	os << "{type:\"" << static_cast<underlying_type<Type>::type>(m_type) << "\",TagName:\"" << m_tagName << "\",IsOpeningTag:" << m_isOpeningTag;
-	os << ",IsClosingTag:" << m_isClosingTag << ",AttributeText:\"" << m_attributeText << "\"}";
+	os << ",IsClosingTag:" << m_isClosingTag << ",AttributeText:\"" << GetAttributeText() << "\"}";
 }
 
-XmlElement XmlElement::FromText(std::string text, bool isOpeningTag, bool isClosingTag)
+vector<XmlAttribute> XmlElement::ReadAttributes(string text)
+{
+	auto attrs = vector<XmlAttribute>{};
+	bool readingQuotedString = false;
+	string attrName;
+	string attrValue;
+	string* currentTarget = &attrName;
+	
+	for (char ch : text)
+	{
+		if (isspace(ch))
+		{
+			if (readingQuotedString)
+			{
+				currentTarget->push_back(ch);
+			}
+			else if (currentTarget == &attrValue && attrValue.length() > 0)
+			{
+				// we just finished reading the value of an attribute
+				attrs.push_back(XmlAttribute{move(attrName), move(attrValue)});
+				attrName.clear();
+				attrValue.clear();
+				currentTarget = &attrName;
+			}
+		}
+		else if (ch == '=')
+		{
+			currentTarget = &attrValue;
+		}
+		else if (ch == '"')
+		{
+			readingQuotedString = !readingQuotedString;
+			currentTarget->push_back(ch);
+		}
+		else
+		{
+			currentTarget->push_back(ch);
+		}
+	}
+
+	// Check if there is one ready to go
+	if (attrName.length() > 0)
+	{
+		attrs.push_back(XmlAttribute{move(attrName), move(attrValue)});
+	}
+	return attrs;
+}
+
+XmlElement XmlElement::FromText(string text, bool isOpeningTag, bool isClosingTag)
 {
 	auto firstSpace = text.find_first_of(' ');
 	
@@ -122,18 +194,8 @@ XmlElement XmlElement::FromText(std::string text, bool isOpeningTag, bool isClos
 	}
 	else
 	{
-		return XmlElement(Type::tag, text.substr(0, firstSpace), text.substr(firstSpace), isOpeningTag, isClosingTag);
+		//return XmlElement(Type::tag, text.substr(0, firstSpace), isOpeningTag, isClosingTag);
+		return XmlElement(Type::tag, text.substr(0, firstSpace), ReadAttributes(text.substr(firstSpace)), isOpeningTag, isClosingTag);
 	}
 }
 
-ostream& XmlElement::XmlFormat(ostream &stream)
-{
-	CustomStreamFlags::SetIWordValue(stream, m_formatIndex, Format::xml);
-	return(stream);
-}
-
-ostream& XmlElement::VerboseFormat(ostream &stream)
-{
-	CustomStreamFlags::SetIWordValue(stream, m_formatIndex, Format::verbose);
-	return(stream);
-}

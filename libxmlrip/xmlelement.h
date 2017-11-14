@@ -2,15 +2,18 @@
 #define XMLELEMENT_H
 
 #include <string>
+#include <vector>
+
+#include "xmlattribute.h"
 
 class XmlElement
 {
 public:
 	enum class Type {tag, declaration, comment, text};
-	enum Format : long {xml = 0L, verbose};
 	
 	XmlElement() noexcept;
 	XmlElement(Type type, std::string tagName, bool isOpeningTag, bool isClosingTag) noexcept;
+	XmlElement(Type type, std::string tagName, std::vector<XmlAttribute>&& attributes, bool isOpeningTag, bool isClosingTag) noexcept;
 
 public:
 	XmlElement::Type GetType() const;
@@ -18,6 +21,7 @@ public:
 	bool IsClosingTag() const;
 	std::string GetTagName() const;
 	std::string GetAttributeText() const;
+	const std::string* GetAttributeValue(const std::string& attrName) const;
 
 	bool operator==(const XmlElement& e1) const;
 	bool IsMatch(const XmlElement& e1) const;
@@ -28,18 +32,15 @@ public:
 	void PrintAsXml(std::ostream& os) const;
 	void PrintAsVerbose(std::ostream& os) const;
 
-	static std::ostream& XmlFormat(std::ostream &stream);
-	static std::ostream& VerboseFormat(std::ostream &stream);
 
 private:
-	XmlElement(Type type, std::string tagName, std::string attributeText, bool isOpeningTag, bool isClosingTag) noexcept;
+	static std::vector<XmlAttribute> ReadAttributes(std::string text);
 	
 	XmlElement::Type m_type;
 	std::string m_tagName;
-	std::string m_attributeText;
+	std::vector<XmlAttribute> m_attributes;
 	bool m_isOpeningTag;
 	bool m_isClosingTag;
-	static int m_formatIndex;
 };
 
 std::ostream& operator<<(std::ostream& os, const XmlElement& elem);

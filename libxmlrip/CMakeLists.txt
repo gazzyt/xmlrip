@@ -18,24 +18,33 @@ set( BUILD_LIBXMLRIP_MANIFEST
 	token.cpp
     tokeniser.cpp
     xmlelement.cpp
+	xmlattribute.cpp
     xmlelementreader.cpp
     xmlpredicate.cpp
 	xmlexpression.cpp
 	stringutils.cpp
 	xmlelementreader-iterator.cpp
 	customstreamflags.cpp
+	xmlstreammodifiers.cpp
+	exception/baseexception.cpp
+	exception/xpathexception.cpp
 )
 
 set( BUILD_LIBXMLRIP_MANIFEST_HEADERS
     token.h
     tokeniser.h
     xmlelement.h
+	xmlattribute.h
     xmlelementreader.h
     xmlpredicate.h
 	xmlexpression.h
 	stringutils.h
+	memoryutils.h
 	xmlelementreader-iterator.h
 	customstreamflags.h
+	xmlstreammodifiers.h
+	exception/baseexception.h
+	exception/xpathexception.h
 )
 
 add_library( libxmlrip ${BUILD_LIBXMLRIP_MANIFEST} ${BUILD_LIBXMLRIP_MANIFEST_HEADERS})
