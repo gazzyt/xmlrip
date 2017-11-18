@@ -7,7 +7,7 @@
 
 using namespace std;
 
-XmlElementReader::XmlElementReader(unique_ptr<istream> stream)
+XmlElementReader::XmlElementReader(unique_ptr<InlineBuffer> stream)
 :	m_stream(move(stream))
 {
 }
