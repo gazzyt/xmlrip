@@ -24,8 +24,8 @@ endif()
 set( BUILD_TEST_MANIFEST
     main.cpp
 	tokeniser-test.cpp
-#    xmlelementreader-test.cpp
-#    xmlelementreader-iterator-test.cpp
+    xmlelementreader-test.cpp
+    xmlelementreader-iterator-test.cpp
     xmlpredicate-test.cpp
 	xmlexpression-test.cpp
 	xmlelement-test.cpp

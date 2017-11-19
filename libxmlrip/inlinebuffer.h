@@ -17,8 +17,11 @@ public:
 		if (m_pDataNext == m_pDataEnd)
 			Fill();
 
-		if (eof())
+		if ((m_pDataNext == m_pDataEnd) && m_stream->eof())
+		{
+			m_eof = true;
 			return EOF;
+		}
 				
 		return *m_pDataNext;
 	}
@@ -28,8 +31,9 @@ public:
 		if (m_pDataNext == m_pDataEnd)
 			Fill();
 
-		if (eof())
+		if ((m_pDataNext == m_pDataEnd) && m_stream->eof())
 		{
+			m_eof = true;
 			ch = EOF;
 			return;
 		}
@@ -46,17 +50,24 @@ public:
 			if (m_pDataNext == m_pDataEnd)
 				Fill();
 
-			auto delimPos = std::find(m_pDataNext, m_pDataEnd, delim);
-			sb.sputn(m_pDataNext, delimPos - m_pDataNext);
+			if ((m_pDataNext == m_pDataEnd) && m_stream->eof())
+			{
+				m_eof = true;
+			}
+			else
+			{
+				auto delimPos = std::find(m_pDataNext, m_pDataEnd, delim);
+				sb.sputn(m_pDataNext, delimPos - m_pDataNext);
 
-			m_pDataNext = delimPos;
+				m_pDataNext = delimPos;
+			}
 		} while ((m_pDataNext == m_pDataEnd) && !eof());
 
 	}
 	
 	inline bool eof()
 	{
-		return (m_pDataNext == m_pDataEnd) && m_stream->eof();
+		return m_eof;
 	}
 
 private:
@@ -65,6 +76,7 @@ private:
 	char* m_pBuffer;
 	char* m_pDataEnd;
 	char* m_pDataNext;
+	bool m_eof;
 
 	void Fill();
 

@@ -39,6 +39,40 @@ TEST(InlineBuffer, GetCharReturnsCorrectCharAndDoesAdvance) {
 	EXPECT_EQ('b', ch2);
 }
 
+TEST(InlineBuffer, GetCharSetsEofFlag) {
+	// Arrange
+	char ch1, ch2, ch3;
+	InlineBuffer buf{ make_unique<istringstream>("12"), 10 };
+
+	//Act
+	// Assert
+	EXPECT_FALSE(buf.eof());
+	buf.get(ch1);
+	EXPECT_EQ('1', ch1);
+	EXPECT_FALSE(buf.eof());
+	buf.get(ch2);
+	EXPECT_EQ('2', ch2);
+	EXPECT_FALSE(buf.eof());
+	buf.get(ch3);
+	EXPECT_EQ(EOF, ch3);
+	EXPECT_TRUE(buf.eof());
+}
+
+TEST(InlineBuffer, PeekSetsEofFlag) {
+	// Arrange
+	char ch1, ch2;
+	InlineBuffer buf{ make_unique<istringstream>("12"), 10 };
+
+	//Act
+	buf.get(ch1);
+	buf.get(ch2);
+
+	// Assert
+	EXPECT_FALSE(buf.eof());
+	EXPECT_EQ(EOF, buf.peek());
+	EXPECT_TRUE(buf.eof());
+}
+
 TEST(InlineBuffer, GetLineReturnsCorrectString) {
 	// Arrange
 	stringbuf result;
@@ -63,4 +97,17 @@ TEST(InlineBuffer, GetLineReturnsCorrectStringAcrossBuffers) {
 	// Assert
 	EXPECT_EQ("abcdefghijklmnopqrstuvw", result.str());
 	EXPECT_EQ('x', buf.peek());
+}
+
+TEST(InlineBuffer, GetLineSetsEofFlag) {
+	// Arrange
+	stringbuf result;
+	InlineBuffer buf{ make_unique<istringstream>(testString), 100 };
+
+	//Act
+	buf.get(result, '<');
+
+	// Assert
+	EXPECT_EQ(testString, result.str());
+	EXPECT_TRUE(buf.eof());
 }

@@ -11,7 +11,8 @@ InlineBuffer::InlineBuffer(unique_ptr<istream> stream, size_t bufferSize)
 	m_bufferSize{ bufferSize },
 	m_pBuffer{new char[bufferSize]},
 	m_pDataEnd{m_pBuffer},
-	m_pDataNext{m_pDataEnd}
+	m_pDataNext{m_pDataEnd},
+	m_eof{ false }
 {
 	assert(m_stream);
 }

@@ -19,8 +19,8 @@ static const vector<XmlElement> simpleXmlElements = {
 
 
 TEST(XmlElementReader_iterator, CreatesCorrectElementsForSimpleXml) {
-	auto xmlStream = make_unique<istringstream>(simpleXml);
-	XmlElementReader elementReader{move(xmlStream)};
+	auto buf = make_unique<InlineBuffer>(make_unique<istringstream>(simpleXml), 100);
+	XmlElementReader elementReader{move(buf)};
 	XmlElementReader_iterator beginIter{elementReader};
 	XmlElementReader_iterator endIter{};
 	
@@ -34,8 +34,8 @@ TEST(XmlElementReader_iterator, CreatesCorrectElementsForSimpleXml) {
 
 TEST(XmlElementReader_iterator, PreIncrementReturnNewIterator) {
 	// Arrange
-	auto xmlStream = make_unique<istringstream>(simpleXml);
-	XmlElementReader elementReader{move(xmlStream)};
+	auto buf = make_unique<InlineBuffer>(make_unique<istringstream>(simpleXml), 100);
+	XmlElementReader elementReader{move(buf)};
 	XmlElementReader_iterator beginIter{elementReader};
 	XmlElementReader_iterator endIter{};
 	
@@ -49,8 +49,8 @@ TEST(XmlElementReader_iterator, PreIncrementReturnNewIterator) {
 
 TEST(XmlElementReader_iterator, PostIncrementReturnsOldIterator) {
 	// Arrange
-	auto xmlStream = make_unique<istringstream>(simpleXml);
-	XmlElementReader elementReader{move(xmlStream)};
+	auto buf = make_unique<InlineBuffer>(make_unique<istringstream>(simpleXml), 100);
+	XmlElementReader elementReader{move(buf)};
 	XmlElementReader_iterator beginIter{elementReader};
 	XmlElementReader_iterator endIter{};
 	
