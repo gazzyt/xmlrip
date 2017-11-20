@@ -19,7 +19,7 @@ public:
 	XmlElement::Type GetType() const;
 	bool IsOpeningTag() const;
 	bool IsClosingTag() const;
-	std::string GetTagName() const;
+	const std::string& GetTagName() const;
 	std::string GetAttributeText() const;
 	const std::string* GetAttributeValue(const std::string& attrName) const;
 

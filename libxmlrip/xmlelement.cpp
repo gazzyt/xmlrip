@@ -34,7 +34,7 @@ bool XmlElement::IsClosingTag() const
 }
 
 
-string XmlElement::GetTagName() const
+const string& XmlElement::GetTagName() const
 {
 	return m_tagName;
 }
