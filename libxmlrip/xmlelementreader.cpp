@@ -57,7 +57,10 @@ XmlElement XmlElementReader::GetNextElement()
 
 XmlElement XmlElementReader::ReadTag()
 {
-    string tagName;
+	// Use static string here to reduce time spent in memory allocation
+    static string tagName;
+	tagName.assign("");
+
     char c;
     bool startTag = false;
     bool endTag = false;
