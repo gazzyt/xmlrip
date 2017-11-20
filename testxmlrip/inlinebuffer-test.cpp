@@ -75,39 +75,39 @@ TEST(InlineBuffer, PeekSetsEofFlag) {
 
 TEST(InlineBuffer, GetLineReturnsCorrectString) {
 	// Arrange
-	stringbuf result;
+	string result;
 	InlineBuffer buf{ make_unique<istringstream>(testString), 100 };
 
 	//Act
 	buf.get(result, 'g');
 
 	// Assert
-	EXPECT_EQ("abcdef", result.str());
+	EXPECT_EQ("abcdef", result);
 	EXPECT_EQ('g', buf.peek());
 }
 
 TEST(InlineBuffer, GetLineReturnsCorrectStringAcrossBuffers) {
 	// Arrange
-	stringbuf result;
+	string result;
 	InlineBuffer buf{ make_unique<istringstream>(testString), 10 };
 
 	//Act
 	buf.get(result, 'x');
 
 	// Assert
-	EXPECT_EQ("abcdefghijklmnopqrstuvw", result.str());
+	EXPECT_EQ("abcdefghijklmnopqrstuvw", result);
 	EXPECT_EQ('x', buf.peek());
 }
 
 TEST(InlineBuffer, GetLineSetsEofFlag) {
 	// Arrange
-	stringbuf result;
+	string result;
 	InlineBuffer buf{ make_unique<istringstream>(testString), 100 };
 
 	//Act
 	buf.get(result, '<');
 
 	// Assert
-	EXPECT_EQ(testString, result.str());
+	EXPECT_EQ(testString, result);
 	EXPECT_TRUE(buf.eof());
 }

@@ -155,9 +155,8 @@ XmlElement XmlElementReader::ReadComment()
 string XmlElementReader::ReadText()
 {
     string text;
-	stringbuf buffer;
 	
-	m_stream->get(buffer, '<');
+	m_stream->get(text, '<');
 	
-	return trim(buffer.str());
+	return trim(text);
 }

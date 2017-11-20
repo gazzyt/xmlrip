@@ -41,7 +41,8 @@ public:
 		ch = *m_pDataNext++;
 	}
 
-	inline void get(std::streambuf& sb, char delim)
+
+	inline void get(std::string& str, char delim)
 	{
 		if (eof())
 			return;
@@ -57,14 +58,14 @@ public:
 			else
 			{
 				auto delimPos = std::find(m_pDataNext, m_pDataEnd, delim);
-				sb.sputn(m_pDataNext, delimPos - m_pDataNext);
+				std::copy(m_pDataNext, delimPos, std::back_inserter(str));
 
 				m_pDataNext = delimPos;
 			}
 		} while ((m_pDataNext == m_pDataEnd) && !eof());
 
 	}
-	
+
 	inline bool eof()
 	{
 		return m_eof;
