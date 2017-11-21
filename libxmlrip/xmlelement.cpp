@@ -15,7 +15,7 @@ XmlElement::XmlElement(XmlElement::Type type, string tagName, bool isOpeningTag,
 {}
 
 XmlElement::XmlElement(XmlElement::Type type, string tagName, vector<XmlAttribute>&& attributes, bool isOpeningTag, bool isClosingTag) noexcept
-	: m_type{type}, m_tagName{tagName}, m_attributes{attributes}, m_isOpeningTag{isOpeningTag}, m_isClosingTag{isClosingTag}
+	: m_type{type}, m_tagName{tagName}, m_attributes{move(attributes)}, m_isOpeningTag{isOpeningTag}, m_isClosingTag{isClosingTag}
 {}
 
 XmlElement::Type XmlElement::GetType() const
@@ -138,12 +138,15 @@ void XmlElement::PrintAsVerbose(ostream& os) const
 
 vector<XmlAttribute> XmlElement::ReadAttributes(string text)
 {
-	auto attrs = vector<XmlAttribute>{};
-	bool readingQuotedString = false;
-	string attrName;
-	string attrValue;
+	static auto attrs = vector<XmlAttribute>{};
+	static string attrName;
+	static string attrValue;
+	attrs.clear();
+	attrName.assign("");
+	attrValue.assign("");
 	string* currentTarget = &attrName;
-	
+	bool readingQuotedString = false;
+
 	for (char ch : text)
 	{
 		if (isspace(ch))
@@ -195,7 +198,7 @@ XmlElement XmlElement::FromText(string text, bool isOpeningTag, bool isClosingTa
 	else
 	{
 		//return XmlElement(Type::tag, text.substr(0, firstSpace), isOpeningTag, isClosingTag);
-		return XmlElement(Type::tag, text.substr(0, firstSpace), ReadAttributes(text.substr(firstSpace)), isOpeningTag, isClosingTag);
+		return XmlElement(Type::tag, text.substr(0, firstSpace), move(ReadAttributes(text.substr(firstSpace))), isOpeningTag, isClosingTag);
 	}
 }
 
