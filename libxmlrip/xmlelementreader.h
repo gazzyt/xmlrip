@@ -1,14 +1,16 @@
 #ifndef XMLELEMENTREADER_H
 #define XMLELEMENTREADER_H
 
-#include "xmlelement.h"
 #include <istream>
 #include <memory>
+
+#include "xmlelement.h"
+#include "inlinebuffer.h"
 
 class XmlElementReader
 {
 public:
-	XmlElementReader(std::unique_ptr<std::istream> stream);
+	XmlElementReader(std::unique_ptr<InlineBuffer> stream);
 
 
 public:
@@ -20,7 +22,7 @@ private:
 	XmlElement ReadComment();
 	std::string ReadText();
 
-	std::unique_ptr<std::istream> m_stream;
+	std::unique_ptr<InlineBuffer> m_stream;
 
 	XmlElementReader(const XmlElementReader& src) = delete;
 	XmlElementReader operator=(const XmlElementReader& src) = delete;

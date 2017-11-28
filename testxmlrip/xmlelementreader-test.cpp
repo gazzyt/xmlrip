@@ -70,9 +70,9 @@ TEST(XmlElementReader, CreatesCorrectElementsForSimpleXmlWithLineBreaks) {
 
 template <class ELEMSTYPE> static void TextToElementsTestHelper(const string& xmlText, const ELEMSTYPE& expectedElements) {
 	int elementIndex = 0;
-	auto xmlStream = make_unique<istringstream>(xmlText);
-	XmlElementReader elementReader{move(xmlStream)};
-	
+	auto buf = make_unique<InlineBuffer>( make_unique<istringstream>(xmlText), 10 );
+	XmlElementReader elementReader{ move(buf) };
+
 	for_each(begin(expectedElements), end(expectedElements), 
 		[&] (const XmlElement& elem) 
 		{

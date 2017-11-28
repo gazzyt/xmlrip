@@ -30,6 +30,7 @@ set( BUILD_TEST_MANIFEST
 	xmlexpression-test.cpp
 	xmlelement-test.cpp
 	xmlattribute-test.cpp
+	inlinebuffer-test.cpp
 )
 
 set( BUILD_TEST_MANIFEST_HEADERS

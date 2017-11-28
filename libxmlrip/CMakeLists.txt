@@ -26,6 +26,7 @@ set( BUILD_LIBXMLRIP_MANIFEST
 	xmlelementreader-iterator.cpp
 	customstreamflags.cpp
 	xmlstreammodifiers.cpp
+	inlinebuffer.cpp
 	exception/baseexception.cpp
 	exception/xpathexception.cpp
 )
@@ -43,6 +44,7 @@ set( BUILD_LIBXMLRIP_MANIFEST_HEADERS
 	xmlelementreader-iterator.h
 	customstreamflags.h
 	xmlstreammodifiers.h
+	inlinebuffer.h
 	exception/baseexception.h
 	exception/xpathexception.h
 )

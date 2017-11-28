@@ -7,7 +7,7 @@
 
 using namespace std;
 
-XmlElementReader::XmlElementReader(unique_ptr<istream> stream)
+XmlElementReader::XmlElementReader(unique_ptr<InlineBuffer> stream)
 :	m_stream(move(stream))
 {
 }
@@ -57,7 +57,10 @@ XmlElement XmlElementReader::GetNextElement()
 
 XmlElement XmlElementReader::ReadTag()
 {
-    string tagName;
+	// Use static string here to reduce time spent in memory allocation
+    static string tagName;
+	tagName.assign("");
+
     char c;
     bool startTag = false;
     bool endTag = false;
@@ -155,9 +158,8 @@ XmlElement XmlElementReader::ReadComment()
 string XmlElementReader::ReadText()
 {
     string text;
-	stringbuf buffer;
 	
-	m_stream->get(buffer, '<');
+	m_stream->get(text, '<');
 	
-	return trim(buffer.str());
+	return trim(text);
 }
