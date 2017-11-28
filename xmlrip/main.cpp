@@ -31,7 +31,11 @@ int main(int argc, char** argv)
 	XmlElementReader elemReader(move(buffer));
 	XmlElementReader_iterator beginIter{elemReader};
 	XmlElementReader_iterator endIter{};
-	auto expr = XmlExpression::FromText(argv[2]);
+
+	string xpathText = argv[2];
+	if (xpathText == "xx")
+		xpathText = "program[TMSId=\"SH026320890000\"]";
+	auto expr = XmlExpression::FromText(xpathText);
 
 	for_each(beginIter, endIter, 
 		[&] (const XmlElement& elem) 
