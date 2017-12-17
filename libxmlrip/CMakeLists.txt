@@ -27,6 +27,7 @@ set( BUILD_LIBXMLRIP_MANIFEST
 	customstreamflags.cpp
 	xmlstreammodifiers.cpp
 	inlinebuffer.cpp
+	internalparserxpathprocessor.cpp
 	exception/baseexception.cpp
 	exception/xpathexception.cpp
 )
@@ -45,6 +46,7 @@ set( BUILD_LIBXMLRIP_MANIFEST_HEADERS
 	customstreamflags.h
 	xmlstreammodifiers.h
 	inlinebuffer.h
+	internalparserxpathprocessor.h
 	exception/baseexception.h
 	exception/xpathexception.h
 )

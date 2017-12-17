@@ -2,9 +2,7 @@
 #include <iostream>
 #include <fstream>
 
-#include "inlinebuffer.h"
-#include "xmlelementreader.h"
-#include "xmlelementreader-iterator.h"
+#include "internalparserxpathprocessor.h"
 #include "xmlexpression.h"
 
 using namespace std;
@@ -27,25 +25,12 @@ int main(int argc, char** argv)
 		return 1;
 	}
 
-	unique_ptr<InlineBuffer> buffer = make_unique<InlineBuffer>(move(inputStream), 25000);
-	XmlElementReader elemReader(move(buffer));
-	XmlElementReader_iterator beginIter{elemReader};
-	XmlElementReader_iterator endIter{};
 
 	string xpathText = argv[2];
 	if (xpathText == "xx")
 		xpathText = "program[TMSId=\"SH026320890000\"]";
 	auto expr = XmlExpression::FromText(xpathText);
 
-	for_each(beginIter, endIter, 
-		[&] (const XmlElement& elem) 
-		{
-			if (expr->ProcessElement(elem))
-			{
-				cout << elem << endl;
-			}
-		}
-	);
-	
+	InternalParserXPathProcessor::Run(move(inputStream), move(expr));
 }
 
