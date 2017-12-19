@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 
 #include "internalparserxpathprocessor.h"
 
@@ -9,8 +10,16 @@
 using namespace std;
 
 
-void InternalParserXPathProcessor::Run(std::unique_ptr<std::istream> inputStream, std::unique_ptr<XmlExpression> expr)
+void InternalParserXPathProcessor::Run(const char* fileName, std::unique_ptr<XmlExpression> expr)
 {
+	unique_ptr<ifstream> inputStream(new ifstream(fileName));
+	if (!inputStream->is_open())
+	{
+		cerr << "Failed to open file" << endl;
+		return;
+	}
+
+
 	unique_ptr<InlineBuffer> buffer = make_unique<InlineBuffer>(move(inputStream), 25000);
 	XmlElementReader elemReader(move(buffer));
 	XmlElementReader_iterator beginIter{ elemReader };

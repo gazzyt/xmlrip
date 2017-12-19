@@ -23,7 +23,7 @@ set( BUILD_XMLRIP_MANIFEST_HEADERS
 
 add_executable( xmlrip ${BUILD_XMLRIP_MANIFEST} ${BUILD_XMLRIP_MANIFEST_HEADERS})
 
-target_link_libraries( xmlrip libxmlrip)
+target_link_libraries( xmlrip libxmlrip ${LIBXML2_LIBRARIES})
 target_include_directories( xmlrip PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_SOURCE_DIR}/libxmlrip" )
 
 

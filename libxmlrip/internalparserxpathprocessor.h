@@ -9,7 +9,7 @@
 class InternalParserXPathProcessor
 {
 public:
-	static void Run(std::unique_ptr<std::istream> inputStream, std::unique_ptr<XmlExpression> expr);
+	static void Run(const char* fileName, std::unique_ptr<XmlExpression> expr);
 
 	InternalParserXPathProcessor() = delete;
 	

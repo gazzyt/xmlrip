@@ -1,0 +1,35 @@
+#ifndef LIBXMLXPATHPROCESSOR_H
+#define LIBXMLXPATHPROCESSOR_H
+
+#include <istream>
+#include <memory>
+
+#define LIBXML_STATIC
+
+extern "C" {
+#include "libxml/parser.h"
+}
+
+#include "xmlexpression.h"
+
+class LibXmlXPathProcessor
+{
+public:
+	static void Run(const char* fileName, std::unique_ptr<XmlExpression> expr);
+
+	LibXmlXPathProcessor() = delete;
+	
+private:
+	static xmlSAXHandler m_handler;
+
+	static void StartElement(void *ctx, const xmlChar *name, const xmlChar **atts);
+	static void EndElement(void *ctx, const xmlChar *name);
+
+	struct ParserState {
+		std::unique_ptr<XmlExpression> expr;
+		int return_val;
+	};
+
+};
+
+#endif
