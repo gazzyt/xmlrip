@@ -14,6 +14,7 @@ public:
 	XmlElement() noexcept;
 	XmlElement(Type type, std::string tagName, bool isOpeningTag, bool isClosingTag) noexcept;
 	XmlElement(Type type, std::string tagName, std::vector<XmlAttribute>&& attributes, bool isOpeningTag, bool isClosingTag) noexcept;
+	template<class T> XmlElement(Type type, std::string tagName, const T& attributes, bool isOpeningTag, bool isClosingTag) noexcept;
 
 public:
 	XmlElement::Type GetType() const;
@@ -42,6 +43,15 @@ private:
 	bool m_isOpeningTag;
 	bool m_isClosingTag;
 };
+
+template<class T> XmlElement::XmlElement(Type type, std::string tagName, const T& attributes, bool isOpeningTag, bool isClosingTag) noexcept
+	: m_type{ type }, m_tagName{ tagName }, m_attributes{}, m_isOpeningTag{ isOpeningTag }, m_isClosingTag{ isClosingTag }
+{
+	for (auto iter = begin(attributes); iter != end(attributes); ++iter)
+	{
+		m_attributes.push_back(XmlAttribute{ iter->first, iter->second });
+	}
+}
 
 std::ostream& operator<<(std::ostream& os, const XmlElement& elem);
 

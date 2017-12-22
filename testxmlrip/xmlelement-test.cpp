@@ -7,6 +7,7 @@
 
 #include "xmlstreammodifiers.h"
 #include "customprinters.h"
+#include "libxmlattributecollection.h"
 
 #include "xmlelement.h"
 
@@ -38,6 +39,22 @@ TEST(XmlElement, CreatesCorrectElementFromNameAndAttributes) {
 	EXPECT_TRUE(element.IsClosingTag());
 	EXPECT_EQ("aa", element.GetTagName());
 	EXPECT_EQ("att=3 btt=4", element.GetAttributeText());
+}
+
+TEST(XmlElement, CreatesCorrectElementFromNameAndLibXmlAttributes) {
+	// Arrange
+	string tagName = "aa";
+	static const xmlChar* testStrings[] = { BAD_CAST "attname1", BAD_CAST "attvalue1", BAD_CAST "attname2", BAD_CAST "attvalue2" };
+	LibXmlAttributeCollection attrs{ testStrings };
+
+	// Act
+	XmlElement element{ XmlElement::Type::tag, tagName, attrs, true, false };
+
+	// Assert
+	EXPECT_TRUE(element.IsOpeningTag());
+	EXPECT_FALSE(element.IsClosingTag());
+	EXPECT_EQ("aa", element.GetTagName());
+	EXPECT_EQ("attname1=attvalue1 attname2=attvalue2", element.GetAttributeText());
 }
 
 TEST(XmlElement, CreatesCorrectElementFromNameAndAttribute) {
