@@ -31,6 +31,8 @@ set( BUILD_TEST_MANIFEST
 	xmlelement-test.cpp
 	xmlattribute-test.cpp
 	inlinebuffer-test.cpp
+	libxmlattributecollection-test.cpp
+	libxmlattributecollection-iterator-test.cpp
 )
 
 set( BUILD_TEST_MANIFEST_HEADERS

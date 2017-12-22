@@ -49,6 +49,8 @@ set( BUILD_LIBXMLRIP_MANIFEST_HEADERS
 	inlinebuffer.h
 	internalparserxpathprocessor.h
 	libxmlxpathprocessor.h
+	libxmlattributecollection.h
+	libxmlattributecollection-iterator.h
 	exception/baseexception.h
 	exception/xpathexception.h
 )
