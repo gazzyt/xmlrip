@@ -7,6 +7,8 @@
 #include <memory>
 #include <sstream>
 
+#include "libxmlattributecollection.h"
+#include "libxmlattributecollection-iterator.h"
 #include "xmlpredicate.h"
 #include "exception/xpathexception.h"
 
@@ -42,6 +44,10 @@ TEST(XmlPredicate, CopyConstructorWorksWithoutAttributePredicate) {
 	ASSERT_EQ(nullptr, xp2.GetAttributePredicate());
 	
 }
+
+/******************************************************************************************/
+/* bool IsMatch(const XmlElement& elem) tests*/
+/******************************************************************************************/
 
 TEST(XmlPredicate, IsMatchReturnsTrueWhenOpeningTagNamesMatch) {
     XmlElement testElement(XmlElement::Type::tag, "aa", true, false);
@@ -101,6 +107,78 @@ TEST(XmlPredicate, IsMatchReturnsFalseWhenAttributeNameNotMatch) {
     
 	EXPECT_FALSE(testPredicate.IsMatch(testElement));
 }
+
+/******************************************************************************************/
+/* template<class T> bool IsMatch(const char* tagName, const T& attributes) tests */
+/******************************************************************************************/
+
+TEST(XmlPredicate, IsMatchReturnsTrueWhenTagNamesMatch) {
+	// Arrange
+	LibXmlAttributeCollection attrs{ nullptr };
+	XmlPredicate testPredicate("aa");
+
+	// Act
+	bool result = testPredicate.IsMatch("aa", attrs);
+
+	// Assert
+	EXPECT_TRUE(result);
+}
+
+TEST(XmlPredicate, IsMatchReturnsFalseWhenTagNamesNoMatch) {
+	// Arrange
+	LibXmlAttributeCollection attrs{ nullptr };
+	XmlPredicate testPredicate("aa");
+
+	// Act
+	bool result = testPredicate.IsMatch("bb", attrs);
+
+	// Assert
+	EXPECT_FALSE(result);
+}
+
+TEST(XmlPredicate, IsMatchReturnsTrueWhenTagNamesAndAttributesMatch) {
+	// Arrange
+	static const xmlChar* testAttrs[] = { BAD_CAST "attname1", BAD_CAST "attvalue1", BAD_CAST "attname2", BAD_CAST "attvalue2" };
+	LibXmlAttributeCollection attrs{ testAttrs };
+	XmlPredicate testPredicate("aa", make_unique<XmlAttribute>("attname2", "attvalue2"));
+
+	// Act
+	bool result = testPredicate.IsMatch("aa", attrs);
+
+	// Assert
+	EXPECT_TRUE(result);
+}
+
+TEST(XmlPredicate, IsMatchReturnsFalseWhenTagNamesMatchAndAttributeNameNoMatch) {
+	// Arrange
+	static const xmlChar* testAttrs[] = { BAD_CAST "attname1", BAD_CAST "attvalue1", BAD_CAST "attname2", BAD_CAST "attvalue2" };
+	LibXmlAttributeCollection attrs{ testAttrs };
+	XmlPredicate testPredicate("aa", make_unique<XmlAttribute>("attname3", "attvalue2"));
+
+	// Act
+	bool result = testPredicate.IsMatch("aa", attrs);
+
+	// Assert
+	EXPECT_FALSE(result);
+}
+
+TEST(XmlPredicate, IsMatchReturnsFalseWhenTagNamesMatchAndAttributeValueNameNoMatch) {
+	// Arrange
+	static const xmlChar* testAttrs[] = { BAD_CAST "attname1", BAD_CAST "attvalue1", BAD_CAST "attname2", BAD_CAST "attvalue2" };
+	LibXmlAttributeCollection attrs{ testAttrs };
+	XmlPredicate testPredicate("aa", make_unique<XmlAttribute>("attname2", "attvalue3"));
+
+	// Act
+	bool result = testPredicate.IsMatch("aa", attrs);
+
+	// Assert
+	EXPECT_FALSE(result);
+}
+
+
+/******************************************************************************************/
+/* static XmlPredicate FromText(std::string text) */
+/******************************************************************************************/
 
 TEST(XmlPredicate, FromTextReturnsPredicateForSimpleTagName) {
     // Arrange
