@@ -9,7 +9,7 @@
 using namespace std;
 
 
-static const xmlChar* testStrings[] = { BAD_CAST "attname1", BAD_CAST "attvalue1", BAD_CAST "attname2", BAD_CAST "attvalue2" };
+static const xmlChar* testStrings[] = { BAD_CAST "attname1", BAD_CAST "attvalue1", BAD_CAST "attname2", BAD_CAST "attvalue2", nullptr };
 
 TEST(LibXmlAttributeCollection_iterator, ContructWithNullSetsEnd) {
 	// Arrange
