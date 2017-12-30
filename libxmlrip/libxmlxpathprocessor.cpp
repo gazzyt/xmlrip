@@ -1,6 +1,6 @@
 #include <iostream>
 
-
+#include "libxmlattributecollection.h"
 
 #include "libxmlxpathprocessor.h"
 
@@ -46,46 +46,18 @@ xmlSAXHandler LibXmlXPathProcessor::m_handler
 
 void LibXmlXPathProcessor::StartElement(void *ctx, const xmlChar *name, const xmlChar **atts)
 {
-	vector<XmlAttribute> attributes{};
-
-	if (atts)
+	if (reinterpret_cast<ParserState*>(ctx)->expr->ProcessStartTag(reinterpret_cast<const char*>(name), LibXmlAttributeCollection{atts}))
 	{
-		const xmlChar **attIter = atts;
-
-		while (*attIter != nullptr)
-		{
-			auto attName = *attIter;
-			++attIter;
-
-			if (*attIter != nullptr)
-			{
-				auto attValue = *attIter;
-				string quotedValue = string{ "\"" } +reinterpret_cast<const char*>(attValue) + "\"";
-				attributes.push_back(XmlAttribute{ reinterpret_cast<const char*>(attName), move(quotedValue) });
-			}
-			++attIter;
-		}
+		cout << XmlElement{XmlElement::Type::tag, reinterpret_cast<const char*>(name), LibXmlAttributeCollection{atts}, true, false} << endl;
 	}
-
-	XmlElement elem{ XmlElement::Type::tag, reinterpret_cast<const char*>(name), move(attributes), true, false };
-
-	if (reinterpret_cast<ParserState*>(ctx)->expr->ProcessElement(elem))
-	{
-		std::cout << elem << endl;
-	}
-
 }
 
 void LibXmlXPathProcessor::EndElement(void *ctx, const xmlChar *name)
 {
-
-	//XmlElement elem{ XmlElement::Type::tag, reinterpret_cast<const char*>(name), false, true };
-
-	//if (reinterpret_cast<ParserState*>(ctx)->expr->ProcessElement(elem))
-	//{
-	//	std::cout << elem << endl;
-	//}
-
+	if (reinterpret_cast<ParserState*>(ctx)->expr->ProcessEndTag(reinterpret_cast<const char*>(name)))
+	{
+		cout << XmlElement{XmlElement::Type::tag, reinterpret_cast<const char*>(name), false, true} << endl;
+	}
 }
 
 

@@ -25,7 +25,10 @@ int main(int argc, char** argv)
 		xpathText = "program[TMSId=\"SH026320890000\"]";
 	auto expr = XmlExpression::FromText(xpathText);
 
+#ifdef USE_INTERNAL_PARSER
+	InternalParserXPathProcessor::Run(argv[1], move(expr));
+#else
 	LibXmlXPathProcessor::Run(argv[1], move(expr));
-	//InternalParserXPathProcessor::Run(argv[1], move(expr));
+#endif
 }
 

@@ -2,6 +2,7 @@
 #define LIBXMLATTRIBUTECOLLECTION_ITERATOR_H
 
 #include <iterator>
+#include <limits>
 #include <utility>
 
 #include "libxml/xmlstring.h"
