@@ -17,6 +17,7 @@ public:
 	const std::vector<XmlPredicate>& GetPredicates() const;
 	bool ProcessElement(const XmlElement& elem);
 	template<class T> bool ProcessStartTag(const char* tagName, const T& attributes);
+	bool ProcessEndTag(const char* tagName);
 	
 	static std::unique_ptr<XmlExpression> FromText(std::string text);
 

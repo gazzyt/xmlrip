@@ -162,25 +162,65 @@ TEST(XmlExpression, ProcessStartTagReturnsTrueForChildTagsOfFullMatch) {
 	EXPECT_TRUE(result);
 }
 
+TEST(XmlExpression, ProcessStartTagReturnsFalseAfterMatchingTagClosed) {
+	// Arrange
+    XmlExpression expr;
+	expr.AddPredicate(XmlPredicate{"aa"});
+	LibXmlAttributeCollection attrs{ nullptr };
+	
+	// Act
+	expr.ProcessStartTag("aa", attrs);
+	expr.ProcessEndTag("aa");
+	auto result = expr.ProcessStartTag("bb", attrs);
+    
+	// Assert
+	EXPECT_FALSE(result);
+}
+
+TEST(XmlExpression, ProcessStartTagProcessesTwoPrecidatesCorrectly) {
+	// Arrange
+    XmlExpression expr;
+ 	expr.AddPredicate(XmlPredicate{"aa"});
+	expr.AddPredicate(XmlPredicate{"bb"});
+	LibXmlAttributeCollection attrs{ nullptr };
+	
+	// Act
+	// Assert
+	// <aa><bb><cc></cc></bb><cc></cc><bb></bb></aa><bb></bb>
+	EXPECT_FALSE(expr.ProcessStartTag("aa", attrs));
+	EXPECT_TRUE(expr.ProcessStartTag("bb", attrs));
+	EXPECT_TRUE(expr.ProcessStartTag("cc", attrs));
+	EXPECT_TRUE(expr.ProcessEndTag("cc"));
+	EXPECT_TRUE(expr.ProcessEndTag("bb"));
+	EXPECT_FALSE(expr.ProcessStartTag("cc", attrs));
+	EXPECT_FALSE(expr.ProcessEndTag("cc"));
+	EXPECT_TRUE(expr.ProcessStartTag("bb", attrs));
+	EXPECT_TRUE(expr.ProcessEndTag("bb"));
+   	EXPECT_FALSE(expr.ProcessEndTag("aa"));
+	EXPECT_FALSE(expr.ProcessStartTag("bb", attrs));
+	EXPECT_FALSE(expr.ProcessEndTag("bb"));
+
+}
+
+
 /******************************************************************************************/
 /* ProcessEndTag tests */
 /******************************************************************************************/
-/*
+
 TEST(XmlExpression, ProcessStartTagReturnsTrueForClosingTagOfFullMatch) {
 	// Arrange
     XmlExpression expr;
-	XmlElement testElement1(XmlElement::Type::tag, "aa", true, false);
-	XmlElement testElement2(XmlElement::Type::tag, "aa", false, true);
 	expr.AddPredicate(XmlPredicate{"aa"});
+	LibXmlAttributeCollection attrs{ nullptr };
 	
 	// Act
-	expr.ProcessElement(testElement1);
-	auto result = expr.ProcessElement(testElement2);
+	expr.ProcessStartTag("aa", attrs);
+	auto result = expr.ProcessEndTag("aa");
     
 	// Assert
 	EXPECT_TRUE(result);
 }
-*/
+
 
 /******************************************************************************************/
 /* FromText tests */

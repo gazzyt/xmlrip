@@ -101,6 +101,37 @@ bool XmlExpression::ProcessTag(const XmlElement& elem)
 	return false; // We only get here if that tag is neither opening nor closing
 }
 
+bool XmlExpression::ProcessEndTag(const char* tagName)
+{
+	const auto matchIndex = m_matchingElements.size();
+	
+	// Does this closing tag close the last matched tag?
+	if ((matchIndex > 0) && m_matchingElements.top().GetTagName() == tagName)
+	{
+		// It does
+		m_matchingElements.pop();
+
+		if (matchIndex == m_predicates.size())
+		{
+			// We matched the last predicate
+			return true;
+		}
+		else
+		{
+			// Only a partial match
+			return false;
+		}
+	}
+	
+	// If we already have a full match for all predicates
+	if (matchIndex == m_predicates.size())
+	{
+		return true;
+	}
+	
+	return false;
+}
+
 unique_ptr<XmlExpression> XmlExpression::FromText(string text)
 {
 	auto retval = make_unique<XmlExpression>();
