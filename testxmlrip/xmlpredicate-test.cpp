@@ -206,5 +206,9 @@ TEST(XmlPredicate, FromTextReturnsPredicateForSimpleTagNameWithAttribute) {
 	EXPECT_EQ("simpletagname", pred.GetTagName());
 	ASSERT_NE(nullptr, pred.GetAttributePredicate());
 	EXPECT_EQ("attr", pred.GetAttributePredicate()->GetName());
+#ifdef USE_INTERNAL_PARSER
 	EXPECT_EQ("\"val\"", pred.GetAttributePredicate()->GetValue());
+#else
+	EXPECT_EQ("val", pred.GetAttributePredicate()->GetValue());
+#endif
 }
