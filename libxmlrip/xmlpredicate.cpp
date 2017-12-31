@@ -73,7 +73,7 @@ XmlPredicate XmlPredicate::FromText(string text)
 		{
 			currentTarget = &attrValue;
 		}
-		else if (ch == '"')
+		else if (ch == '"' || ch == '\'')
 		{
 			readingQuotedString = !readingQuotedString;
 #ifdef USE_INTERNAL_PARSER

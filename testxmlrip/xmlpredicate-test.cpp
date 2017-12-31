@@ -197,7 +197,7 @@ TEST(XmlPredicate, FromTextThrowsWithEmptyString) {
 	EXPECT_THROW(XmlPredicate::FromText(""), XPathException);
 }
 
-TEST(XmlPredicate, FromTextReturnsPredicateForSimpleTagNameWithAttribute) {
+TEST(XmlPredicate, FromTextReturnsPredicateForSimpleTagNameWithAttributeDoubleQuote) {
     // Arrange
 	
 	// Act
@@ -208,6 +208,22 @@ TEST(XmlPredicate, FromTextReturnsPredicateForSimpleTagNameWithAttribute) {
 	EXPECT_EQ("attr", pred.GetAttributePredicate()->GetName());
 #ifdef USE_INTERNAL_PARSER
 	EXPECT_EQ("\"val\"", pred.GetAttributePredicate()->GetValue());
+#else
+	EXPECT_EQ("val", pred.GetAttributePredicate()->GetValue());
+#endif
+}
+
+TEST(XmlPredicate, FromTextReturnsPredicateForSimpleTagNameWithAttributeSingleQuote) {
+    // Arrange
+	
+	// Act
+	XmlPredicate pred = XmlPredicate::FromText("simpletagname[attr='val']");
+    
+	EXPECT_EQ("simpletagname", pred.GetTagName());
+	ASSERT_NE(nullptr, pred.GetAttributePredicate());
+	EXPECT_EQ("attr", pred.GetAttributePredicate()->GetName());
+#ifdef USE_INTERNAL_PARSER
+	EXPECT_EQ("'val'", pred.GetAttributePredicate()->GetValue());
 #else
 	EXPECT_EQ("val", pred.GetAttributePredicate()->GetValue());
 #endif
