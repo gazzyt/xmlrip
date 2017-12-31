@@ -50,7 +50,15 @@ string XmlElement::GetAttributeText() const
 			attrText += " ";
 		}
 		
-		attrText += attr.GetName() + "=" + attr.GetValue();
+		attrText += attr.GetName() + "=" 
+#ifndef USE_INTERNAL_PARSER
+			+ '"'
+#endif
+			+ attr.GetValue()
+#ifndef USE_INTERNAL_PARSER
+			+ '"'
+#endif
+		;
 	}
 	
 	return attrText;

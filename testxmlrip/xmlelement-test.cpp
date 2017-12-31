@@ -27,6 +27,7 @@ TEST(XmlElement, CreatesCorrectElementFromNameOnly) {
 	EXPECT_EQ("aa", element.GetTagName());
 }
 
+#ifdef USE_INTERNAL_PARSER
 TEST(XmlElement, CreatesCorrectElementFromNameAndAttributes) {
 	// Arrange
 	string tagText{"aa att=3 btt=4"};
@@ -40,6 +41,7 @@ TEST(XmlElement, CreatesCorrectElementFromNameAndAttributes) {
 	EXPECT_EQ("aa", element.GetTagName());
 	EXPECT_EQ("att=3 btt=4", element.GetAttributeText());
 }
+#endif
 
 TEST(XmlElement, CreatesCorrectElementFromNameAndLibXmlAttributes) {
 	// Arrange
@@ -54,9 +56,10 @@ TEST(XmlElement, CreatesCorrectElementFromNameAndLibXmlAttributes) {
 	EXPECT_TRUE(element.IsOpeningTag());
 	EXPECT_FALSE(element.IsClosingTag());
 	EXPECT_EQ("aa", element.GetTagName());
-	EXPECT_EQ("attname1=attvalue1 attname2=attvalue2", element.GetAttributeText());
+	EXPECT_EQ("attname1=\"attvalue1\" attname2=\"attvalue2\"", element.GetAttributeText());
 }
 
+#ifdef USE_INTERNAL_PARSER
 TEST(XmlElement, CreatesCorrectElementFromNameAndAttribute) {
 	// Arrange
 	string tagText{"aa att=3"};
@@ -84,6 +87,7 @@ TEST(XmlElement, CreatesCorrectElementFromNameAndQuotedAttributes) {
 	EXPECT_EQ("aa", element.GetTagName());
 	EXPECT_EQ("att=\"la la\" btt=\"bing bong\"", element.GetAttributeText());
 }
+#endif
 
 TEST(XmlElement, GetAttributeValueReturnsCorrectValueWhenAttributeExists) {
 	// Arrange
@@ -135,7 +139,11 @@ TEST(XmlElement, PrintsAsXml)
 	stream << element;
 	
 	// Assert
+#ifdef USE_INTERNAL_PARSER
 	EXPECT_EQ("<aa at1=987>", stream.str());
+#else
+	EXPECT_EQ("<aa at1=\"987\">", stream.str());
+#endif
 }
 
 TEST(XmlElement, PrintsAsVerbose)
