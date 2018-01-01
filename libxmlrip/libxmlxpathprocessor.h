@@ -24,6 +24,7 @@ private:
 
 	static void StartElement(void *ctx, const xmlChar *name, const xmlChar **atts);
 	static void EndElement(void *ctx, const xmlChar *name);
+	static std::string Indent(int depth);
 
 	struct ParserState {
 		std::unique_ptr<XmlExpression> expr;
@@ -31,5 +32,6 @@ private:
 	};
 
 };
+
 
 #endif

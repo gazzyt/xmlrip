@@ -46,17 +46,23 @@ xmlSAXHandler LibXmlXPathProcessor::m_handler
 
 void LibXmlXPathProcessor::StartElement(void *ctx, const xmlChar *name, const xmlChar **atts)
 {
-	if (reinterpret_cast<ParserState*>(ctx)->expr->ProcessStartTag(reinterpret_cast<const char*>(name), LibXmlAttributeCollection{atts}))
+	auto pCtx = reinterpret_cast<ParserState*>(ctx);
+	auto strName = reinterpret_cast<const char*>(name);
+	auto depth = pCtx->expr->ProcessStartTag(strName, LibXmlAttributeCollection{atts});
+	if (depth != XmlExpression::NO_MATCH)
 	{
-		cout << XmlElement{XmlElement::Type::tag, reinterpret_cast<const char*>(name), LibXmlAttributeCollection{atts}, true, false} << endl;
+		cout << Indent(depth) << XmlElement{XmlElement::Type::tag, strName, LibXmlAttributeCollection{atts}, true, false} << endl;
 	}
 }
 
 void LibXmlXPathProcessor::EndElement(void *ctx, const xmlChar *name)
 {
-	if (reinterpret_cast<ParserState*>(ctx)->expr->ProcessEndTag(reinterpret_cast<const char*>(name)))
+	auto pCtx = reinterpret_cast<ParserState*>(ctx);
+	auto strName = reinterpret_cast<const char*>(name);
+	auto depth = pCtx->expr->ProcessEndTag(strName);
+	if (depth != XmlExpression::NO_MATCH)
 	{
-		cout << XmlElement{XmlElement::Type::tag, reinterpret_cast<const char*>(name), false, true} << endl;
+		cout << Indent(depth) << XmlElement{XmlElement::Type::tag, strName, false, true} << endl;
 	}
 }
 
@@ -84,4 +90,14 @@ void LibXmlXPathProcessor::Run(const char* fileName, std::unique_ptr<XmlExpressi
 	//}
 	//);
 
+}
+
+string LibXmlXPathProcessor::Indent(int depth)
+{
+	if (depth > 0)
+	{
+		return string(depth * 4, ' ');
+	}
+	
+	return "";
 }
