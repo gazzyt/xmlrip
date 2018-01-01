@@ -22,7 +22,7 @@ public:
 	{}
 
 	LibXmlAttributeCollection_iterator(const xmlChar** attributes) noexcept
-		:	m_attributes(attributes), m_npos(attributes == nullptr || *attributes == nullptr ? MAX_NPOS : 0)
+		:	m_attributes(attributes), m_npos(attributes == nullptr || *attributes == nullptr ? MAX_NPOS : 0), m_current{}
 	{
 		if (m_npos == 0)
 		{

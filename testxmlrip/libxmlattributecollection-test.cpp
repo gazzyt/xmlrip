@@ -23,7 +23,7 @@ TEST(LibXmlAttributeCollection, MemberBeginIteratesTwoTimes) {
 	}
 
 	// Assert
-	EXPECT_EQ(2, count);
+	EXPECT_EQ(2U, count);
 }
 
 TEST(LibXmlAttributeCollection, GlobalBeginIteratesTwoTimes) {
@@ -38,5 +38,5 @@ TEST(LibXmlAttributeCollection, GlobalBeginIteratesTwoTimes) {
 	}
 
 	// Assert
-	EXPECT_EQ(2, count);
+	EXPECT_EQ(2U, count);
 }
