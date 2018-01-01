@@ -16,26 +16,29 @@ public:
 	void AddPredicate(XmlPredicate predicate);
 	const std::vector<XmlPredicate>& GetPredicates() const;
 	bool ProcessElement(const XmlElement& elem);
-	template<class T> bool ProcessStartTag(const char* tagName, const T& attributes);
-	bool ProcessEndTag(const char* tagName);
+	template<class T> int ProcessStartTag(const char* tagName, const T& attributes);
+	int ProcessEndTag(const char* tagName);
 	
 	static std::unique_ptr<XmlExpression> FromText(std::string text);
+	
+	enum NoMatch {NO_MATCH = -1};
 
 private:
 	bool ProcessTag(const XmlElement& elem);
 
 	std::vector<XmlPredicate> m_predicates;
 	std::stack<XmlElement> m_matchingElements;
+	int m_matchDepth = NO_MATCH;
 };
 
-template<class T> bool XmlExpression::ProcessStartTag(const char* tagName, const T& attributes)
+template<class T> int XmlExpression::ProcessStartTag(const char* tagName, const T& attributes)
 {
 	const auto matchIndex = m_matchingElements.size();
 	
 	// If we already have a full match for all predicates
 	if (matchIndex == m_predicates.size())
 	{
-		return true;
+		return ++m_matchDepth;
 	}
 
 	auto& nextPredicate = m_predicates[matchIndex];
@@ -47,17 +50,20 @@ template<class T> bool XmlExpression::ProcessStartTag(const char* tagName, const
 		if (matchIndex == (m_predicates.size() - 1))
 		{
 			// We matched the last predicate
-			return true;
+			m_matchDepth = 0;
+			return (m_matchDepth);
 		}
 		else
 		{
 			// Only a partial match
-			return false;
+			m_matchDepth = NO_MATCH;
+			return (m_matchDepth);
 		}
 	}
 	else
 	{
-		return false;
+		m_matchDepth = NO_MATCH;
+		return (m_matchDepth);
 	}
 
 }

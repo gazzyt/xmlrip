@@ -122,33 +122,33 @@ TEST(XmlExpression, ProcessElementProcessesTwoPrecidatesCorrectly) {
 /* ProcessStartTag tests */
 /******************************************************************************************/
 
-TEST(XmlExpression, ProcessStartTagReturnsTrueWithSingleTagExpressionWhenTagMatches) {
+TEST(XmlExpression, ProcessStartTagReturnsZeroWithSingleTagExpressionWhenTagMatches) {
 	// Arrange
     XmlExpression expr;
 	expr.AddPredicate(XmlPredicate{"aa"});
 	LibXmlAttributeCollection attrs{ nullptr };
 	
 	// Act
-	bool result = expr.ProcessStartTag("aa", attrs);
+	auto result = expr.ProcessStartTag("aa", attrs);
     
 	// Assert
-	EXPECT_TRUE(result);
+	EXPECT_EQ(0, result);
 }
 
-TEST(XmlExpression, ProcessStartTagReturnsFalseWithSingleTagExpressionWhenTagDoesNotMatch) {
+TEST(XmlExpression, ProcessStartTagReturnsNoMatchWithSingleTagExpressionWhenTagDoesNotMatch) {
 	// Arrange
     XmlExpression expr;
 	expr.AddPredicate(XmlPredicate{"aa"});
 	LibXmlAttributeCollection attrs{ nullptr };
     
 	// Act
-	bool result = expr.ProcessStartTag("bb", attrs);
+	auto result = expr.ProcessStartTag("bb", attrs);
 	
 	// Assert
-	EXPECT_FALSE(result);
+	EXPECT_EQ(XmlExpression::NO_MATCH, result);
 }
 
-TEST(XmlExpression, ProcessStartTagReturnsTrueForChildTagsOfFullMatch) {
+TEST(XmlExpression, ProcessStartTagReturnsOneForChildTagsOfFullMatch) {
 	// Arrange
     XmlExpression expr;
 	expr.AddPredicate(XmlPredicate{"aa"});
@@ -159,10 +159,10 @@ TEST(XmlExpression, ProcessStartTagReturnsTrueForChildTagsOfFullMatch) {
 	auto result = expr.ProcessStartTag("bb", attrs);
     
 	// Assert
-	EXPECT_TRUE(result);
+	EXPECT_EQ(1, result);
 }
 
-TEST(XmlExpression, ProcessStartTagReturnsFalseAfterMatchingTagClosed) {
+TEST(XmlExpression, ProcessStartTagReturnsNoMatchAfterMatchingTagClosed) {
 	// Arrange
     XmlExpression expr;
 	expr.AddPredicate(XmlPredicate{"aa"});
@@ -174,7 +174,7 @@ TEST(XmlExpression, ProcessStartTagReturnsFalseAfterMatchingTagClosed) {
 	auto result = expr.ProcessStartTag("bb", attrs);
     
 	// Assert
-	EXPECT_FALSE(result);
+	EXPECT_EQ(XmlExpression::NO_MATCH, result);
 }
 
 TEST(XmlExpression, ProcessStartTagProcessesTwoPrecidatesCorrectly) {
@@ -187,18 +187,18 @@ TEST(XmlExpression, ProcessStartTagProcessesTwoPrecidatesCorrectly) {
 	// Act
 	// Assert
 	// <aa><bb><cc></cc></bb><cc></cc><bb></bb></aa><bb></bb>
-	EXPECT_FALSE(expr.ProcessStartTag("aa", attrs));
-	EXPECT_TRUE(expr.ProcessStartTag("bb", attrs));
-	EXPECT_TRUE(expr.ProcessStartTag("cc", attrs));
-	EXPECT_TRUE(expr.ProcessEndTag("cc"));
-	EXPECT_TRUE(expr.ProcessEndTag("bb"));
-	EXPECT_FALSE(expr.ProcessStartTag("cc", attrs));
-	EXPECT_FALSE(expr.ProcessEndTag("cc"));
-	EXPECT_TRUE(expr.ProcessStartTag("bb", attrs));
-	EXPECT_TRUE(expr.ProcessEndTag("bb"));
-   	EXPECT_FALSE(expr.ProcessEndTag("aa"));
-	EXPECT_FALSE(expr.ProcessStartTag("bb", attrs));
-	EXPECT_FALSE(expr.ProcessEndTag("bb"));
+	EXPECT_EQ(XmlExpression::NO_MATCH, expr.ProcessStartTag("aa", attrs));
+	EXPECT_EQ(0, expr.ProcessStartTag("bb", attrs));
+	EXPECT_EQ(1, expr.ProcessStartTag("cc", attrs));
+	EXPECT_EQ(1, expr.ProcessEndTag("cc"));
+	EXPECT_EQ(0, expr.ProcessEndTag("bb"));
+	EXPECT_EQ(XmlExpression::NO_MATCH, expr.ProcessStartTag("cc", attrs));
+	EXPECT_EQ(XmlExpression::NO_MATCH, expr.ProcessEndTag("cc"));
+	EXPECT_EQ(0, expr.ProcessStartTag("bb", attrs));
+	EXPECT_EQ(0, expr.ProcessEndTag("bb"));
+   	EXPECT_EQ(XmlExpression::NO_MATCH, expr.ProcessEndTag("aa"));
+	EXPECT_EQ(XmlExpression::NO_MATCH, expr.ProcessStartTag("bb", attrs));
+	EXPECT_EQ(XmlExpression::NO_MATCH, expr.ProcessEndTag("bb"));
 
 }
 
@@ -207,7 +207,7 @@ TEST(XmlExpression, ProcessStartTagProcessesTwoPrecidatesCorrectly) {
 /* ProcessEndTag tests */
 /******************************************************************************************/
 
-TEST(XmlExpression, ProcessStartTagReturnsTrueForClosingTagOfFullMatch) {
+TEST(XmlExpression, ProcessStartTagReturnsZeroForClosingTagOfFullMatch) {
 	// Arrange
     XmlExpression expr;
 	expr.AddPredicate(XmlPredicate{"aa"});
@@ -218,7 +218,7 @@ TEST(XmlExpression, ProcessStartTagReturnsTrueForClosingTagOfFullMatch) {
 	auto result = expr.ProcessEndTag("aa");
     
 	// Assert
-	EXPECT_TRUE(result);
+	EXPECT_EQ(0, result);
 }
 
 
