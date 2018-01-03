@@ -24,6 +24,7 @@ private:
 
 	static void StartElement(void *ctx, const xmlChar *name, const xmlChar **atts);
 	static void EndElement(void *ctx, const xmlChar *name);
+	static void Characters(void *ctx, const xmlChar *chars, int len);
 	static std::string Indent(int depth);
 
 	struct ParserState {

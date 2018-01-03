@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "libxmlattributecollection.h"
+#include "libxmlutils.h"
 
 #include "libxmlxpathprocessor.h"
 
@@ -26,7 +27,7 @@ xmlSAXHandler LibXmlXPathProcessor::m_handler
 	&StartElement, //startElementSAXFunc
 	&EndElement, //endElementSAXFunc
 	nullptr, //referenceSAXFunc
-	nullptr, //charactersSAXFunc
+	&Characters, //charactersSAXFunc
 	nullptr, //ignorableWhitespaceSAXFunc
 	nullptr, //processingInstructionSAXFunc
 	nullptr, //commentSAXFunc
@@ -63,6 +64,20 @@ void LibXmlXPathProcessor::EndElement(void *ctx, const xmlChar *name)
 	if (depth != XmlExpression::NO_MATCH)
 	{
 		cout << Indent(depth) << XmlElement{XmlElement::Type::tag, strName, false, true} << endl;
+	}
+}
+
+void LibXmlXPathProcessor::Characters(void *ctx, const xmlChar *chars, int len)
+{
+	auto pCtx = reinterpret_cast<ParserState*>(ctx);
+	auto depth = pCtx->expr->GetCurrentMatchDepth();
+
+	if (depth != XmlExpression::NO_MATCH && !isspace(chars, len))
+	{
+		const char* pChars = reinterpret_cast<const char *>(chars);
+		cout << Indent(depth);
+		cout.write(pChars, len);
+		cout << endl;
 	}
 }
 
