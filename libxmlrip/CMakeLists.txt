@@ -29,6 +29,7 @@ set( BUILD_LIBXMLRIP_MANIFEST
 	inlinebuffer.cpp
 	internalparserxpathprocessor.cpp
 	libxmlxpathprocessor.cpp
+	libxmlutils.cpp
 	exception/baseexception.cpp
 	exception/xpathexception.cpp
 )
@@ -51,6 +52,7 @@ set( BUILD_LIBXMLRIP_MANIFEST_HEADERS
 	libxmlxpathprocessor.h
 	libxmlattributecollection.h
 	libxmlattributecollection-iterator.h
+	libxmlutils.h
 	exception/baseexception.h
 	exception/xpathexception.h
 )

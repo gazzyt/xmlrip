@@ -33,6 +33,7 @@ set( BUILD_TEST_MANIFEST
 	inlinebuffer-test.cpp
 	libxmlattributecollection-test.cpp
 	libxmlattributecollection-iterator-test.cpp
+	libxmlutils-test.cpp
 )
 
 set( BUILD_TEST_MANIFEST_HEADERS
