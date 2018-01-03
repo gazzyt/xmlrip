@@ -119,6 +119,61 @@ TEST(XmlExpression, ProcessElementProcessesTwoPrecidatesCorrectly) {
 }
 
 /******************************************************************************************/
+/* GetCurrentMatchDepth tests */
+/******************************************************************************************/
+
+TEST(XmlExpression, CurrentMatchDepthIsNoMatchForNewExpression) {
+	// Arrange
+    XmlExpression expr;
+	
+	// Act
+    
+	// Assert
+	EXPECT_EQ(XmlExpression::NO_MATCH, expr.GetCurrentMatchDepth());
+}
+
+TEST(XmlExpression, CurrentMatchDepthIsNoMatchWhenNoMatch) {
+	// Arrange
+    XmlExpression expr;
+	expr.AddPredicate(XmlPredicate{"aa"});
+	LibXmlAttributeCollection attrs{ nullptr };
+	
+	// Act
+	expr.ProcessStartTag("bb", attrs);
+    
+	// Assert
+	EXPECT_EQ(XmlExpression::NO_MATCH, expr.GetCurrentMatchDepth());
+}
+
+TEST(XmlExpression, CurrentMatchDepthIsZeroOnMatch) {
+	// Arrange
+    XmlExpression expr;
+	expr.AddPredicate(XmlPredicate{"aa"});
+	LibXmlAttributeCollection attrs{ nullptr };
+    
+	// Act
+	expr.ProcessStartTag("aa", attrs);
+	
+	// Assert
+	EXPECT_EQ(0, expr.GetCurrentMatchDepth());
+}
+
+TEST(XmlExpression, CurrentMatchIsOneForChildTagsOfFullMatch) {
+	// Arrange
+    XmlExpression expr;
+	expr.AddPredicate(XmlPredicate{"aa"});
+	LibXmlAttributeCollection attrs{ nullptr };
+	
+	// Act
+	expr.ProcessStartTag("aa", attrs);
+	expr.ProcessStartTag("bb", attrs);
+    
+	// Assert
+	EXPECT_EQ(1, expr.GetCurrentMatchDepth());
+}
+
+
+/******************************************************************************************/
 /* ProcessStartTag tests */
 /******************************************************************************************/
 

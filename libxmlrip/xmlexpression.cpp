@@ -17,6 +17,11 @@ const vector<XmlPredicate>& XmlExpression::GetPredicates() const
 	return m_predicates;
 }
 
+int XmlExpression::GetCurrentMatchDepth() const
+{
+	return m_matchDepth;
+}
+
 bool XmlExpression::ProcessElement(const XmlElement& elem)
 {
 	switch (elem.GetType())
