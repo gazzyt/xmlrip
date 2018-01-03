@@ -13,6 +13,9 @@
 
 using namespace std;
 
+/******************************************************************************************/
+/* FromText tests */
+/******************************************************************************************/
 
 TEST(XmlElement, CreatesCorrectElementFromNameOnly) {
 	// Arrange
@@ -42,22 +45,6 @@ TEST(XmlElement, CreatesCorrectElementFromNameAndAttributes) {
 	EXPECT_EQ("att=3 btt=4", element.GetAttributeText());
 }
 #endif
-
-TEST(XmlElement, CreatesCorrectElementFromNameAndLibXmlAttributes) {
-	// Arrange
-	string tagName = "aa";
-	static const xmlChar* testStrings[] = { BAD_CAST "attname1", BAD_CAST "attvalue1", BAD_CAST "attname2", BAD_CAST "attvalue2", nullptr };
-	LibXmlAttributeCollection attrs{ testStrings };
-
-	// Act
-	XmlElement element{ XmlElement::Type::tag, tagName, attrs, true, false };
-
-	// Assert
-	EXPECT_TRUE(element.IsOpeningTag());
-	EXPECT_FALSE(element.IsClosingTag());
-	EXPECT_EQ("aa", element.GetTagName());
-	EXPECT_EQ("attname1=\"attvalue1\" attname2=\"attvalue2\"", element.GetAttributeText());
-}
 
 #ifdef USE_INTERNAL_PARSER
 TEST(XmlElement, CreatesCorrectElementFromNameAndAttribute) {
@@ -89,6 +76,30 @@ TEST(XmlElement, CreatesCorrectElementFromNameAndQuotedAttributes) {
 }
 #endif
 
+/******************************************************************************************/
+/* constructor tests */
+/******************************************************************************************/
+
+TEST(XmlElement, CreatesCorrectElementFromNameAndLibXmlAttributes) {
+	// Arrange
+	string tagName = "aa";
+	static const xmlChar* testStrings[] = { BAD_CAST "attname1", BAD_CAST "attvalue1", BAD_CAST "attname2", BAD_CAST "attvalue2", nullptr };
+	LibXmlAttributeCollection attrs{ testStrings };
+
+	// Act
+	XmlElement element{ XmlElement::Type::tag, tagName, attrs, true, false };
+
+	// Assert
+	EXPECT_TRUE(element.IsOpeningTag());
+	EXPECT_FALSE(element.IsClosingTag());
+	EXPECT_EQ("aa", element.GetTagName());
+	EXPECT_EQ("attname1=\"attvalue1\" attname2=\"attvalue2\"", element.GetAttributeText());
+}
+
+/******************************************************************************************/
+/* GetAttributeValue tests */
+/******************************************************************************************/
+
 TEST(XmlElement, GetAttributeValueReturnsCorrectValueWhenAttributeExists) {
 	// Arrange
 	vector<XmlAttribute> attrs = {XmlAttribute{"at1", "at1value"}};
@@ -113,6 +124,10 @@ TEST(XmlElement, GetAttributeValueReturnsNullWhenAttributeDoesNotExist) {
 	// Assert
 	ASSERT_TRUE(attrValue == nullptr);
 }
+
+/******************************************************************************************/
+/* stream insertion tests */
+/******************************************************************************************/
 
 TEST(XmlElement, PrintsAsXmlByDefault)
 {
@@ -144,6 +159,20 @@ TEST(XmlElement, PrintsAsXml)
 #else
 	EXPECT_EQ("<aa at1=\"987\">", stream.str());
 #endif
+}
+
+TEST(XmlElement, PrintsAsXmlWithNoAttributes)
+{
+	// Arrange
+	auto element = XmlElement{XmlElement::Type::tag, "aa", true, false};
+	ostringstream stream;
+	stream << XmlStreamModifiers::XmlFormat;
+	
+	// Act
+	stream << element;
+	
+	// Assert
+	EXPECT_EQ("<aa>", stream.str());
 }
 
 TEST(XmlElement, PrintsAsVerbose)

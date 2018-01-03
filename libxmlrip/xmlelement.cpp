@@ -116,10 +116,13 @@ void XmlElement::PrintAsXml(ostream& os) const
 		{
 			auto opening = (IsClosingTag() && !IsOpeningTag()) ? "</" : "<";
 			auto closing = (IsClosingTag() && IsOpeningTag()) ? "/>" : ">";
-
+			auto attrText = GetAttributeText();
 			os << opening;
 			os << GetTagName();
-			os << ' ' << GetAttributeText();
+			if (attrText.length() > 0)
+			{
+				os << ' ' << attrText;
+			}
 			os << closing;
 		}
 		break;
