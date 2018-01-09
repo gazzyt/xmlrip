@@ -15,7 +15,7 @@ xmlSAXHandler LibXmlXPathProcessor::m_handler
 	nullptr, //hasInternalSubsetSAXFunc
 	nullptr, //hasExternalSubsetSAXFunc
 	nullptr, //resolveEntitySAXFunc
-	nullptr, //getEntitySAXFunc
+	&getEntity, //getEntitySAXFunc
 	nullptr, //entityDeclSAXFunc
 	nullptr, //notationDeclSAXFunc
 	nullptr, //attributeDeclSAXFunc
@@ -45,6 +45,11 @@ xmlSAXHandler LibXmlXPathProcessor::m_handler
 	nullptr //xmlStructuredErrorFunc serror
 };
 
+xmlEntityPtr LibXmlXPathProcessor::getEntity(void * /*ctx*/, const xmlChar *name)
+{
+    return xmlGetPredefinedEntity(name);
+}
+
 void LibXmlXPathProcessor::StartElement(void *ctx, const xmlChar *name, const xmlChar **atts)
 {
 	auto pCtx = reinterpret_cast<ParserState*>(ctx);
@@ -52,7 +57,7 @@ void LibXmlXPathProcessor::StartElement(void *ctx, const xmlChar *name, const xm
 	auto depth = pCtx->expr->ProcessStartTag(strName, LibXmlAttributeCollection{atts});
 	if (depth != XmlExpression::NO_MATCH)
 	{
-		cout << Indent(depth) << XmlElement{XmlElement::Type::tag, strName, LibXmlAttributeCollection{atts}, true, false} << endl;
+		cout << endl << Indent(depth) << XmlElement{XmlElement::Type::tag, strName, LibXmlAttributeCollection{atts}, true, false};
 	}
 }
 
@@ -63,7 +68,7 @@ void LibXmlXPathProcessor::EndElement(void *ctx, const xmlChar *name)
 	auto depth = pCtx->expr->ProcessEndTag(strName);
 	if (depth != XmlExpression::NO_MATCH)
 	{
-		cout << Indent(depth) << XmlElement{XmlElement::Type::tag, strName, false, true} << endl;
+		cout << endl << Indent(depth) << XmlElement{XmlElement::Type::tag, strName, false, true};
 	}
 }
 
@@ -77,7 +82,7 @@ void LibXmlXPathProcessor::Characters(void *ctx, const xmlChar *chars, int len)
 		const char* pChars = reinterpret_cast<const char *>(chars);
 		cout << Indent(depth);
 		cout.write(pChars, len);
-		cout << endl;
+		//cout << endl;
 	}
 }
 

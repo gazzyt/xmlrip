@@ -22,6 +22,7 @@ public:
 private:
 	static xmlSAXHandler m_handler;
 
+	static xmlEntityPtr getEntity(void *user_data, const xmlChar *name);
 	static void StartElement(void *ctx, const xmlChar *name, const xmlChar **atts);
 	static void EndElement(void *ctx, const xmlChar *name);
 	static void Characters(void *ctx, const xmlChar *chars, int len);

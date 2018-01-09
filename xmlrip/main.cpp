@@ -30,5 +30,7 @@ int main(int argc, char** argv)
 #else
 	LibXmlXPathProcessor::Run(argv[1], move(expr));
 #endif
+
+	cout << endl << endl;
 }
 
