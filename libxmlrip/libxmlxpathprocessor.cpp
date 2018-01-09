@@ -82,7 +82,6 @@ void LibXmlXPathProcessor::Characters(void *ctx, const xmlChar *chars, int len)
 		const char* pChars = reinterpret_cast<const char *>(chars);
 		cout << Indent(depth);
 		cout.write(pChars, len);
-		//cout << endl;
 	}
 }
 
@@ -94,22 +93,6 @@ void LibXmlXPathProcessor::Run(const char* fileName, std::unique_ptr<XmlExpressi
 	state.expr = move(expr);
 
 	xmlSAXUserParseFile(&m_handler, &state, fileName);
-
-	//unique_ptr<InlineBuffer> buffer = make_unique<InlineBuffer>(move(inputStream), 25000);
-	//XmlElementReader elemReader(move(buffer));
-	//XmlElementReader_iterator beginIter{ elemReader };
-	//XmlElementReader_iterator endIter{};
-
-	//for_each(beginIter, endIter,
-	//	[&](const XmlElement& elem)
-	//{
-	//	if (expr->ProcessElement(elem))
-	//	{
-	//		cout << elem << endl;
-	//	}
-	//}
-	//);
-
 }
 
 string LibXmlXPathProcessor::Indent(int depth)
