@@ -3,6 +3,6 @@
 <data b="9"/>
 </inner>
 <inner>
-Here is some text &lamp; and some more.
+Here is some text &amp; and some more.
 </inner>
 </outer>

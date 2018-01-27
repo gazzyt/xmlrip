@@ -28,10 +28,12 @@ set( BUILD_LIBXMLRIP_MANIFEST
 	xmlstreammodifiers.cpp
 	inlinebuffer.cpp
 	internalparserxpathprocessor.cpp
+	libxmlprint.cpp
 	libxmlxpathprocessor.cpp
 	libxmlutils.cpp
 	exception/baseexception.cpp
 	exception/xpathexception.cpp
+	exception/printexception.cpp
 )
 
 set( BUILD_LIBXMLRIP_MANIFEST_HEADERS
@@ -49,12 +51,14 @@ set( BUILD_LIBXMLRIP_MANIFEST_HEADERS
 	xmlstreammodifiers.h
 	inlinebuffer.h
 	internalparserxpathprocessor.h
+	libxmlprint.h
 	libxmlxpathprocessor.h
 	libxmlattributecollection.h
 	libxmlattributecollection-iterator.h
 	libxmlutils.h
 	exception/baseexception.h
 	exception/xpathexception.h
+	exception/printexception.h
 )
 
 add_library( libxmlrip ${BUILD_LIBXMLRIP_MANIFEST} ${BUILD_LIBXMLRIP_MANIFEST_HEADERS})

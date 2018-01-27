@@ -11,6 +11,7 @@ extern "C" {
 }
 
 #include "xmlexpression.h"
+#include "libxmlprint.h"
 
 class LibXmlXPathProcessor
 {
@@ -30,6 +31,7 @@ private:
 
 	struct ParserState {
 		std::unique_ptr<XmlExpression> expr;
+		const LibXmlPrint* printer;
 		int return_val;
 	};
 
