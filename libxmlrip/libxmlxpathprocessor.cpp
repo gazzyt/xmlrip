@@ -57,7 +57,7 @@ void LibXmlXPathProcessor::StartElement(void *ctx, const xmlChar *name, const xm
 	auto depth = pCtx->expr->ProcessStartTag(strName, LibXmlAttributeCollection{atts});
 	if (depth != XmlExpression::NO_MATCH)
 	{
-		pCtx->printer->StartElement(strName, LibXmlAttributeCollection{atts});
+		pCtx->printer.StartElement(strName, LibXmlAttributeCollection{atts});
 	}
 }
 
@@ -68,7 +68,7 @@ void LibXmlXPathProcessor::EndElement(void *ctx, const xmlChar *name)
 	auto depth = pCtx->expr->ProcessEndTag(strName);
 	if (depth != XmlExpression::NO_MATCH)
 	{
-		pCtx->printer->EndElement();
+		pCtx->printer.EndElement();
 	}
 }
 
@@ -80,7 +80,7 @@ void LibXmlXPathProcessor::Characters(void *ctx, const xmlChar *chars, int len)
 	if (depth != XmlExpression::NO_MATCH && !isspace(chars, len))
 	{
 		const char* pChars = reinterpret_cast<const char *>(chars);
-		pCtx->printer->PrintText(pChars, len);
+		pCtx->printer.PrintText(pChars, len);
 	}
 }
 
@@ -88,10 +88,7 @@ void LibXmlXPathProcessor::Characters(void *ctx, const xmlChar *chars, int len)
 void LibXmlXPathProcessor::Run(const char* fileName, std::unique_ptr<XmlExpression> expr)
 {
 	LibXmlPrint print;
-	struct ParserState state {};
-
-	state.expr = move(expr);
-	state.printer = &print;
+	struct ParserState state {move(expr), print};
 
 	xmlSAXUserParseFile(&m_handler, &state, fileName);
 }

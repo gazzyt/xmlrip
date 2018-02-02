@@ -31,8 +31,11 @@ private:
 
 	struct ParserState {
 		std::unique_ptr<XmlExpression> expr;
-		const LibXmlPrint* printer;
+		const LibXmlPrint& printer;
 		int return_val;
+		
+		ParserState(std::unique_ptr<XmlExpression> e, const LibXmlPrint& p)
+		: expr{std::move(e)}, printer{p}, return_val{0} {}
 	};
 
 };
