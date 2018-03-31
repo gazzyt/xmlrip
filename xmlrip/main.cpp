@@ -2,7 +2,6 @@
 #include <iostream>
 #include <fstream>
 
-#include "internalparserxpathprocessor.h"
 #include "libxmlxpathprocessor.h"
 #include "xmlexpression.h"
 #include "exception/baseexception.h"
@@ -24,15 +23,11 @@ int main(int argc, char** argv)
 	string xpathText = argv[2];
 	if (xpathText == "xx")
 		xpathText = "program[TMSId=\"SH026320890000\"]";
-	auto expr = XmlExpression::FromText(xpathText);
 
 	try
 	{
-#ifdef USE_INTERNAL_PARSER
-	InternalParserXPathProcessor::Run(argv[1], move(expr));
-#else
-	LibXmlXPathProcessor::Run(argv[1], move(expr));
-#endif
+		auto expr = XmlExpression::FromText(xpathText);
+		LibXmlXPathProcessor::Run(argv[1], move(expr));
 	}
 	catch(BaseException& e)
 	{

@@ -15,19 +15,13 @@ project( "libxmlrip" )
 #
 
 set( BUILD_LIBXMLRIP_MANIFEST
-	token.cpp
-    tokeniser.cpp
     xmlelement.cpp
 	xmlattribute.cpp
-    xmlelementreader.cpp
     xmlpredicate.cpp
 	xmlexpression.cpp
 	stringutils.cpp
-	xmlelementreader-iterator.cpp
 	customstreamflags.cpp
 	xmlstreammodifiers.cpp
-	inlinebuffer.cpp
-	internalparserxpathprocessor.cpp
 	libxmlprint.cpp
 	libxmlxpathprocessor.cpp
 	libxmlutils.cpp
@@ -37,20 +31,14 @@ set( BUILD_LIBXMLRIP_MANIFEST
 )
 
 set( BUILD_LIBXMLRIP_MANIFEST_HEADERS
-    token.h
-    tokeniser.h
     xmlelement.h
 	xmlattribute.h
-    xmlelementreader.h
     xmlpredicate.h
 	xmlexpression.h
 	stringutils.h
 	memoryutils.h
-	xmlelementreader-iterator.h
 	customstreamflags.h
 	xmlstreammodifiers.h
-	inlinebuffer.h
-	internalparserxpathprocessor.h
 	libxmlprint.h
 	libxmlxpathprocessor.h
 	libxmlattributecollection.h
