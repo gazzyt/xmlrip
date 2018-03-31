@@ -22,20 +22,6 @@ int XmlExpression::GetCurrentMatchDepth() const
 	return m_matchDepth;
 }
 
-bool XmlExpression::ProcessElement(const XmlElement& elem)
-{
-	switch (elem.GetType())
-	{
-		case XmlElement::Type::tag:
-		case XmlElement::Type::text:
-			return ProcessTag(elem);
-			
-		// Skip these types as not interesting
-		default:
-			return false;
-	};
-}
-
 bool XmlExpression::ProcessTag(const XmlElement& elem)
 {
 	const auto matchIndex = m_matchingElements.size();

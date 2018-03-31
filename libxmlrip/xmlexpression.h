@@ -16,7 +16,6 @@ public:
 	void AddPredicate(XmlPredicate predicate);
 	const std::vector<XmlPredicate>& GetPredicates() const;
 	int GetCurrentMatchDepth() const;
-	bool ProcessElement(const XmlElement& elem);
 	template<class T> int ProcessStartTag(const char* tagName, const T& attributes);
 	int ProcessEndTag(const char* tagName);
 	
