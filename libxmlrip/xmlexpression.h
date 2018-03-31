@@ -24,8 +24,6 @@ public:
 	enum NoMatch {NO_MATCH = -1};
 
 private:
-	bool ProcessTag(const XmlElement& elem);
-
 	std::vector<XmlPredicate> m_predicates;
 	std::stack<XmlElement> m_matchingElements;
 	int m_matchDepth = NO_MATCH;
