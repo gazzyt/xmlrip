@@ -45,68 +45,6 @@ TEST(XmlPredicate, CopyConstructorWorksWithoutAttributePredicate) {
 	
 }
 
-/******************************************************************************************/
-/* bool IsMatch(const XmlElement& elem) tests*/
-/******************************************************************************************/
-
-TEST(XmlPredicate, IsMatchReturnsTrueWhenOpeningTagNamesMatch) {
-    XmlElement testElement(XmlElement::Type::tag, "aa", true, false);
-    XmlPredicate testPredicate("aa");
-    
-	EXPECT_TRUE(testPredicate.IsMatch(testElement));
-}
-
-TEST(XmlPredicate, IsMatchReturnsTrueWhenOpeningClosingTagNamesMatch) {
-    XmlElement testElement(XmlElement::Type::tag, "aa", true, true);
-    XmlPredicate testPredicate("aa");
-    
-	EXPECT_TRUE(testPredicate.IsMatch(testElement));
-}
-
-TEST(XmlPredicate, IsMatchReturnsFalseWhenClosingTagNamesMatch) {
-    XmlElement testElement(XmlElement::Type::tag, "aa", false, true);
-    XmlPredicate testPredicate("aa");
-    
-	EXPECT_FALSE(testPredicate.IsMatch(testElement));
-}
-
-TEST(XmlPredicate, IsMatchReturnsFalseWhenOpeningTagNamesDoNotMatch) {
-    XmlElement testElement(XmlElement::Type::tag, "bb", true, false);
-    XmlPredicate testPredicate("aa");
-    
-	EXPECT_FALSE(testPredicate.IsMatch(testElement));
-}
-
-TEST(XmlPredicate, IsMatchReturnsFalseWhenOpeningClosingTagNamesDoNotMatch) {
-    XmlElement testElement(XmlElement::Type::tag, "cc", true, true);
-    XmlPredicate testPredicate("aa");
-    
-	EXPECT_FALSE(testPredicate.IsMatch(testElement));
-}
-
-TEST(XmlPredicate, IsMatchReturnsTrueWhenOpeningTagNamesAndAttributesMatch) {
-    // Arrange
-	XmlElement testElement(XmlElement::Type::tag, "aa", vector<XmlAttribute>{XmlAttribute{"attr", "val"}}, true, false);
-    XmlPredicate testPredicate("aa", make_unique<XmlAttribute>("attr", "val"));
-    
-	EXPECT_TRUE(testPredicate.IsMatch(testElement));
-}
-
-TEST(XmlPredicate, IsMatchReturnsFalseWhenAttributeValueNotMatch) {
-    // Arrange
-	XmlElement testElement(XmlElement::Type::tag, "aa", vector<XmlAttribute>{XmlAttribute{"attr", "val"}}, true, false);
-    XmlPredicate testPredicate("aa", make_unique<XmlAttribute>("attr", "valxx"));
-    
-	EXPECT_FALSE(testPredicate.IsMatch(testElement));
-}
-
-TEST(XmlPredicate, IsMatchReturnsFalseWhenAttributeNameNotMatch) {
-    // Arrange
-	XmlElement testElement(XmlElement::Type::tag, "aa", vector<XmlAttribute>{XmlAttribute{"attr", "val"}}, true, false);
-    XmlPredicate testPredicate("aa", make_unique<XmlAttribute>("attrxx", "val"));
-    
-	EXPECT_FALSE(testPredicate.IsMatch(testElement));
-}
 
 /******************************************************************************************/
 /* template<class T> bool IsMatch(const char* tagName, const T& attributes) tests */

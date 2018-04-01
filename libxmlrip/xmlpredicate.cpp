@@ -15,20 +15,6 @@ XmlPredicate::XmlPredicate(const XmlPredicate& rhs)
 	m_attributePredicate(copy_unique(rhs.m_attributePredicate))
 {}
 
-bool XmlPredicate::IsMatch(const XmlElement& elem) const
-{
-	bool tagMatch = m_tagName == elem.GetTagName() && elem.IsOpeningTag();
-	
-	if (!tagMatch)
-		return false;
-	
-	if (!m_attributePredicate)
-		return true;
-
-	auto val = elem.GetAttributeValue(m_attributePredicate->GetName());
-	
-	return !(val == nullptr || m_attributePredicate->GetValue() != *val);
-}
 
 const string& XmlPredicate::GetTagName() const
 {

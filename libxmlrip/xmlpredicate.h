@@ -13,7 +13,6 @@ public:
 	XmlPredicate(const XmlPredicate& rhs);
 
 public:
-	bool IsMatch(const XmlElement& elem) const;
 	template<class T> bool IsMatch(const char* tagName, const T& attributes) const;
 	const std::string& GetTagName() const;
 	const XmlAttribute* GetAttributePredicate() const;
