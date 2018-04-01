@@ -45,7 +45,7 @@ template<class T> int XmlExpression::ProcessStartTag(const char* tagName, const 
 
 	auto& nextPredicate = m_predicates[matchIndex];
 	
-	if (nextPredicate.IsMatch(tagName, attributes))
+	if (nextPredicate.IsMatch(tagName, attributes, m_documentDepth - 1))
 	{
 		m_matchingElements.push(XmlElement{XmlElement::Type::tag, tagName, attributes, true, false});
 		
