@@ -22,8 +22,15 @@ int XmlExpression::GetCurrentMatchDepth() const
 	return m_matchDepth;
 }
 
+int XmlExpression::GetCurrentDocumentDepth() const
+{
+	return m_documentDepth;
+}
+
 int XmlExpression::ProcessEndTag(const char* tagName)
 {
+	--m_documentDepth;
+	
 	const auto matchIndex = m_matchingElements.size();
 	
 	// Does this closing tag close the last matched tag?

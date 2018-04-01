@@ -62,6 +62,46 @@ TEST(XmlExpression, CurrentMatchIsOneForChildTagsOfFullMatch) {
 	EXPECT_EQ(1, expr.GetCurrentMatchDepth());
 }
 
+/******************************************************************************************/
+/* GetCurrentMatchDepth tests */
+/******************************************************************************************/
+
+TEST(XmlExpression, CurrentDocumentDepthIsZeroForNewExpression) {
+	// Arrange
+    XmlExpression expr;
+	
+	// Act
+    
+	// Assert
+	EXPECT_EQ(0, expr.GetCurrentDocumentDepth());
+}
+
+TEST(XmlExpression, CurrentDocumentDepthIncrementsAfterStartTag) {
+	// Arrange
+    XmlExpression expr;
+	LibXmlAttributeCollection attrs{ nullptr };
+	
+	// Act
+	expr.ProcessStartTag("aa", attrs);
+    
+	// Assert
+	EXPECT_EQ(1, expr.GetCurrentDocumentDepth());
+}
+
+TEST(XmlExpression, CurrentDocumentDepthDecrementsAfterEndTag) {
+	// Arrange
+    XmlExpression expr;
+	LibXmlAttributeCollection attrs{ nullptr };
+	
+	// Act
+	expr.ProcessStartTag("aa", attrs);
+	expr.ProcessStartTag("bb", attrs);
+	expr.ProcessEndTag("bb");
+    
+	// Assert
+	EXPECT_EQ(1, expr.GetCurrentDocumentDepth());
+}
+
 
 /******************************************************************************************/
 /* ProcessStartTag tests */

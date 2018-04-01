@@ -16,6 +16,7 @@ public:
 	void AddPredicate(XmlPredicate predicate);
 	const std::vector<XmlPredicate>& GetPredicates() const;
 	int GetCurrentMatchDepth() const;
+	int GetCurrentDocumentDepth() const;
 	template<class T> int ProcessStartTag(const char* tagName, const T& attributes);
 	int ProcessEndTag(const char* tagName);
 	
@@ -27,10 +28,13 @@ private:
 	std::vector<XmlPredicate> m_predicates;
 	std::stack<XmlElement> m_matchingElements;
 	int m_matchDepth = NO_MATCH;
+	int m_documentDepth = 0;
 };
 
 template<class T> int XmlExpression::ProcessStartTag(const char* tagName, const T& attributes)
 {
+	++m_documentDepth;
+	
 	const auto matchIndex = m_matchingElements.size();
 	
 	// If we already have a full match for all predicates
