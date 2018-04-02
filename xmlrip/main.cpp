@@ -2,10 +2,9 @@
 #include <iostream>
 #include <fstream>
 
-#include "inlinebuffer.h"
-#include "xmlelementreader.h"
-#include "xmlelementreader-iterator.h"
+#include "libxmlxpathprocessor.h"
 #include "xmlexpression.h"
+#include "exception/baseexception.h"
 
 using namespace std;
 
@@ -20,32 +19,21 @@ int main(int argc, char** argv)
 	if (argc != 3)
 		Usage();
 	
-	unique_ptr<ifstream> inputStream(new ifstream(argv[1]));
-	if (!inputStream->is_open())
-	{
-		cerr << "Failed to open file" << endl;
-		return 1;
-	}
-
-	unique_ptr<InlineBuffer> buffer = make_unique<InlineBuffer>(move(inputStream), 25000);
-	XmlElementReader elemReader(move(buffer));
-	XmlElementReader_iterator beginIter{elemReader};
-	XmlElementReader_iterator endIter{};
 
 	string xpathText = argv[2];
 	if (xpathText == "xx")
 		xpathText = "program[TMSId=\"SH026320890000\"]";
-	auto expr = XmlExpression::FromText(xpathText);
 
-	for_each(beginIter, endIter, 
-		[&] (const XmlElement& elem) 
-		{
-			if (expr->ProcessElement(elem))
-			{
-				cout << elem << endl;
-			}
-		}
-	);
-	
+	try
+	{
+		auto expr = XmlExpression::FromText(xpathText);
+		LibXmlXPathProcessor::Run(argv[1], move(expr));
+	}
+	catch(BaseException& e)
+	{
+		cerr << e << endl;
+	}
+
+	cout << endl << endl;
 }
 

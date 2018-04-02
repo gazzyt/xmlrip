@@ -7,10 +7,16 @@
 #include <memory>
 #include <sstream>
 
+#include "libxmlattributecollection.h"
+#include "libxmlattributecollection-iterator.h"
 #include "xmlpredicate.h"
 #include "exception/xpathexception.h"
 
 using namespace std;
+
+/******************************************************************************************/
+/* copy constructor tests                                                                 */
+/******************************************************************************************/
 
 TEST(XmlPredicate, CopyConstructorWorksWithAttributePredicate) {
 	// Arrange
@@ -43,64 +49,114 @@ TEST(XmlPredicate, CopyConstructorWorksWithoutAttributePredicate) {
 	
 }
 
-TEST(XmlPredicate, IsMatchReturnsTrueWhenOpeningTagNamesMatch) {
-    XmlElement testElement(XmlElement::Type::tag, "aa", true, false);
-    XmlPredicate testPredicate("aa");
-    
-	EXPECT_TRUE(testPredicate.IsMatch(testElement));
+TEST(XmlPredicate, CopyConstructorCopiesDocumentDepthPredicate) {
+	// Arrange
+	XmlPredicate xp1{"TestTagName", unique_ptr<XmlAttribute>(), 14};
+	
+	// Act
+	XmlPredicate xp2(xp1);
+	
+	// Assert
+	EXPECT_EQ(xp1.GetDocumentDepthPredicate(), xp2.GetDocumentDepthPredicate());
+	
 }
 
-TEST(XmlPredicate, IsMatchReturnsTrueWhenOpeningClosingTagNamesMatch) {
-    XmlElement testElement(XmlElement::Type::tag, "aa", true, true);
-    XmlPredicate testPredicate("aa");
-    
-	EXPECT_TRUE(testPredicate.IsMatch(testElement));
+
+/******************************************************************************************/
+/* template<class T> bool IsMatch(const char* tagName, const T& attributes) tests */
+/******************************************************************************************/
+
+TEST(XmlPredicate, IsMatchReturnsTrueWhenTagNamesMatch) {
+	// Arrange
+	LibXmlAttributeCollection attrs{ nullptr };
+	XmlPredicate testPredicate("aa");
+
+	// Act
+	bool result = testPredicate.IsMatch("aa", attrs, 0);
+
+	// Assert
+	EXPECT_TRUE(result);
 }
 
-TEST(XmlPredicate, IsMatchReturnsFalseWhenClosingTagNamesMatch) {
-    XmlElement testElement(XmlElement::Type::tag, "aa", false, true);
-    XmlPredicate testPredicate("aa");
-    
-	EXPECT_FALSE(testPredicate.IsMatch(testElement));
+TEST(XmlPredicate, IsMatchReturnsFalseWhenTagNamesNoMatch) {
+	// Arrange
+	LibXmlAttributeCollection attrs{ nullptr };
+	XmlPredicate testPredicate("aa");
+
+	// Act
+	bool result = testPredicate.IsMatch("bb", attrs, 0);
+
+	// Assert
+	EXPECT_FALSE(result);
 }
 
-TEST(XmlPredicate, IsMatchReturnsFalseWhenOpeningTagNamesDoNotMatch) {
-    XmlElement testElement(XmlElement::Type::tag, "bb", true, false);
-    XmlPredicate testPredicate("aa");
-    
-	EXPECT_FALSE(testPredicate.IsMatch(testElement));
+TEST(XmlPredicate, IsMatchReturnsTrueWhenTagNamesAndAttributesMatch) {
+	// Arrange
+	static const xmlChar* testAttrs[] = { BAD_CAST "attname1", BAD_CAST "attvalue1", BAD_CAST "attname2", BAD_CAST "attvalue2" };
+	LibXmlAttributeCollection attrs{ testAttrs };
+	XmlPredicate testPredicate("aa", make_unique<XmlAttribute>("attname2", "attvalue2"));
+
+	// Act
+	bool result = testPredicate.IsMatch("aa", attrs, 0);
+
+	// Assert
+	EXPECT_TRUE(result);
 }
 
-TEST(XmlPredicate, IsMatchReturnsFalseWhenOpeningClosingTagNamesDoNotMatch) {
-    XmlElement testElement(XmlElement::Type::tag, "cc", true, true);
-    XmlPredicate testPredicate("aa");
-    
-	EXPECT_FALSE(testPredicate.IsMatch(testElement));
+TEST(XmlPredicate, IsMatchReturnsFalseWhenTagNamesMatchAndAttributeNameNoMatch) {
+	// Arrange
+	static const xmlChar* testAttrs[] = { BAD_CAST "attname1", BAD_CAST "attvalue1", BAD_CAST "attname2", BAD_CAST "attvalue2" };
+	LibXmlAttributeCollection attrs{ testAttrs };
+	XmlPredicate testPredicate("aa", make_unique<XmlAttribute>("attname3", "attvalue2"));
+
+	// Act
+	bool result = testPredicate.IsMatch("aa", attrs, 0);
+
+	// Assert
+	EXPECT_FALSE(result);
 }
 
-TEST(XmlPredicate, IsMatchReturnsTrueWhenOpeningTagNamesAndAttributesMatch) {
-    // Arrange
-	XmlElement testElement(XmlElement::Type::tag, "aa", vector<XmlAttribute>{XmlAttribute{"attr", "val"}}, true, false);
-    XmlPredicate testPredicate("aa", make_unique<XmlAttribute>("attr", "val"));
-    
-	EXPECT_TRUE(testPredicate.IsMatch(testElement));
+TEST(XmlPredicate, IsMatchReturnsFalseWhenTagNamesMatchAndAttributeValueNameNoMatch) {
+	// Arrange
+	static const xmlChar* testAttrs[] = { BAD_CAST "attname1", BAD_CAST "attvalue1", BAD_CAST "attname2", BAD_CAST "attvalue2" };
+	LibXmlAttributeCollection attrs{ testAttrs };
+	XmlPredicate testPredicate("aa", make_unique<XmlAttribute>("attname2", "attvalue3"));
+
+	// Act
+	bool result = testPredicate.IsMatch("aa", attrs, 0);
+
+	// Assert
+	EXPECT_FALSE(result);
 }
 
-TEST(XmlPredicate, IsMatchReturnsFalseWhenAttributeValueNotMatch) {
-    // Arrange
-	XmlElement testElement(XmlElement::Type::tag, "aa", vector<XmlAttribute>{XmlAttribute{"attr", "val"}}, true, false);
-    XmlPredicate testPredicate("aa", make_unique<XmlAttribute>("attr", "valxx"));
-    
-	EXPECT_FALSE(testPredicate.IsMatch(testElement));
+TEST(XmlPredicate, IsMatchReturnsTrueWhenTagNamesAndDepthMatch) {
+	// Arrange
+	LibXmlAttributeCollection attrs{ nullptr };
+	XmlPredicate testPredicate("aa", unique_ptr<XmlAttribute>(), 0);
+
+	// Act
+	bool result = testPredicate.IsMatch("aa", attrs, 0);
+
+	// Assert
+	EXPECT_TRUE(result);
 }
 
-TEST(XmlPredicate, IsMatchReturnsFalseWhenAttributeNameNotMatch) {
-    // Arrange
-	XmlElement testElement(XmlElement::Type::tag, "aa", vector<XmlAttribute>{XmlAttribute{"attr", "val"}}, true, false);
-    XmlPredicate testPredicate("aa", make_unique<XmlAttribute>("attrxx", "val"));
-    
-	EXPECT_FALSE(testPredicate.IsMatch(testElement));
+TEST(XmlPredicate, IsMatchReturnsFalseWhenTagNamesMatchAndDepthNoMatch) {
+	// Arrange
+	LibXmlAttributeCollection attrs{ nullptr };
+	XmlPredicate testPredicate("aa", unique_ptr<XmlAttribute>(), 0);
+
+	// Act
+	bool result = testPredicate.IsMatch("aa", attrs, 1);
+
+	// Assert
+	EXPECT_FALSE(result);
 }
+
+
+/******************************************************************************************/
+/* static XmlPredicate FromText(std::string text) */
+/******************************************************************************************/
 
 TEST(XmlPredicate, FromTextReturnsPredicateForSimpleTagName) {
     // Arrange
@@ -119,7 +175,7 @@ TEST(XmlPredicate, FromTextThrowsWithEmptyString) {
 	EXPECT_THROW(XmlPredicate::FromText(""), XPathException);
 }
 
-TEST(XmlPredicate, FromTextReturnsPredicateForSimpleTagNameWithAttribute) {
+TEST(XmlPredicate, FromTextReturnsPredicateForSimpleTagNameWithAttributeDoubleQuote) {
     // Arrange
 	
 	// Act
@@ -128,5 +184,25 @@ TEST(XmlPredicate, FromTextReturnsPredicateForSimpleTagNameWithAttribute) {
 	EXPECT_EQ("simpletagname", pred.GetTagName());
 	ASSERT_NE(nullptr, pred.GetAttributePredicate());
 	EXPECT_EQ("attr", pred.GetAttributePredicate()->GetName());
+#ifdef USE_INTERNAL_PARSER
 	EXPECT_EQ("\"val\"", pred.GetAttributePredicate()->GetValue());
+#else
+	EXPECT_EQ("val", pred.GetAttributePredicate()->GetValue());
+#endif
+}
+
+TEST(XmlPredicate, FromTextReturnsPredicateForSimpleTagNameWithAttributeSingleQuote) {
+    // Arrange
+	
+	// Act
+	XmlPredicate pred = XmlPredicate::FromText("simpletagname[attr='val']");
+    
+	EXPECT_EQ("simpletagname", pred.GetTagName());
+	ASSERT_NE(nullptr, pred.GetAttributePredicate());
+	EXPECT_EQ("attr", pred.GetAttributePredicate()->GetName());
+#ifdef USE_INTERNAL_PARSER
+	EXPECT_EQ("'val'", pred.GetAttributePredicate()->GetValue());
+#else
+	EXPECT_EQ("val", pred.GetAttributePredicate()->GetValue());
+#endif
 }

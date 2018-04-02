@@ -1,6 +1,6 @@
 project( "xmlrip-root" )
 
-cmake_minimum_required( VERSION 2.8.10 )
+cmake_minimum_required( VERSION 2.8.11 )
 
 #Use solution folders.
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
@@ -16,6 +16,8 @@ else()
 endif()
 
 include(${CMAKE_SOURCE_DIR}/cmake/DownloadProject.cmake)
+
+add_definitions(-D_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING)
 
 download_project(PROJ                googletest
                  GIT_REPOSITORY      https://github.com/google/googletest.git
@@ -50,6 +52,8 @@ endif()
 # Dependencies
 #
 set( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules" )
+find_package(LIBXML2 REQUIRED)
+include_directories(${LIBXML2_INCLUDE_DIRS})
 
 #
 # Build

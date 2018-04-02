@@ -17,88 +17,47 @@ const vector<XmlPredicate>& XmlExpression::GetPredicates() const
 	return m_predicates;
 }
 
-bool XmlExpression::ProcessElement(const XmlElement& elem)
+int XmlExpression::GetCurrentMatchDepth() const
 {
-	switch (elem.GetType())
-	{
-		case XmlElement::Type::tag:
-		case XmlElement::Type::text:
-			return ProcessTag(elem);
-			
-		// Skip these types as not interesting
-		default:
-			return false;
-	};
+	return m_matchDepth;
 }
 
-bool XmlExpression::ProcessTag(const XmlElement& elem)
+int XmlExpression::GetCurrentDocumentDepth() const
 {
+	return m_documentDepth;
+}
+
+int XmlExpression::ProcessEndTag(const char* tagName)
+{
+	--m_documentDepth;
+	
 	const auto matchIndex = m_matchingElements.size();
 	
-	if (elem.IsOpeningTag())
+	// Does this closing tag close the last matched tag?
+	if ((matchIndex > 0) && m_matchingElements.top().GetTagName() == tagName)
 	{
-	
-		// If we already have a full match for all predicates
+		// It does
+		m_matchingElements.pop();
+
 		if (matchIndex == m_predicates.size())
 		{
-			return true;
-		}
-	
-		auto& nextPredicate = m_predicates[matchIndex];
-		
-		if (nextPredicate.IsMatch(elem))
-		{
-			if (!elem.IsClosingTag())
-			{
-				m_matchingElements.push(elem);
-			}
-			
-			if (matchIndex == (m_predicates.size() - 1))
-			{
-				// We matched the last predicate
-				return true;
-			}
-			else
-			{
-				// Only a partial match
-				return false;
-			}
+			// We matched the last predicate
+			return m_matchDepth--;
 		}
 		else
 		{
-			return false;
+			// Only a partial match
+			return NO_MATCH;
 		}
-	}
-	else if (elem.IsClosingTag())
-	{
-		// Does this closing tag close the last matched tag?
-		if ((matchIndex > 0) && m_matchingElements.top().IsMatch(elem))
-		{
-			// It does
-			m_matchingElements.pop();
-
-			if (matchIndex == m_predicates.size())
-			{
-				// We matched the last predicate
-				return true;
-			}
-			else
-			{
-				// Only a partial match
-				return false;
-			}
-		}
-		
-		// If we already have a full match for all predicates
-		if (matchIndex == m_predicates.size())
-		{
-			return true;
-		}
-		
-		return false;
 	}
 	
-	return false; // We only get here if that tag is neither opening nor closing
+	// If we already have a full match for all predicates
+	if (matchIndex == m_predicates.size())
+	{
+		return m_matchDepth--;
+	}
+	
+	return NO_MATCH;
 }
 
 unique_ptr<XmlExpression> XmlExpression::FromText(string text)

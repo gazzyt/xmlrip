@@ -1,8 +1,8 @@
 <outer>
 <inner c="77">
-<data b=9/>
+<data b="9"/>
 </inner>
 <inner>
-Here is some text
+Here is some text &amp; and some more.
 </inner>
 </outer>

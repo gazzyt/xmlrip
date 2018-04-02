@@ -6,29 +6,17 @@
 
 using namespace std;
 
-XmlPredicate::XmlPredicate(string tagName, std::unique_ptr<XmlAttribute> attributePredicate)
-	: m_tagName(tagName), m_attributePredicate(move(attributePredicate))
+XmlPredicate::XmlPredicate(string tagName, std::unique_ptr<XmlAttribute> attributePredicate, int documentDepthPredicate)
+	:	m_tagName(tagName), m_attributePredicate(move(attributePredicate)),
+		m_documentDepthPredicate(documentDepthPredicate)
 {}
 
 XmlPredicate::XmlPredicate(const XmlPredicate& rhs)
 :	m_tagName(rhs.m_tagName),
-	m_attributePredicate(copy_unique(rhs.m_attributePredicate))
+	m_attributePredicate(copy_unique(rhs.m_attributePredicate)),
+	m_documentDepthPredicate(rhs.m_documentDepthPredicate)
 {}
 
-bool XmlPredicate::IsMatch(const XmlElement& elem) const
-{
-	bool tagMatch = m_tagName == elem.GetTagName() && elem.IsOpeningTag();
-	
-	if (!tagMatch)
-		return false;
-	
-	if (!m_attributePredicate)
-		return true;
-
-	auto val = elem.GetAttributeValue(m_attributePredicate->GetName());
-	
-	return !(val == nullptr || m_attributePredicate->GetValue() != *val);
-}
 
 const string& XmlPredicate::GetTagName() const
 {
@@ -38,6 +26,11 @@ const string& XmlPredicate::GetTagName() const
 const XmlAttribute* XmlPredicate::GetAttributePredicate() const
 {
 	return m_attributePredicate.get();
+}
+
+int XmlPredicate::GetDocumentDepthPredicate() const
+{
+	return m_documentDepthPredicate;
 }
 
 XmlPredicate XmlPredicate::FromText(string text)
@@ -73,10 +66,12 @@ XmlPredicate XmlPredicate::FromText(string text)
 		{
 			currentTarget = &attrValue;
 		}
-		else if (ch == '"')
+		else if (ch == '"' || ch == '\'')
 		{
 			readingQuotedString = !readingQuotedString;
+#ifdef USE_INTERNAL_PARSER
 			currentTarget->push_back(ch);
+#endif
 		}
 		else
 		{

@@ -3,116 +3,213 @@
 #include "gtest/gtest.h"
 #pragma GCC diagnostic pop
 
+#include "libxmlattributecollection.h"
 #include "xmlexpression.h"
 
 using namespace std;
 
+/******************************************************************************************/
+/* GetCurrentMatchDepth tests */
+/******************************************************************************************/
 
-TEST(XmlExpression, ProcessTagReturnsTrueWithSingleTagExpressionWhenTagMatches) {
-    XmlExpression expr;
-	XmlElement testElement(XmlElement::Type::tag, "aa", true, false);
-	expr.AddPredicate(XmlPredicate{"aa"});
-    
-	EXPECT_TRUE(expr.ProcessElement(testElement));
-}
-
-TEST(XmlExpression, ProcessTagReturnsFalseWithSingleTagExpressionWhenTagDoesNotMatch) {
-    XmlExpression expr;
-	XmlElement testElement(XmlElement::Type::tag, "bb", true, false);
-	expr.AddPredicate(XmlPredicate{"aa"});
-    
-	EXPECT_FALSE(expr.ProcessElement(testElement));
-}
-
-TEST(XmlExpression, ProcessTagReturnsTrueForChildTagsOfFullMatch) {
+TEST(XmlExpression, CurrentMatchDepthIsNoMatchForNewExpression) {
 	// Arrange
     XmlExpression expr;
-	XmlElement testElement1(XmlElement::Type::tag, "aa", true, false);
-	XmlElement testElement2(XmlElement::Type::tag, "bb", true, false);
-	expr.AddPredicate(XmlPredicate{"aa"});
 	
 	// Act
-	expr.ProcessElement(testElement1);
-	auto result = expr.ProcessElement(testElement2);
     
 	// Assert
-	EXPECT_TRUE(result);
+	EXPECT_EQ(XmlExpression::NO_MATCH, expr.GetCurrentMatchDepth());
 }
 
-TEST(XmlExpression, ProcessTagReturnsTrueForClosingTagOfFullMatch) {
+TEST(XmlExpression, CurrentMatchDepthIsNoMatchWhenNoMatch) {
 	// Arrange
     XmlExpression expr;
-	XmlElement testElement1(XmlElement::Type::tag, "aa", true, false);
-	XmlElement testElement2(XmlElement::Type::tag, "aa", false, true);
 	expr.AddPredicate(XmlPredicate{"aa"});
+	LibXmlAttributeCollection attrs{ nullptr };
 	
 	// Act
-	expr.ProcessElement(testElement1);
-	auto result = expr.ProcessElement(testElement2);
+	expr.ProcessStartTag("bb", attrs);
     
 	// Assert
-	EXPECT_TRUE(result);
+	EXPECT_EQ(XmlExpression::NO_MATCH, expr.GetCurrentMatchDepth());
 }
 
-TEST(XmlExpression, ProcessTagReturnsTrueForMatchingOpenClosingTag) {
+TEST(XmlExpression, CurrentMatchDepthIsZeroOnMatch) {
 	// Arrange
     XmlExpression expr;
-	XmlElement testElement1(XmlElement::Type::tag, "aa", true, true);
 	expr.AddPredicate(XmlPredicate{"aa"});
+	LibXmlAttributeCollection attrs{ nullptr };
+    
+	// Act
+	expr.ProcessStartTag("aa", attrs);
+	
+	// Assert
+	EXPECT_EQ(0, expr.GetCurrentMatchDepth());
+}
+
+TEST(XmlExpression, CurrentMatchIsOneForChildTagsOfFullMatch) {
+	// Arrange
+    XmlExpression expr;
+	expr.AddPredicate(XmlPredicate{"aa"});
+	LibXmlAttributeCollection attrs{ nullptr };
 	
 	// Act
-	auto result = expr.ProcessElement(testElement1);
+	expr.ProcessStartTag("aa", attrs);
+	expr.ProcessStartTag("bb", attrs);
     
 	// Assert
-	EXPECT_TRUE(result);
+	EXPECT_EQ(1, expr.GetCurrentMatchDepth());
 }
 
-TEST(XmlExpression, ProcessTagReturnsFalseAfterMatchingTagClosed) {
+/******************************************************************************************/
+/* GetCurrentMatchDepth tests */
+/******************************************************************************************/
+
+TEST(XmlExpression, CurrentDocumentDepthIsZeroForNewExpression) {
 	// Arrange
     XmlExpression expr;
-	XmlElement testElement1(XmlElement::Type::tag, "aa", true, false);
-	XmlElement testElement2(XmlElement::Type::tag, "aa", false, true);
-	XmlElement testElement3(XmlElement::Type::tag, "bb", true, false);
-	expr.AddPredicate(XmlPredicate{"aa"});
 	
 	// Act
-	expr.ProcessElement(testElement1);
-	expr.ProcessElement(testElement2);
-	auto result = expr.ProcessElement(testElement3);
     
 	// Assert
-	EXPECT_FALSE(result);
+	EXPECT_EQ(0, expr.GetCurrentDocumentDepth());
 }
 
-TEST(XmlExpression, ProcessTagProcessesTwoPrecidatesCorrectly) {
+TEST(XmlExpression, CurrentDocumentDepthIncrementsAfterStartTag) {
 	// Arrange
     XmlExpression expr;
-	XmlElement openAATag(XmlElement::Type::tag, "aa", true, false);
-	XmlElement closeAATag(XmlElement::Type::tag, "aa", false, true);
-	XmlElement openBBTag(XmlElement::Type::tag, "bb", true, false);
-	XmlElement closeBBTag(XmlElement::Type::tag, "bb", false, true);
-	XmlElement openCCTag(XmlElement::Type::tag, "cc", true, false);
-	XmlElement closeCCTag(XmlElement::Type::tag, "cc", false, true);
+	LibXmlAttributeCollection attrs{ nullptr };
+	
+	// Act
+	expr.ProcessStartTag("aa", attrs);
+    
+	// Assert
+	EXPECT_EQ(1, expr.GetCurrentDocumentDepth());
+}
+
+TEST(XmlExpression, CurrentDocumentDepthDecrementsAfterEndTag) {
+	// Arrange
+    XmlExpression expr;
+	LibXmlAttributeCollection attrs{ nullptr };
+	
+	// Act
+	expr.ProcessStartTag("aa", attrs);
+	expr.ProcessStartTag("bb", attrs);
+	expr.ProcessEndTag("bb");
+    
+	// Assert
+	EXPECT_EQ(1, expr.GetCurrentDocumentDepth());
+}
+
+
+/******************************************************************************************/
+/* ProcessStartTag tests */
+/******************************************************************************************/
+
+TEST(XmlExpression, ProcessStartTagReturnsZeroWithSingleTagExpressionWhenTagMatches) {
+	// Arrange
+    XmlExpression expr;
 	expr.AddPredicate(XmlPredicate{"aa"});
+	LibXmlAttributeCollection attrs{ nullptr };
+	
+	// Act
+	auto result = expr.ProcessStartTag("aa", attrs);
+    
+	// Assert
+	EXPECT_EQ(0, result);
+}
+
+TEST(XmlExpression, ProcessStartTagReturnsNoMatchWithSingleTagExpressionWhenTagDoesNotMatch) {
+	// Arrange
+    XmlExpression expr;
+	expr.AddPredicate(XmlPredicate{"aa"});
+	LibXmlAttributeCollection attrs{ nullptr };
+    
+	// Act
+	auto result = expr.ProcessStartTag("bb", attrs);
+	
+	// Assert
+	EXPECT_EQ(XmlExpression::NO_MATCH, result);
+}
+
+TEST(XmlExpression, ProcessStartTagReturnsOneForChildTagsOfFullMatch) {
+	// Arrange
+    XmlExpression expr;
+	expr.AddPredicate(XmlPredicate{"aa"});
+	LibXmlAttributeCollection attrs{ nullptr };
+	
+	// Act
+	expr.ProcessStartTag("aa", attrs);
+	auto result = expr.ProcessStartTag("bb", attrs);
+    
+	// Assert
+	EXPECT_EQ(1, result);
+}
+
+TEST(XmlExpression, ProcessStartTagReturnsNoMatchAfterMatchingTagClosed) {
+	// Arrange
+    XmlExpression expr;
+	expr.AddPredicate(XmlPredicate{"aa"});
+	LibXmlAttributeCollection attrs{ nullptr };
+	
+	// Act
+	expr.ProcessStartTag("aa", attrs);
+	expr.ProcessEndTag("aa");
+	auto result = expr.ProcessStartTag("bb", attrs);
+    
+	// Assert
+	EXPECT_EQ(XmlExpression::NO_MATCH, result);
+}
+
+TEST(XmlExpression, ProcessStartTagProcessesTwoPrecidatesCorrectly) {
+	// Arrange
+    XmlExpression expr;
+ 	expr.AddPredicate(XmlPredicate{"aa"});
 	expr.AddPredicate(XmlPredicate{"bb"});
+	LibXmlAttributeCollection attrs{ nullptr };
 	
 	// Act
 	// Assert
 	// <aa><bb><cc></cc></bb><cc></cc><bb></bb></aa><bb></bb>
-	EXPECT_FALSE(expr.ProcessElement(openAATag));
-	EXPECT_TRUE(expr.ProcessElement(openBBTag));
-	EXPECT_TRUE(expr.ProcessElement(openCCTag));
-	EXPECT_TRUE(expr.ProcessElement(closeCCTag));
-	EXPECT_TRUE(expr.ProcessElement(closeBBTag));
-	EXPECT_FALSE(expr.ProcessElement(openCCTag));
-	EXPECT_FALSE(expr.ProcessElement(closeCCTag));
-	EXPECT_TRUE(expr.ProcessElement(openBBTag));
-	EXPECT_TRUE(expr.ProcessElement(closeBBTag));
-   	EXPECT_FALSE(expr.ProcessElement(closeAATag));
-	EXPECT_FALSE(expr.ProcessElement(openBBTag));
-	EXPECT_FALSE(expr.ProcessElement(closeBBTag));
+	EXPECT_EQ(XmlExpression::NO_MATCH, expr.ProcessStartTag("aa", attrs));
+	EXPECT_EQ(0, expr.ProcessStartTag("bb", attrs));
+	EXPECT_EQ(1, expr.ProcessStartTag("cc", attrs));
+	EXPECT_EQ(1, expr.ProcessEndTag("cc"));
+	EXPECT_EQ(0, expr.ProcessEndTag("bb"));
+	EXPECT_EQ(XmlExpression::NO_MATCH, expr.ProcessStartTag("cc", attrs));
+	EXPECT_EQ(XmlExpression::NO_MATCH, expr.ProcessEndTag("cc"));
+	EXPECT_EQ(0, expr.ProcessStartTag("bb", attrs));
+	EXPECT_EQ(0, expr.ProcessEndTag("bb"));
+   	EXPECT_EQ(XmlExpression::NO_MATCH, expr.ProcessEndTag("aa"));
+	EXPECT_EQ(XmlExpression::NO_MATCH, expr.ProcessStartTag("bb", attrs));
+	EXPECT_EQ(XmlExpression::NO_MATCH, expr.ProcessEndTag("bb"));
 
 }
+
+
+/******************************************************************************************/
+/* ProcessEndTag tests */
+/******************************************************************************************/
+
+TEST(XmlExpression, ProcessStartTagReturnsZeroForClosingTagOfFullMatch) {
+	// Arrange
+    XmlExpression expr;
+	expr.AddPredicate(XmlPredicate{"aa"});
+	LibXmlAttributeCollection attrs{ nullptr };
+	
+	// Act
+	expr.ProcessStartTag("aa", attrs);
+	auto result = expr.ProcessEndTag("aa");
+    
+	// Assert
+	EXPECT_EQ(0, result);
+}
+
+
+/******************************************************************************************/
+/* FromText tests */
+/******************************************************************************************/
 
 TEST(XmlExpression, FromTextCreatesSingleItemExpressionCorrectly) {
 	// Arrange
