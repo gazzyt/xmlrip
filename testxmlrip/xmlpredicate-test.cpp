@@ -158,6 +158,24 @@ TEST(XmlPredicate, IsMatchReturnsFalseWhenTagNamesMatchAndDepthNoMatch) {
 /* static XmlPredicate FromText(std::string text) */
 /******************************************************************************************/
 
+TEST(XmlPredicate, FromTextThrowsXPathExceptionForEmptyString) {
+	// Arrange
+	bool exceptionThrown = false;
+
+	// Act
+	try
+	{
+		XmlPredicate pred = XmlPredicate::FromText("");
+	}
+	catch (XPathException& e)
+	{
+		exceptionThrown = true;
+		EXPECT_EQ("Cannot create predicate from empty string", e.GetMessage());
+	}
+
+	EXPECT_TRUE(exceptionThrown);
+}
+
 TEST(XmlPredicate, FromTextReturnsPredicateForSimpleTagName) {
     // Arrange
 	
