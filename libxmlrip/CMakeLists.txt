@@ -25,6 +25,7 @@ set( BUILD_LIBXMLRIP_MANIFEST
 	libxmlprint.cpp
 	libxmlxpathprocessor.cpp
 	libxmlutils.cpp
+	porting.cpp
 	exception/baseexception.cpp
 	exception/xpathexception.cpp
 	exception/printexception.cpp
@@ -44,6 +45,7 @@ set( BUILD_LIBXMLRIP_MANIFEST_HEADERS
 	libxmlattributecollection.h
 	libxmlattributecollection-iterator.h
 	libxmlutils.h
+	porting.h
 	exception/baseexception.h
 	exception/xpathexception.h
 	exception/printexception.h

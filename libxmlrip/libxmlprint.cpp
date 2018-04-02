@@ -1,5 +1,5 @@
-#include <unistd.h>
 #include "libxmlprint.h"
+#include "porting.h"
 #include "exception/printexception.h"
 
 using namespace std;
@@ -8,7 +8,7 @@ LibXmlPrint::LibXmlPrint()
 :	m_outBuffer(nullptr),
 	m_writer(nullptr)
 {
-	m_outBuffer = xmlOutputBufferCreateFd(STDOUT_FILENO, NULL);
+	m_outBuffer = xmlOutputBufferCreateFd(Porting::StdOutFileNo(), NULL);
 	if (m_outBuffer == NULL) {
 		throw PrintException("Error creating output buffer");
 	}
