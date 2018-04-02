@@ -1,5 +1,6 @@
 #include "xmlexpression.h"
 #include "stringutils.h"
+#include "exception\xpathexception.h"
 
 using namespace std;
 
@@ -62,6 +63,14 @@ int XmlExpression::ProcessEndTag(const char* tagName)
 
 unique_ptr<XmlExpression> XmlExpression::FromText(string text)
 {
+	if (text[0] != '/')
+	{
+		throw XPathException("XPath must begin with / or //");
+	}
+
+	// TODO - replace when xpath splitting implemented
+	text.erase(0, 1);
+
 	auto retval = make_unique<XmlExpression>();
 	auto tagNames = split(text, '/');
 	
