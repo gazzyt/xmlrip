@@ -30,51 +30,6 @@ TEST(XmlElement, CreatesCorrectElementFromNameOnly) {
 	EXPECT_EQ("aa", element.GetTagName());
 }
 
-#ifdef USE_INTERNAL_PARSER
-TEST(XmlElement, CreatesCorrectElementFromNameAndAttributes) {
-	// Arrange
-	string tagText{"aa att=3 btt=4"};
-	
-	// Act
-	XmlElement element = XmlElement::FromText(tagText, true, true);
-	
-	// Assert
-	EXPECT_TRUE(element.IsOpeningTag());
-	EXPECT_TRUE(element.IsClosingTag());
-	EXPECT_EQ("aa", element.GetTagName());
-	EXPECT_EQ("att=3 btt=4", element.GetAttributeText());
-}
-#endif
-
-#ifdef USE_INTERNAL_PARSER
-TEST(XmlElement, CreatesCorrectElementFromNameAndAttribute) {
-	// Arrange
-	string tagText{"aa att=3"};
-	
-	// Act
-	XmlElement element = XmlElement::FromText(tagText, true, true);
-	
-	// Assert
-	EXPECT_TRUE(element.IsOpeningTag());
-	EXPECT_TRUE(element.IsClosingTag());
-	EXPECT_EQ("aa", element.GetTagName());
-	EXPECT_EQ("att=3", element.GetAttributeText());
-}
-
-TEST(XmlElement, CreatesCorrectElementFromNameAndQuotedAttributes) {
-	// Arrange
-	string tagText{"aa att=\"la la\" btt=\"bing bong\""};
-	
-	// Act
-	XmlElement element = XmlElement::FromText(tagText, true, true);
-	
-	// Assert
-	EXPECT_TRUE(element.IsOpeningTag());
-	EXPECT_TRUE(element.IsClosingTag());
-	EXPECT_EQ("aa", element.GetTagName());
-	EXPECT_EQ("att=\"la la\" btt=\"bing bong\"", element.GetAttributeText());
-}
-#endif
 
 /******************************************************************************************/
 /* constructor tests */

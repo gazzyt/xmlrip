@@ -69,9 +69,6 @@ XmlPredicate XmlPredicate::FromText(string text)
 		else if (ch == '"' || ch == '\'')
 		{
 			readingQuotedString = !readingQuotedString;
-#ifdef USE_INTERNAL_PARSER
-			currentTarget->push_back(ch);
-#endif
 		}
 		else
 		{
