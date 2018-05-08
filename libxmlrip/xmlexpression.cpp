@@ -1,6 +1,6 @@
 #include "xmlexpression.h"
 #include "stringutils.h"
-#include "exception\xpathexception.h"
+#include "exception/xpathexception.h"
 
 using namespace std;
 
