@@ -13,7 +13,7 @@ using namespace std;
 /* constructor tests                                                                 */
 /******************************************************************************************/
 
-TEST(XPathToken, ConstructorSetsType) {
+TEST(XPathToken, ThreeParamConstructorSetsType) {
 	// Arrange
 	string chars("//");
 	
@@ -24,6 +24,21 @@ TEST(XPathToken, ConstructorSetsType) {
 	EXPECT_EQ(XPathToken::TOK_SLASH, token.GetType());
 	
 }
+
+TEST(XPathToken, OneParamConstructorSetsType) {
+	// Arrange
+	
+	// Act
+	XPathToken token{XPathToken::TOK_NULL};
+	
+	// Assert
+	EXPECT_EQ(XPathToken::TOK_NULL, token.GetType());
+	
+}
+
+/******************************************************************************************/
+/* GetString tests                                                                 */
+/******************************************************************************************/
 
 TEST(XPathToken, GetStringReturnsTokenText) {
 	// Arrange
@@ -37,3 +52,13 @@ TEST(XPathToken, GetStringReturnsTokenText) {
 	
 }
 	
+TEST(XPathToken, GetStringReturnsEmptyStringWhenNoTokenText) {
+	// Arrange
+	
+	// Act
+	XPathToken token{XPathToken::TOK_NULL};
+	
+	// Assert
+	EXPECT_EQ("", token.GetString());
+	
+}

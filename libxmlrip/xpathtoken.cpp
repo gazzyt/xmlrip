@@ -9,6 +9,12 @@ XPathToken::XPathToken(TokenType type, string::const_iterator beginChars, string
 	m_endChars{endChars}
 {}
 
+XPathToken::XPathToken(TokenType type)
+:	m_type{type},
+	m_beginChars{},
+	m_endChars{}
+{}
+
 string XPathToken::GetString() const
 {
 	return string(m_beginChars, m_endChars);

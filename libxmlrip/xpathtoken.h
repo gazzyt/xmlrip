@@ -6,11 +6,12 @@
 class XPathToken
 {
 public:
-	enum TokenType {TOK_SLASH, TOK_STRING};
+	enum TokenType {TOK_NULL, TOK_SLASH, TOK_STRING};
 	
 public:
+	XPathToken(TokenType type);
 	XPathToken(TokenType type, std::string::const_iterator beginChars, std::string::const_iterator endChars);
-	XPathToken(const XPathToken& rhs) = delete;
+	XPathToken(const XPathToken& rhs) = default;
 
 public:
 	TokenType GetType() const { return m_type; }

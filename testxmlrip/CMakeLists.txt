@@ -25,6 +25,7 @@ set( BUILD_TEST_MANIFEST
     main.cpp
     xmlpredicate-test.cpp
 	xpathtoken-test.cpp
+	xpathtokeniser-test.cpp
 	xmlexpression-test.cpp
 	xmlelement-test.cpp
 	xmlattribute-test.cpp
