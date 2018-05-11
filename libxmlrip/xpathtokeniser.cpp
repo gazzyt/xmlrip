@@ -1,11 +1,10 @@
-#include <iostream>
 
 #include "xpathtokeniser.h"
 
 using namespace std;
 
-XPathTokeniser::XPathTokeniser(std::istream& inStream)
-:	m_inStream{inStream}
+XPathTokeniser::XPathTokeniser(std::string& xpathText)
+:	m_xpathText{xpathText}
 {}
 
 XPathToken XPathTokeniser::GetNextToken()

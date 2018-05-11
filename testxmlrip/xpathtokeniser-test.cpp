@@ -1,4 +1,3 @@
-#include <sstream>
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Weffc++"
@@ -15,8 +14,8 @@ using namespace std;
 
 TEST(XPathTokeniser, ReturnsNullTokenForEmptyStream) {
 	// Arrange
-	istringstream stream("");
-	XPathTokeniser tokeniser(stream);
+	string xpath("");
+	XPathTokeniser tokeniser(xpath);
 	
 	// Act
 	XPathToken token = tokeniser.GetNextToken();
