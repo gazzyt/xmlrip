@@ -17,6 +17,8 @@ public:
 
 private:
 	std::string m_xpathText;
+	std::string::const_iterator m_nextTokenStart;
+	std::string::const_iterator m_xpathTextEnd;
 };
 
 
