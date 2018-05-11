@@ -9,15 +9,19 @@ public:
 	enum TokenType {TOK_SLASH, TOK_STRING};
 	
 public:
-	XPathToken(TokenType type);
+	XPathToken(TokenType type, std::string::const_iterator beginChars, std::string::const_iterator endChars);
 	XPathToken(const XPathToken& rhs) = delete;
 
 public:
 	TokenType GetType() const { return m_type; }
+	std::string GetString() const;
 	XPathToken& operator=(const XPathToken& rhs) = delete;
 
 private:
 	TokenType m_type;
+	std::string::const_iterator m_beginChars;
+	std::string::const_iterator m_endChars;
 };
+
 
 #endif
