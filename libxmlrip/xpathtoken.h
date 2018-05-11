@@ -6,7 +6,7 @@
 class XPathToken
 {
 public:
-	enum TokenType {TOK_NULL, TOK_SLASH, TOK_STRING, TOK_AT};
+	enum TokenType {TOK_NULL, TOK_SLASH, TOK_DBLSLASH, TOK_STRING, TOK_AT, TOK_LEFTSQUAREBRACKET, TOK_RIGHTSQUAREBRACKET, TOK_EQUALS};
 	
 public:
 	XPathToken(TokenType type);

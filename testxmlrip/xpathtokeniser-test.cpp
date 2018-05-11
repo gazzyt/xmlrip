@@ -51,6 +51,58 @@ TEST(XPathTokeniser, ReturnsSlashTokenForSlash) {
 	EXPECT_EQ(xpath, token.GetString());
 }
 
+TEST(XPathTokeniser, ReturnsDoubleSlashTokenForDoubleSlash) {
+	// Arrange
+	string xpath("//");
+	XPathTokeniser tokeniser(xpath);
+	
+	// Act
+	XPathToken token = tokeniser.GetNextToken();
+	
+	// Assert
+	EXPECT_EQ(XPathToken::TOK_DBLSLASH, token.GetType());
+	EXPECT_EQ(xpath, token.GetString());
+}
+
+TEST(XPathTokeniser, ReturnsLeftSquareBracketTokenForLeftSquareBracket) {
+	// Arrange
+	string xpath("[");
+	XPathTokeniser tokeniser(xpath);
+	
+	// Act
+	XPathToken token = tokeniser.GetNextToken();
+	
+	// Assert
+	EXPECT_EQ(XPathToken::TOK_LEFTSQUAREBRACKET, token.GetType());
+	EXPECT_EQ(xpath, token.GetString());
+}
+
+TEST(XPathTokeniser, ReturnsRightSquareBracketTokenForRightSquareBracket) {
+	// Arrange
+	string xpath("]");
+	XPathTokeniser tokeniser(xpath);
+	
+	// Act
+	XPathToken token = tokeniser.GetNextToken();
+	
+	// Assert
+	EXPECT_EQ(XPathToken::TOK_RIGHTSQUAREBRACKET, token.GetType());
+	EXPECT_EQ(xpath, token.GetString());
+}
+
+TEST(XPathTokeniser, ReturnsEqualsTokenForEquals) {
+	// Arrange
+	string xpath("=");
+	XPathTokeniser tokeniser(xpath);
+	
+	// Act
+	XPathToken token = tokeniser.GetNextToken();
+	
+	// Assert
+	EXPECT_EQ(XPathToken::TOK_EQUALS, token.GetType());
+	EXPECT_EQ(xpath, token.GetString());
+}
+
 TEST(XPathTokeniser, ReturnsAtTokenForAt) {
 	// Arrange
 	string xpath("@");

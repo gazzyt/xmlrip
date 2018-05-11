@@ -30,6 +30,12 @@ XPathToken XPathTokeniser::GetNextToken()
 	{
 		++m_nextTokenStart;
 		
+		if (*m_nextTokenStart == '/')
+		{
+			++m_nextTokenStart;
+			return XPathToken{XPathToken::TOK_DBLSLASH, currentTokenStart, m_nextTokenStart};
+		}
+		
 		return XPathToken{XPathToken::TOK_SLASH, currentTokenStart, m_nextTokenStart};
 	}
 
@@ -38,6 +44,27 @@ XPathToken XPathTokeniser::GetNextToken()
 		++m_nextTokenStart;
 		
 		return XPathToken{XPathToken::TOK_AT, currentTokenStart, m_nextTokenStart};
+	}
+
+	if (*m_nextTokenStart == '[')
+	{
+		++m_nextTokenStart;
+		
+		return XPathToken{XPathToken::TOK_LEFTSQUAREBRACKET, currentTokenStart, m_nextTokenStart};
+	}
+
+	if (*m_nextTokenStart == ']')
+	{
+		++m_nextTokenStart;
+		
+		return XPathToken{XPathToken::TOK_RIGHTSQUAREBRACKET, currentTokenStart, m_nextTokenStart};
+	}
+
+	if (*m_nextTokenStart == '=')
+	{
+		++m_nextTokenStart;
+		
+		return XPathToken{XPathToken::TOK_EQUALS, currentTokenStart, m_nextTokenStart};
 	}
 	
 	throw XPathException(string("Unexpected character in XPath: ") + *m_nextTokenStart);
