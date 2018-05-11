@@ -26,5 +26,12 @@ XPathToken XPathTokeniser::GetNextToken()
 		return XPathToken{XPathToken::TOK_STRING, currentTokenStart, m_nextTokenStart};
 	}
 	
+	if (*m_nextTokenStart == '/')
+	{
+		++m_nextTokenStart;
+		
+		return XPathToken{XPathToken::TOK_SLASH, currentTokenStart, m_nextTokenStart};
+	}
+	
 	throw XPathException(string("Unexpected character in XPath: ") + *m_nextTokenStart);
 }

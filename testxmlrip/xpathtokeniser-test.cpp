@@ -37,6 +37,19 @@ TEST(XPathTokeniser, ReturnsStringTokenForWord) {
 	EXPECT_EQ(XPathToken::TOK_STRING, token.GetType());
 	EXPECT_EQ(xpath, token.GetString());
 }
+
+TEST(XPathTokeniser, ReturnsSlashTokenForSlash) {
+	// Arrange
+	string xpath("/");
+	XPathTokeniser tokeniser(xpath);
+	
+	// Act
+	XPathToken token = tokeniser.GetNextToken();
+	
+	// Assert
+	EXPECT_EQ(XPathToken::TOK_SLASH, token.GetType());
+	EXPECT_EQ(xpath, token.GetString());
+}
 	
 TEST(XPathTokeniser, GetNextTokenThrowsXPathExceptionForIllegalCharactor) {
 	// Arrange
