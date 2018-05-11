@@ -63,6 +63,28 @@ TEST(XPathTokeniser, ReturnsAtTokenForAt) {
 	EXPECT_EQ(XPathToken::TOK_AT, token.GetType());
 	EXPECT_EQ(xpath, token.GetString());
 }
+
+TEST(XPathTokeniser, ReturnsCorrectTokenSequence) {
+	// Arrange
+	string xpath("/inner/outer");
+	XPathTokeniser tokeniser(xpath);
+	
+	// Act
+	XPathToken token1 = tokeniser.GetNextToken();
+	XPathToken token2 = tokeniser.GetNextToken();
+	XPathToken token3 = tokeniser.GetNextToken();
+	XPathToken token4 = tokeniser.GetNextToken();
+	XPathToken token5 = tokeniser.GetNextToken();
+
+	// Assert
+	EXPECT_EQ(XPathToken::TOK_SLASH, token1.GetType());
+	EXPECT_EQ(XPathToken::TOK_STRING, token2.GetType());
+	EXPECT_EQ("inner", token2.GetString());
+	EXPECT_EQ(XPathToken::TOK_SLASH, token3.GetType());
+	EXPECT_EQ(XPathToken::TOK_STRING, token4.GetType());
+	EXPECT_EQ("outer", token4.GetString());
+	EXPECT_EQ(XPathToken::TOK_NULL, token5.GetType());
+}
 	
 TEST(XPathTokeniser, GetNextTokenThrowsXPathExceptionForIllegalCharactor) {
 	// Arrange
