@@ -182,6 +182,51 @@ TEST(XPathTokeniser, GetNextTokenThrowsXPathExceptionForMissingClosingDoubleQuot
 
 	EXPECT_TRUE(exceptionThrown);
 }
+
+TEST(XPathTokeniser, GetNextTokenReturnsSingleQuotedStringToken) {
+	// Arrange
+	string xpath("/inner[@a=' one two ']");
+	XPathTokeniser tokeniser(xpath);
+	
+	// Act
+	tokeniser.GetNextToken();
+	tokeniser.GetNextToken();
+	tokeniser.GetNextToken();
+	tokeniser.GetNextToken();
+	tokeniser.GetNextToken();
+	tokeniser.GetNextToken();
+	XPathToken token = tokeniser.GetNextToken();
+
+	// Assert
+	EXPECT_EQ(XPathToken::TOK_STRING, token.GetType());
+	EXPECT_EQ(" one two ", token.GetString());
+}
+
+TEST(XPathTokeniser, GetNextTokenThrowsXPathExceptionForMissingClosingSingleQuote) {
+	// Arrange
+	string xpath("/inner[@a=' one two ]");
+	XPathTokeniser tokeniser(xpath);
+	bool exceptionThrown = false;
+
+	// Act
+	try
+	{
+		tokeniser.GetNextToken();
+		tokeniser.GetNextToken();
+		tokeniser.GetNextToken();
+		tokeniser.GetNextToken();
+		tokeniser.GetNextToken();
+		tokeniser.GetNextToken();
+		tokeniser.GetNextToken();
+	}
+	catch (XPathException& e)
+	{
+		exceptionThrown = true;
+		EXPECT_EQ("Missing closing quote", e.GetMessage());
+	}
+
+	EXPECT_TRUE(exceptionThrown);
+}
 	
 TEST(XPathTokeniser, GetNextTokenThrowsXPathExceptionForIllegalCharactor) {
 	// Arrange

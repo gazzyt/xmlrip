@@ -68,19 +68,25 @@ XPathToken XPathTokeniser::GetNextToken()
 		return XPathToken{XPathToken::TOK_EQUALS, currentTokenStart, m_nextTokenStart};
 	}
 	
-	if (*m_nextTokenStart == '"')
+	if (*m_nextTokenStart == '"' || *m_nextTokenStart == '\'')
 	{
-		++m_nextTokenStart;
-		
-		auto closingQuote = find(m_nextTokenStart, m_xpathTextEnd, '"');
-		
-		if (closingQuote == m_xpathTextEnd)
-			throw XPathException("Missing closing quote");
-		
-		m_nextTokenStart = closingQuote + 1;
-		
-		return XPathToken{XPathToken::TOK_STRING, currentTokenStart + 1, closingQuote};
+		return ExtractQuotedString(currentTokenStart);
 	}
 	
 	throw XPathException(string("Unexpected character in XPath: ") + *m_nextTokenStart);
+}
+
+XPathToken XPathTokeniser::ExtractQuotedString(const string::const_iterator& currentTokenStart)
+{
+	char quote = *m_nextTokenStart;
+	++m_nextTokenStart;
+
+	auto closingQuote = find(m_nextTokenStart, m_xpathTextEnd, quote);
+		
+	if (closingQuote == m_xpathTextEnd)
+		throw XPathException("Missing closing quote");
+	
+	m_nextTokenStart = closingQuote + 1;
+	
+	return XPathToken{XPathToken::TOK_STRING, currentTokenStart + 1, closingQuote};
 }
