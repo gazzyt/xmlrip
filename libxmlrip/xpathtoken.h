@@ -16,7 +16,7 @@ public:
 public:
 	TokenType GetType() const { return m_type; }
 	std::string GetString() const;
-	XPathToken& operator=(const XPathToken& rhs) = delete;
+	XPathToken& operator=(const XPathToken& rhs) = default;
 
 private:
 	TokenType m_type;

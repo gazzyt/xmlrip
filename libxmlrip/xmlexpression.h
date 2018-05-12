@@ -6,6 +6,8 @@
 #include <vector>
 
 #include "xmlpredicate.h"
+#include "xpathtoken.h"
+#include "xpathtokeniser.h"
 
 class XmlExpression
 {
@@ -23,6 +25,9 @@ public:
 	static std::unique_ptr<XmlExpression> FromText(std::string text);
 	
 	enum NoMatch {NO_MATCH = -1};
+
+private:
+	static void ReadPredicate(XPathTokeniser& tokeniser, XPathToken& token, XmlExpression& expression);
 
 private:
 	std::vector<XmlPredicate> m_predicates;
