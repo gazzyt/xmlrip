@@ -16,6 +16,9 @@ public:
 	XPathTokeniser& operator=(const XPathTokeniser& rhs) = delete;
 
 private:
+	XPathToken ExtractSingleCharToken(XPathToken::TokenType type, const std::string::const_iterator& currentTokenStart);
+	XPathToken ExtractSlashToken(const std::string::const_iterator& currentTokenStart);
+	XPathToken ExtractStringToken(const std::string::const_iterator& currentTokenStart);
 	XPathToken ExtractQuotedString(const std::string::const_iterator& currentTokenStart);
 
 private:

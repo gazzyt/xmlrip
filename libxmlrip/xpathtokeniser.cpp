@@ -19,61 +19,64 @@ XPathToken XPathTokeniser::GetNextToken()
 	if (m_nextTokenStart == m_xpathTextEnd)
 		return XPathToken{XPathToken::TOK_NULL};
 	
-	if (::isalnum(*m_nextTokenStart))
+	switch (*m_nextTokenStart)
 	{
-		while (::isalnum(*m_nextTokenStart) && (m_nextTokenStart != m_xpathTextEnd))
-			++m_nextTokenStart;
-		
-		return XPathToken{XPathToken::TOK_STRING, currentTokenStart, m_nextTokenStart};
-	}
+		case '/':
+			return ExtractSlashToken(currentTokenStart);
+			
+		case '@':
+			return ExtractSingleCharToken(XPathToken::TOK_AT, currentTokenStart);
+
+		case '[':
+			return ExtractSingleCharToken(XPathToken::TOK_LEFTSQUAREBRACKET, currentTokenStart);
+
+		case ']':
+			return ExtractSingleCharToken(XPathToken::TOK_RIGHTSQUAREBRACKET, currentTokenStart);
+
+		case '=':
+			return ExtractSingleCharToken(XPathToken::TOK_EQUALS, currentTokenStart);
 	
-	if (*m_nextTokenStart == '/')
-	{
-		++m_nextTokenStart;
-		
-		if (*m_nextTokenStart == '/')
-		{
-			++m_nextTokenStart;
-			return XPathToken{XPathToken::TOK_DBLSLASH, currentTokenStart, m_nextTokenStart};
-		}
-		
-		return XPathToken{XPathToken::TOK_SLASH, currentTokenStart, m_nextTokenStart};
-	}
+		case '"':
+		case '\'':
+			return ExtractQuotedString(currentTokenStart);
 
-	if (*m_nextTokenStart == '@')
-	{
-		++m_nextTokenStart;
-		
-		return XPathToken{XPathToken::TOK_AT, currentTokenStart, m_nextTokenStart};
-	}
+		default:
+			if (::isalnum(*m_nextTokenStart))
+				return ExtractStringToken(currentTokenStart);
+			else
+				throw XPathException(string("Unexpected character in XPath: ") + *m_nextTokenStart);
+	};
+}
 
-	if (*m_nextTokenStart == '[')
-	{
-		++m_nextTokenStart;
-		
-		return XPathToken{XPathToken::TOK_LEFTSQUAREBRACKET, currentTokenStart, m_nextTokenStart};
-	}
-
-	if (*m_nextTokenStart == ']')
-	{
-		++m_nextTokenStart;
-		
-		return XPathToken{XPathToken::TOK_RIGHTSQUAREBRACKET, currentTokenStart, m_nextTokenStart};
-	}
-
-	if (*m_nextTokenStart == '=')
-	{
-		++m_nextTokenStart;
-		
-		return XPathToken{XPathToken::TOK_EQUALS, currentTokenStart, m_nextTokenStart};
-	}
+XPathToken XPathTokeniser::ExtractSingleCharToken(XPathToken::TokenType type, const std::string::const_iterator& currentTokenStart)
+{
+	++m_nextTokenStart;
 	
-	if (*m_nextTokenStart == '"' || *m_nextTokenStart == '\'')
-	{
-		return ExtractQuotedString(currentTokenStart);
-	}
+	return XPathToken{type, currentTokenStart, m_nextTokenStart};
+}
+
+XPathToken XPathTokeniser::ExtractSlashToken(const std::string::const_iterator& currentTokenStart)
+{
+	string::const_iterator nextChar{m_nextTokenStart + 1};
 	
-	throw XPathException(string("Unexpected character in XPath: ") + *m_nextTokenStart);
+	if (nextChar != m_xpathTextEnd && *nextChar == '/')
+	{
+		++m_nextTokenStart;
+		return ExtractSingleCharToken(XPathToken::TOK_DBLSLASH, currentTokenStart);
+	}
+	else
+	{
+		return ExtractSingleCharToken(XPathToken::TOK_SLASH, currentTokenStart);
+	}
+}
+
+XPathToken XPathTokeniser::ExtractStringToken(const std::string::const_iterator& currentTokenStart)
+{
+	auto stringEnd = find_if_not(currentTokenStart, m_xpathTextEnd, ::isalnum);
+	
+	m_nextTokenStart = stringEnd;
+	
+	return XPathToken{XPathToken::TOK_STRING, currentTokenStart, m_nextTokenStart};
 }
 
 XPathToken XPathTokeniser::ExtractQuotedString(const string::const_iterator& currentTokenStart)
