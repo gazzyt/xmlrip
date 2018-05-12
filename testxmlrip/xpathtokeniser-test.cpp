@@ -13,7 +13,7 @@ using namespace std;
 /* GetNextToken tests                                                                 */
 /******************************************************************************************/
 
-TEST(XPathTokeniser, ReturnsNullTokenForEmptyString) {
+TEST(XPathTokeniser, GetNextTokenReturnsNullTokenForEmptyString) {
 	// Arrange
 	string xpath("");
 	XPathTokeniser tokeniser(xpath);
@@ -25,7 +25,7 @@ TEST(XPathTokeniser, ReturnsNullTokenForEmptyString) {
 	EXPECT_EQ(XPathToken::TOK_NULL, token.GetType());
 }
 
-TEST(XPathTokeniser, ReturnsStringTokenForWord) {
+TEST(XPathTokeniser, GetNextTokenReturnsStringTokenForWord) {
 	// Arrange
 	string xpath("inner");
 	XPathTokeniser tokeniser(xpath);
@@ -38,7 +38,7 @@ TEST(XPathTokeniser, ReturnsStringTokenForWord) {
 	EXPECT_EQ(xpath, token.GetString());
 }
 
-TEST(XPathTokeniser, ReturnsSlashTokenForSlash) {
+TEST(XPathTokeniser, GetNextTokenReturnsSlashTokenForSlash) {
 	// Arrange
 	string xpath("/");
 	XPathTokeniser tokeniser(xpath);
@@ -51,7 +51,7 @@ TEST(XPathTokeniser, ReturnsSlashTokenForSlash) {
 	EXPECT_EQ(xpath, token.GetString());
 }
 
-TEST(XPathTokeniser, ReturnsDoubleSlashTokenForDoubleSlash) {
+TEST(XPathTokeniser, GetNextTokenReturnsDoubleSlashTokenForDoubleSlash) {
 	// Arrange
 	string xpath("//");
 	XPathTokeniser tokeniser(xpath);
@@ -64,7 +64,7 @@ TEST(XPathTokeniser, ReturnsDoubleSlashTokenForDoubleSlash) {
 	EXPECT_EQ(xpath, token.GetString());
 }
 
-TEST(XPathTokeniser, ReturnsLeftSquareBracketTokenForLeftSquareBracket) {
+TEST(XPathTokeniser, GetNextTokenReturnsLeftSquareBracketTokenForLeftSquareBracket) {
 	// Arrange
 	string xpath("[");
 	XPathTokeniser tokeniser(xpath);
@@ -77,7 +77,7 @@ TEST(XPathTokeniser, ReturnsLeftSquareBracketTokenForLeftSquareBracket) {
 	EXPECT_EQ(xpath, token.GetString());
 }
 
-TEST(XPathTokeniser, ReturnsRightSquareBracketTokenForRightSquareBracket) {
+TEST(XPathTokeniser, GetNextTokenReturnsRightSquareBracketTokenForRightSquareBracket) {
 	// Arrange
 	string xpath("]");
 	XPathTokeniser tokeniser(xpath);
@@ -90,7 +90,7 @@ TEST(XPathTokeniser, ReturnsRightSquareBracketTokenForRightSquareBracket) {
 	EXPECT_EQ(xpath, token.GetString());
 }
 
-TEST(XPathTokeniser, ReturnsEqualsTokenForEquals) {
+TEST(XPathTokeniser, GetNextTokenReturnsEqualsTokenForEquals) {
 	// Arrange
 	string xpath("=");
 	XPathTokeniser tokeniser(xpath);
@@ -103,7 +103,7 @@ TEST(XPathTokeniser, ReturnsEqualsTokenForEquals) {
 	EXPECT_EQ(xpath, token.GetString());
 }
 
-TEST(XPathTokeniser, ReturnsAtTokenForAt) {
+TEST(XPathTokeniser, GetNextTokenReturnsAtTokenForAt) {
 	// Arrange
 	string xpath("@");
 	XPathTokeniser tokeniser(xpath);
@@ -116,7 +116,7 @@ TEST(XPathTokeniser, ReturnsAtTokenForAt) {
 	EXPECT_EQ(xpath, token.GetString());
 }
 
-TEST(XPathTokeniser, ReturnsCorrectTokenSequence) {
+TEST(XPathTokeniser, GetNextTokenReturnsCorrectTokenSequence) {
 	// Arrange
 	string xpath("/inner/outer");
 	XPathTokeniser tokeniser(xpath);
@@ -136,6 +136,51 @@ TEST(XPathTokeniser, ReturnsCorrectTokenSequence) {
 	EXPECT_EQ(XPathToken::TOK_STRING, token4.GetType());
 	EXPECT_EQ("outer", token4.GetString());
 	EXPECT_EQ(XPathToken::TOK_NULL, token5.GetType());
+}
+
+TEST(XPathTokeniser, GetNextTokenReturnsDoubleQuotedStringToken) {
+	// Arrange
+	string xpath("/inner[@a=\" one two \"]");
+	XPathTokeniser tokeniser(xpath);
+	
+	// Act
+	tokeniser.GetNextToken();
+	tokeniser.GetNextToken();
+	tokeniser.GetNextToken();
+	tokeniser.GetNextToken();
+	tokeniser.GetNextToken();
+	tokeniser.GetNextToken();
+	XPathToken token = tokeniser.GetNextToken();
+
+	// Assert
+	EXPECT_EQ(XPathToken::TOK_STRING, token.GetType());
+	EXPECT_EQ(" one two ", token.GetString());
+}
+
+TEST(XPathTokeniser, GetNextTokenThrowsXPathExceptionForMissingClosingDoubleQuote) {
+	// Arrange
+	string xpath("/inner[@a=\" one two ]");
+	XPathTokeniser tokeniser(xpath);
+	bool exceptionThrown = false;
+
+	// Act
+	try
+	{
+		tokeniser.GetNextToken();
+		tokeniser.GetNextToken();
+		tokeniser.GetNextToken();
+		tokeniser.GetNextToken();
+		tokeniser.GetNextToken();
+		tokeniser.GetNextToken();
+		tokeniser.GetNextToken();
+	}
+	catch (XPathException& e)
+	{
+		exceptionThrown = true;
+		EXPECT_EQ("Missing closing quote", e.GetMessage());
+	}
+
+	EXPECT_TRUE(exceptionThrown);
 }
 	
 TEST(XPathTokeniser, GetNextTokenThrowsXPathExceptionForIllegalCharactor) {

@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <cctype>
 
 #include "xpathtokeniser.h"
@@ -65,6 +66,20 @@ XPathToken XPathTokeniser::GetNextToken()
 		++m_nextTokenStart;
 		
 		return XPathToken{XPathToken::TOK_EQUALS, currentTokenStart, m_nextTokenStart};
+	}
+	
+	if (*m_nextTokenStart == '"')
+	{
+		++m_nextTokenStart;
+		
+		auto closingQuote = find(m_nextTokenStart, m_xpathTextEnd, '"');
+		
+		if (closingQuote == m_xpathTextEnd)
+			throw XPathException("Missing closing quote");
+		
+		m_nextTokenStart = closingQuote + 1;
+		
+		return XPathToken{XPathToken::TOK_STRING, currentTokenStart + 1, closingQuote};
 	}
 	
 	throw XPathException(string("Unexpected character in XPath: ") + *m_nextTokenStart);
