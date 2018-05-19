@@ -258,3 +258,49 @@ TEST(XmlExpression, FromTextCreatesTwoItemExpressionCorrectly) {
 	EXPECT_EQ("aa", predicates[0].GetTagName());
 	EXPECT_EQ("bb", predicates[1].GetTagName());
 }
+
+/******************************************************************************************/
+/* ReadPredicate tests */
+/******************************************************************************************/
+TEST(XmlExpression, ReadPredicateReturnsPredicateForSimpleTagName) {
+    // Arrange
+	string xpath{ "/simpletagname" };
+	XPathTokeniser tokeniser{ xpath };
+	XPathToken token = tokeniser.GetNextToken();
+	
+	// Act
+	XmlPredicate pred = XmlExpression::ReadPredicate(tokeniser, token);
+    
+	EXPECT_EQ("simpletagname", pred.GetTagName());
+	EXPECT_EQ(nullptr, pred.GetAttributePredicate());
+}
+
+TEST(XmlExpression, ReadPredicateReturnsPredicateForSimpleTagNameWithAttributeDoubleQuote) {
+    // Arrange
+	string xpath{ "/simpletagname[@attr=\"val\"]" };
+	XPathTokeniser tokeniser{ xpath };
+	XPathToken token = tokeniser.GetNextToken();
+	
+	// Act
+	XmlPredicate pred = XmlExpression::ReadPredicate(tokeniser, token);
+    
+	EXPECT_EQ("simpletagname", pred.GetTagName());
+	ASSERT_NE(nullptr, pred.GetAttributePredicate());
+	EXPECT_EQ("attr", pred.GetAttributePredicate()->GetName());
+	EXPECT_EQ("val", pred.GetAttributePredicate()->GetValue());
+}
+
+TEST(XmlExpression, ReadPredicateReturnsPredicateForSimpleTagNameWithAttributeSingleQuote) {
+    // Arrange
+	string xpath{ "/simpletagname[@attr='val']" };
+	XPathTokeniser tokeniser{ xpath };
+	XPathToken token = tokeniser.GetNextToken();
+	
+	// Act
+	XmlPredicate pred = XmlExpression::ReadPredicate(tokeniser, token);
+    
+	EXPECT_EQ("simpletagname", pred.GetTagName());
+	ASSERT_NE(nullptr, pred.GetAttributePredicate());
+	EXPECT_EQ("attr", pred.GetAttributePredicate()->GetName());
+	EXPECT_EQ("val", pred.GetAttributePredicate()->GetValue());
+}

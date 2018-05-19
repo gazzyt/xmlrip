@@ -74,7 +74,7 @@ unique_ptr<XmlExpression> XmlExpression::FromText(string text)
 
 	while (token.GetType() != XPathToken::TOK_NULL)
 	{
-		ReadPredicate(tokeniser, token, *retval);
+		retval->AddPredicate(ReadPredicate(tokeniser, token));
 
 		//token = tokeniser.GetNextToken();
 	}
@@ -82,7 +82,7 @@ unique_ptr<XmlExpression> XmlExpression::FromText(string text)
 	return retval;
 }
 
-void XmlExpression::ReadPredicate(XPathTokeniser& tokeniser, XPathToken& token, XmlExpression& expression)
+XmlPredicate XmlExpression::ReadPredicate(XPathTokeniser& tokeniser, XPathToken& token)
 {
 	if (token.GetType() != XPathToken::TOK_DBLSLASH && token.GetType() != XPathToken::TOK_SLASH)
 	{
@@ -139,15 +139,13 @@ void XmlExpression::ReadPredicate(XPathTokeniser& tokeniser, XPathToken& token, 
 
 			token = tokeniser.GetNextToken();
 
-			expression.AddPredicate(XmlPredicate{ elementName, make_unique<XmlAttribute>(move(attributeName), move(attributeValue)) });
+			return XmlPredicate{ elementName, make_unique<XmlAttribute>(move(attributeName), move(attributeValue)) };
 		}
-		break;
 
 	case XPathToken::TOK_DBLSLASH:
 	case XPathToken::TOK_SLASH:
 	case XPathToken::TOK_NULL:
-		expression.AddPredicate(XmlPredicate{ elementName });
-		break;
+		return (XmlPredicate{ elementName });
 
 	default:
 		throw XPathException{ "Unexpected token" };

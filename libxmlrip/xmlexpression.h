@@ -23,11 +23,10 @@ public:
 	int ProcessEndTag(const char* tagName);
 	
 	static std::unique_ptr<XmlExpression> FromText(std::string text);
+	static XmlPredicate ReadPredicate(XPathTokeniser& tokeniser, XPathToken& token);
 	
 	enum NoMatch {NO_MATCH = -1};
 
-private:
-	static void ReadPredicate(XPathTokeniser& tokeniser, XPathToken& token, XmlExpression& expression);
 
 private:
 	std::vector<XmlPredicate> m_predicates;
