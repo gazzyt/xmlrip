@@ -22,7 +22,7 @@ int main(int argc, char** argv)
 
 	string xpathText = argv[2];
 	if (xpathText == "xx")
-		xpathText = "program[TMSId=\"SH026320890000\"]";
+		xpathText = "//program[@TMSId=\"SH026320890000\"]";
 
 	try
 	{

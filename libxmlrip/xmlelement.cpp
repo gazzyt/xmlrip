@@ -51,13 +51,9 @@ string XmlElement::GetAttributeText() const
 		}
 		
 		attrText += attr.GetName() + "=" 
-#ifndef USE_INTERNAL_PARSER
 			+ '"'
-#endif
 			+ attr.GetValue()
-#ifndef USE_INTERNAL_PARSER
 			+ '"'
-#endif
 		;
 	}
 	

@@ -19,8 +19,6 @@ public:
 	const XmlAttribute* GetAttributePredicate() const;
 	int GetDocumentDepthPredicate() const;
 
-	static XmlPredicate FromText(std::string text);
-
 private:
 	std::string m_tagName;
 	std::unique_ptr<XmlAttribute> m_attributePredicate;

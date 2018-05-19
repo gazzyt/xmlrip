@@ -1,5 +1,6 @@
 #include "xmlexpression.h"
 #include "stringutils.h"
+#include "exception/xpathexception.h"
 
 using namespace std;
 
@@ -63,12 +64,91 @@ int XmlExpression::ProcessEndTag(const char* tagName)
 unique_ptr<XmlExpression> XmlExpression::FromText(string text)
 {
 	auto retval = make_unique<XmlExpression>();
-	auto tagNames = split(text, '/');
-	
-	for ( auto tagName : tagNames)
+	XPathTokeniser tokeniser{ text };
+	XPathToken token = tokeniser.GetNextToken();
+
+	if (token.GetType() != XPathToken::TOK_DBLSLASH && token.GetType() != XPathToken::TOK_SLASH)
 	{
-		retval->AddPredicate(XmlPredicate::FromText(tagName));
+		throw XPathException("XPath must begin with / or //");
 	}
-	
+
+	while (token.GetType() != XPathToken::TOK_NULL)
+	{
+		retval->AddPredicate(ReadPredicate(tokeniser, token));
+
+		//token = tokeniser.GetNextToken();
+	}
+
 	return retval;
+}
+
+XmlPredicate XmlExpression::ReadPredicate(XPathTokeniser& tokeniser, XPathToken& token)
+{
+	if (token.GetType() != XPathToken::TOK_DBLSLASH && token.GetType() != XPathToken::TOK_SLASH)
+	{
+		throw XPathException("Expected / or //");
+	}
+
+	token = tokeniser.GetNextToken();
+
+	if (token.GetType() != XPathToken::TOK_STRING)
+	{
+		throw XPathException("Expected element name");
+	}
+
+	string elementName{ token.GetString() };
+
+	token = tokeniser.GetNextToken();
+
+	switch (token.GetType())
+	{
+	case XPathToken::TOK_LEFTSQUAREBRACKET:
+		{
+			token = tokeniser.GetNextToken();
+
+			if (token.GetType() != XPathToken::TOK_AT)
+				throw XPathException("Expected @ token");
+
+			token = tokeniser.GetNextToken();
+
+			if (token.GetType() != XPathToken::TOK_STRING)
+			{
+				throw XPathException("Expected attribute name");
+			}
+
+			string attributeName{ token.GetString() };
+
+			token = tokeniser.GetNextToken();
+
+			if (token.GetType() != XPathToken::TOK_EQUALS)
+				throw XPathException("Expected = token");
+
+			token = tokeniser.GetNextToken();
+
+			if (token.GetType() != XPathToken::TOK_STRING)
+			{
+				throw XPathException("Expected attribute value");
+			}
+
+			string attributeValue{ token.GetString() };
+
+			token = tokeniser.GetNextToken();
+
+			if (token.GetType() != XPathToken::TOK_RIGHTSQUAREBRACKET)
+				throw XPathException("Expected ] token");
+
+			token = tokeniser.GetNextToken();
+
+			return XmlPredicate{ elementName, make_unique<XmlAttribute>(move(attributeName), move(attributeValue)) };
+		}
+
+	case XPathToken::TOK_DBLSLASH:
+	case XPathToken::TOK_SLASH:
+	case XPathToken::TOK_NULL:
+		return (XmlPredicate{ elementName });
+
+	default:
+		throw XPathException{ "Unexpected token" };
+
+	}
 }

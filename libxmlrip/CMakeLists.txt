@@ -18,6 +18,8 @@ set( BUILD_LIBXMLRIP_MANIFEST
     xmlelement.cpp
 	xmlattribute.cpp
     xmlpredicate.cpp
+	xpathtoken.cpp
+	xpathtokeniser.cpp
 	xmlexpression.cpp
 	stringutils.cpp
 	customstreamflags.cpp
@@ -35,6 +37,8 @@ set( BUILD_LIBXMLRIP_MANIFEST_HEADERS
     xmlelement.h
 	xmlattribute.h
     xmlpredicate.h
+	xpathtoken.h
+	xpathtokeniser.h
 	xmlexpression.h
 	stringutils.h
 	memoryutils.h
