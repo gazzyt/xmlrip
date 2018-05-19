@@ -86,7 +86,7 @@ XmlPredicate XmlExpression::ReadPredicate(XPathTokeniser& tokeniser, XPathToken&
 {
 	if (token.GetType() != XPathToken::TOK_DBLSLASH && token.GetType() != XPathToken::TOK_SLASH)
 	{
-		throw XPathException("Ecpected / or //");
+		throw XPathException("Expected / or //");
 	}
 
 	token = tokeniser.GetNextToken();

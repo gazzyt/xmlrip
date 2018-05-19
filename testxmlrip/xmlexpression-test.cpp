@@ -268,6 +268,150 @@ XmlPredicate GetTestPredicate(const string xpath)
 	XPathToken token = tokeniser.GetNextToken();
 	return XmlExpression::ReadPredicate(tokeniser, token);
 }
+
+TEST(XmlExpression, ReadPredicateThrowsXPathExceptionIfXPathNotBeginWithSlash) {
+	// Arrange
+	bool exceptionThrown = false;
+
+	// Act
+	try
+	{
+		XmlPredicate pred = GetTestPredicate("simpletagname");
+	}
+	catch (XPathException& e)
+	{
+		exceptionThrown = true;
+		EXPECT_EQ("Expected / or //", e.GetMessage());
+	}
+
+	EXPECT_TRUE(exceptionThrown);
+}
+
+TEST(XmlExpression, ReadPredicateThrowsXPathExceptionIfXPathNotContainTagName) {
+	// Arrange
+	bool exceptionThrown = false;
+
+	// Act
+	try
+	{
+		XmlPredicate pred = GetTestPredicate("//@");
+	}
+	catch (XPathException& e)
+	{
+		exceptionThrown = true;
+		EXPECT_EQ("Expected element name", e.GetMessage());
+	}
+
+	EXPECT_TRUE(exceptionThrown);
+}
+
+TEST(XmlExpression, ReadPredicateThrowsXPathExceptionIfXPathContainDot) {
+	// Arrange
+	bool exceptionThrown = false;
+
+	// Act
+	try
+	{
+		XmlPredicate pred = GetTestPredicate("//tag.");
+	}
+	catch (XPathException& e)
+	{
+		exceptionThrown = true;
+		EXPECT_EQ("Unexpected character in XPath: .", e.GetMessage());
+	}
+
+	EXPECT_TRUE(exceptionThrown);
+}
+
+TEST(XmlExpression, ReadPredicateThrowsXPathExceptionIfXPathConditionMissingAt) {
+	// Arrange
+	bool exceptionThrown = false;
+
+	// Act
+	try
+	{
+		XmlPredicate pred = GetTestPredicate("//tag[a='t']");
+	}
+	catch (XPathException& e)
+	{
+		exceptionThrown = true;
+		EXPECT_EQ("Expected @ token", e.GetMessage());
+	}
+
+	EXPECT_TRUE(exceptionThrown);
+}
+
+TEST(XmlExpression, ReadPredicateThrowsXPathExceptionIfXPathConditionMissingAttributeName) {
+	// Arrange
+	bool exceptionThrown = false;
+
+	// Act
+	try
+	{
+		XmlPredicate pred = GetTestPredicate("//tag[@='t']");
+	}
+	catch (XPathException& e)
+	{
+		exceptionThrown = true;
+		EXPECT_EQ("Expected attribute name", e.GetMessage());
+	}
+
+	EXPECT_TRUE(exceptionThrown);
+}
+
+TEST(XmlExpression, ReadPredicateThrowsXPathExceptionIfXPathConditionMissingEquals) {
+	// Arrange
+	bool exceptionThrown = false;
+
+	// Act
+	try
+	{
+		XmlPredicate pred = GetTestPredicate("//tag[@a't']");
+	}
+	catch (XPathException& e)
+	{
+		exceptionThrown = true;
+		EXPECT_EQ("Expected = token", e.GetMessage());
+	}
+
+	EXPECT_TRUE(exceptionThrown);
+}
+
+TEST(XmlExpression, ReadPredicateThrowsXPathExceptionIfXPathConditionMissingValue) {
+	// Arrange
+	bool exceptionThrown = false;
+
+	// Act
+	try
+	{
+		XmlPredicate pred = GetTestPredicate("//tag[@a=]");
+	}
+	catch (XPathException& e)
+	{
+		exceptionThrown = true;
+		EXPECT_EQ("Expected attribute value", e.GetMessage());
+	}
+
+	EXPECT_TRUE(exceptionThrown);
+}
+
+TEST(XmlExpression, ReadPredicateThrowsXPathExceptionIfXPathConditionClosingBracket) {
+	// Arrange
+	bool exceptionThrown = false;
+
+	// Act
+	try
+	{
+		XmlPredicate pred = GetTestPredicate("//tag[@a='b'");
+	}
+	catch (XPathException& e)
+	{
+		exceptionThrown = true;
+		EXPECT_EQ("Expected ] token", e.GetMessage());
+	}
+
+	EXPECT_TRUE(exceptionThrown);
+}
 	
 TEST(XmlExpression, ReadPredicateReturnsPredicateForSimpleTagName) {
     // Arrange
