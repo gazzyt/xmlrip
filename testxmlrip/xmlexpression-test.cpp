@@ -262,14 +262,18 @@ TEST(XmlExpression, FromTextCreatesTwoItemExpressionCorrectly) {
 /******************************************************************************************/
 /* ReadPredicate tests */
 /******************************************************************************************/
-TEST(XmlExpression, ReadPredicateReturnsPredicateForSimpleTagName) {
-    // Arrange
-	string xpath{ "/simpletagname" };
+XmlPredicate GetTestPredicate(const string xpath)
+{
 	XPathTokeniser tokeniser{ xpath };
 	XPathToken token = tokeniser.GetNextToken();
+	return XmlExpression::ReadPredicate(tokeniser, token);
+}
+	
+TEST(XmlExpression, ReadPredicateReturnsPredicateForSimpleTagName) {
+    // Arrange
 	
 	// Act
-	XmlPredicate pred = XmlExpression::ReadPredicate(tokeniser, token);
+	XmlPredicate pred = GetTestPredicate("/simpletagname");
     
 	EXPECT_EQ("simpletagname", pred.GetTagName());
 	EXPECT_EQ(nullptr, pred.GetAttributePredicate());
@@ -277,12 +281,9 @@ TEST(XmlExpression, ReadPredicateReturnsPredicateForSimpleTagName) {
 
 TEST(XmlExpression, ReadPredicateReturnsPredicateForSimpleTagNameWithAttributeDoubleQuote) {
     // Arrange
-	string xpath{ "/simpletagname[@attr=\"val\"]" };
-	XPathTokeniser tokeniser{ xpath };
-	XPathToken token = tokeniser.GetNextToken();
 	
 	// Act
-	XmlPredicate pred = XmlExpression::ReadPredicate(tokeniser, token);
+	XmlPredicate pred = GetTestPredicate("/simpletagname[@attr=\"val\"]");
     
 	EXPECT_EQ("simpletagname", pred.GetTagName());
 	ASSERT_NE(nullptr, pred.GetAttributePredicate());
@@ -292,12 +293,9 @@ TEST(XmlExpression, ReadPredicateReturnsPredicateForSimpleTagNameWithAttributeDo
 
 TEST(XmlExpression, ReadPredicateReturnsPredicateForSimpleTagNameWithAttributeSingleQuote) {
     // Arrange
-	string xpath{ "/simpletagname[@attr='val']" };
-	XPathTokeniser tokeniser{ xpath };
-	XPathToken token = tokeniser.GetNextToken();
 	
 	// Act
-	XmlPredicate pred = XmlExpression::ReadPredicate(tokeniser, token);
+	XmlPredicate pred = GetTestPredicate("/simpletagname[@attr='val']");
     
 	EXPECT_EQ("simpletagname", pred.GetTagName());
 	ASSERT_NE(nullptr, pred.GetAttributePredicate());
