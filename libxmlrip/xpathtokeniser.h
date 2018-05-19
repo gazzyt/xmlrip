@@ -8,7 +8,7 @@
 class XPathTokeniser
 {
 public:
-	XPathTokeniser(std::string& xpathText);
+	XPathTokeniser(const std::string& xpathText);
 	XPathTokeniser(const XPathTokeniser& rhs) = delete;
 
 public:
@@ -22,7 +22,7 @@ private:
 	XPathToken ExtractQuotedString(const std::string::const_iterator& currentTokenStart);
 
 private:
-	std::string m_xpathText;
+	const std::string m_xpathText;
 	std::string::const_iterator m_nextTokenStart;
 	std::string::const_iterator m_xpathTextEnd;
 };

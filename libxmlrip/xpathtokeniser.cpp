@@ -6,7 +6,7 @@
 
 using namespace std;
 
-XPathTokeniser::XPathTokeniser(std::string& xpathText)
+XPathTokeniser::XPathTokeniser(const std::string& xpathText)
 :	m_xpathText{xpathText},
 	m_nextTokenStart{xpathText.begin()},
 	m_xpathTextEnd{xpathText.end()}
