@@ -421,7 +421,7 @@ TEST(XmlExpression, ReadPredicateReturnsPredicateForSimpleTagName) {
     
 	EXPECT_EQ("simpletagname", pred.GetTagName());
 	EXPECT_EQ(nullptr, pred.GetAttributePredicate());
-	EXPECT_EQ(-1, pred.GetDocumentDepthPredicate());
+	EXPECT_EQ(0, pred.GetDocumentDepthPredicate());
 }
 
 TEST(XmlExpression, ReadPredicateReturnsPredicateForSimpleTagNameWithDepth) {
@@ -432,7 +432,7 @@ TEST(XmlExpression, ReadPredicateReturnsPredicateForSimpleTagNameWithDepth) {
     
 	EXPECT_EQ("simpletagname", pred.GetTagName());
 	EXPECT_EQ(nullptr, pred.GetAttributePredicate());
-	EXPECT_EQ(0, pred.GetDocumentDepthPredicate());
+	EXPECT_EQ(-1, pred.GetDocumentDepthPredicate());
 }
 
 TEST(XmlExpression, ReadPredicateReturnsPredicateForSimpleTagNameWithAttributeDoubleQuote) {
