@@ -5,7 +5,7 @@
 using namespace std;
 
 XmlExpression::XmlExpression()
-:	m_predicates{}, m_matchingElements{}
+:	m_predicates{}, m_matches{}
 {}
 
 void XmlExpression::AddPredicate(XmlPredicate predicate)
@@ -32,13 +32,13 @@ int XmlExpression::ProcessEndTag(const char* tagName)
 {
 	--m_documentDepth;
 	
-	const auto matchIndex = m_matchingElements.size();
+	const auto matchIndex = m_matches.size();
 	
 	// Does this closing tag close the last matched tag?
-	if ((matchIndex > 0) && m_matchingElements.top().GetTagName() == tagName)
+	if ((matchIndex > 0) && m_matches.top().element.GetTagName() == tagName)
 	{
 		// It does
-		m_matchingElements.pop();
+		m_matches.pop();
 
 		if (matchIndex == m_predicates.size())
 		{
@@ -88,7 +88,7 @@ XmlPredicate XmlExpression::ReadPredicate(XPathTokeniser& tokeniser, XPathToken&
 
 	if (token.GetType() == XPathToken::TOK_SLASH)
 	{
-		depthPredicate = 0;
+		depthPredicate = 1;
 	}
 	else if (token.GetType() != XPathToken::TOK_DBLSLASH)
 	{

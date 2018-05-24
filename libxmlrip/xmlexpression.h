@@ -27,19 +27,28 @@ public:
 	
 	enum NoMatch {NO_MATCH = -1};
 
+private:
+	struct Match { XmlElement element; int documentDepth; };
 
 private:
 	std::vector<XmlPredicate> m_predicates;
-	std::stack<XmlElement> m_matchingElements;
+	std::stack<Match> m_matches;
 	int m_matchDepth = NO_MATCH;
 	int m_documentDepth = 0;
 };
 
 template<class T> int XmlExpression::ProcessStartTag(const char* tagName, const T& attributes)
 {
+	int lastMatchDocumentDepth = 0;
+	
 	++m_documentDepth;
 	
-	const auto matchIndex = m_matchingElements.size();
+	const auto matchIndex = m_matches.size();
+	
+	if (matchIndex > 0)
+	{
+		lastMatchDocumentDepth = m_matches.top().documentDepth;
+	}
 	
 	// If we already have a full match for all predicates
 	if (matchIndex == m_predicates.size())
@@ -49,9 +58,10 @@ template<class T> int XmlExpression::ProcessStartTag(const char* tagName, const 
 
 	auto& nextPredicate = m_predicates[matchIndex];
 	
-	if (nextPredicate.IsMatch(tagName, attributes, m_documentDepth - 1))
+	if (nextPredicate.IsMatch(tagName, attributes, m_documentDepth - lastMatchDocumentDepth))
 	{
-		m_matchingElements.push(XmlElement{XmlElement::Type::tag, tagName, attributes, true, false});
+		//m_matchingElements.push(XmlElement{XmlElement::Type::tag, tagName, attributes, true, false});
+		m_matches.push(Match { XmlElement{XmlElement::Type::tag, tagName, attributes, true, false}, m_documentDepth });
 		
 		if (matchIndex == (m_predicates.size() - 1))
 		{
