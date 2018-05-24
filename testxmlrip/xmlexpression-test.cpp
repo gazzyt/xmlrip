@@ -121,59 +121,6 @@ TEST(XmlExpression, ProcessStartTagReturnsZeroWithSingleTagExpressionWhenTagMatc
 	EXPECT_EQ(0, result);
 }
 
-TEST(XmlExpression, ProcessStartTagReturnsZeroForSecondTagWhenTagsMatchWithSingleSlashes) {
-	// Arrange
-	auto expr = XmlExpression::FromText("/aa/bb");
-	LibXmlAttributeCollection attrs{ nullptr };
-	expr->ProcessStartTag("aa", attrs);
-	
-	// Act
-	auto result = expr->ProcessStartTag("bb", attrs);
-    
-	// Assert
-	EXPECT_EQ(0, result);
-}
-
-TEST(XmlExpression, ProcessStartTagReturnsNoMatchForSecondTagWhenTagsNamesMatchButDepthDoesNot) {
-	// Arrange
-	auto expr = XmlExpression::FromText("/bb");
-	LibXmlAttributeCollection attrs{ nullptr };
-	expr->ProcessStartTag("aa", attrs);
-	
-	// Act
-	auto result = expr->ProcessStartTag("bb", attrs);
-    
-	// Assert
-	EXPECT_EQ(XmlExpression::NO_MATCH, result);
-}
-
-TEST(XmlExpression, ProcessStartTagReturnsZeroForSecondTagWhenTagsNamesMatchAndDepthDoesNotMatter) {
-	// Arrange
-	auto expr = XmlExpression::FromText("//bb");
-	LibXmlAttributeCollection attrs{ nullptr };
-	expr->ProcessStartTag("aa", attrs);
-	
-	// Act
-	auto result = expr->ProcessStartTag("bb", attrs);
-    
-	// Assert
-	EXPECT_EQ(0, result);
-}
-
-TEST(XmlExpression, ProcessStartTagReturnsZeroForSecondTagWhenTagsMatchWithDoubleSlashes) {
-	// Arrange
-	auto expr = XmlExpression::FromText("//aa//bb");
-	LibXmlAttributeCollection attrs{ nullptr };
-	expr->ProcessStartTag("xx", attrs);
-	expr->ProcessStartTag("aa", attrs);
-	expr->ProcessStartTag("yy", attrs);
-
-	// Act
-	auto result = expr->ProcessStartTag("bb", attrs);
-    
-	// Assert
-	EXPECT_EQ(0, result);
-}
 
 TEST(XmlExpression, ProcessStartTagReturnsNoMatchWithSingleTagExpressionWhenTagDoesNotMatch) {
 	// Arrange
