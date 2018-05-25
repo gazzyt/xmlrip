@@ -17,6 +17,7 @@ template <class T> class LibXmlXPathProcessor
 {
 public:
 	static void Run(const char* fileName, std::unique_ptr<XmlExpression> expr);
+	static void Run(const char* xmlText, int xmlTextLength, std::unique_ptr<XmlExpression> expr, T& printer);
 
 	LibXmlXPathProcessor() = delete;
 	
@@ -31,10 +32,10 @@ private:
 
 	struct ParserState {
 		std::unique_ptr<XmlExpression> expr;
-		const T& printer;
+		T& printer;
 		int return_val;
 		
-		ParserState(std::unique_ptr<XmlExpression> e, const T& p)
+		ParserState(std::unique_ptr<XmlExpression> e, T& p)
 		: expr{std::move(e)}, printer{p}, return_val{0} {}
 	};
 
@@ -125,10 +126,18 @@ void LibXmlXPathProcessor<T>::Characters(void *ctx, const xmlChar *chars, int le
 template <class T>
 void LibXmlXPathProcessor<T>::Run(const char* fileName, std::unique_ptr<XmlExpression> expr)
 {
-	LibXmlPrint print;
+	T print;
 	struct ParserState state {move(expr), print};
 
 	xmlSAXUserParseFile(&m_handler, &state, fileName);
+}
+
+template <class T>
+void LibXmlXPathProcessor<T>::Run(const char* xmlText, int xmlTextLength, std::unique_ptr<XmlExpression> expr, T& printer)
+{
+	struct ParserState state {move(expr), printer};
+
+	xmlSAXUserParseMemory(&m_handler, &state, xmlText, xmlTextLength);
 }
 
 template <class T>

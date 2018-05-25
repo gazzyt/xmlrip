@@ -3,9 +3,12 @@
 #include "gtest/gtest.h"
 #pragma GCC diagnostic pop
 
+#include "recordingprinter.h"
+#include "libxmlxpathprocessor.h"
 #include "libxmlattributecollection.h"
 #include "xmlexpression.h"
 #include "exception/xpathexception.h"
+#include "customprinters.h"
 
 using namespace std;
 
@@ -49,6 +52,30 @@ TEST(XPath, OneLevelXPathAnyDepth) {
 	// Assert
 	EXPECT_EQ(XmlExpression::NO_MATCH, result1);
 	EXPECT_EQ(0, result2);
+}
+
+TEST(XPath, E2EOneLevelXPathAnyDepth) {
+	// Arrange
+	vector<RecordingPrinterItem> expected = {
+		RecordingPrinterItem{RecordingPrinterItem::START_ELEMENT, "bb"},
+		RecordingPrinterItem{RecordingPrinterItem::END_ELEMENT, ""},
+	};
+	
+	string xmlText{"<aa><bb></bb></aa>"};
+	auto expr = XmlExpression::FromText("//bb");
+	RecordingPrinter printer;
+	//auto processor = 
+	LibXmlAttributeCollection attrs{ nullptr };
+	
+	// Act
+	LibXmlXPathProcessor<RecordingPrinter>::Run(xmlText.c_str(), xmlText.length(), move(expr), printer);
+//	auto result1 = expr->ProcessStartTag("aa", attrs);
+	//auto result2 = expr->ProcessStartTag("bb", attrs);
+    
+	// Assert
+	EXPECT_EQ(expected, printer.GetRecordedItems());
+	//EXPECT_EQ(XmlExpression::NO_MATCH, result1);
+	//EXPECT_EQ(0, result2);
 }
 
 TEST(XPath, TwoLevelXPathAnyDepth) {

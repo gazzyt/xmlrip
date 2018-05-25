@@ -23,6 +23,7 @@ endif()
 
 set( BUILD_TEST_MANIFEST
     main.cpp
+	recordingprinter.cpp
     xmlpredicate-test.cpp
 	xpathtoken-test.cpp
 	xpathtokeniser-test.cpp
@@ -36,13 +37,15 @@ set( BUILD_TEST_MANIFEST
 )
 
 set( BUILD_TEST_MANIFEST_HEADERS
+	recordingprinter.h
+	recordingprinteritem.h
 )
 
 add_executable( testxmlrip ${BUILD_TEST_MANIFEST} ${BUILD_TEST_MANIFEST_HEADERS})
 
 #add_dependencies (testxmlrip googletest)
 
-target_link_libraries( testxmlrip libxmlrip gtest)
+target_link_libraries( testxmlrip libxmlrip ${LIBXML2_LIBRARIES} gtest)
 target_include_directories( testxmlrip PUBLIC "${CMAKE_SOURCE_DIR}/libxmlrip"  )
 
 
