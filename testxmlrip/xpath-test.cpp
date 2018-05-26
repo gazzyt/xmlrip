@@ -93,3 +93,16 @@ TEST(XPath, ThreeLevelXPathFromRootMultipleMatches) {
 	// Act
 	RunE2ETest("<aa><bb><cc/><cc/></bb><bb/><bb><cc><dd/></cc></bb></aa>", "/aa/bb/cc", expected);
 }
+
+TEST(XPath, TwoLevelXPathWithAttribute) {
+	// Arrange
+	vector<RecordingPrinterItem> expected = {
+		RecordingPrinterItem{RecordingPrinterItem::START_ELEMENT, "bb", vector<pair<string, string>>{{"a", "1"}}},
+		RecordingPrinterItem{RecordingPrinterItem::END_ELEMENT, ""},
+		RecordingPrinterItem{RecordingPrinterItem::START_ELEMENT, "bb", vector<pair<string, string>>{{"a", "1"},{"b", "2"}}},
+		RecordingPrinterItem{RecordingPrinterItem::END_ELEMENT, ""},
+	};
+
+	// Act
+	RunE2ETest("<aa><bb a='1'></bb><bb a='1' b='2'/><bb a='2'></bb></aa>", "/aa/bb[@a='1']", expected);
+}

@@ -13,7 +13,14 @@ RecordingPrinter::~RecordingPrinter()
 
 void RecordingPrinter::StartElement(const char* tagName, LibXmlAttributeCollection attrs)
 {
-	m_items.push_back(RecordingPrinterItem(RecordingPrinterItem::START_ELEMENT, tagName));
+	std::vector<std::pair<std::string, std::string>> attribs;
+	
+	for (auto iter = begin(attrs); iter != end(attrs); ++iter)
+	{
+		attribs.push_back(pair<string, string>((char*) iter->first, (char*) iter->second));
+	}
+
+	m_items.push_back(RecordingPrinterItem(RecordingPrinterItem::START_ELEMENT, tagName, move(attribs)));
 }
 
 void RecordingPrinter::EndElement()

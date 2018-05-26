@@ -19,7 +19,10 @@ inline void PrintTo(const XmlAttribute& attr, ::std::ostream* os)
 
 inline void PrintTo(const RecordingPrinterItem& item, ::std::ostream* os)
 {
-	*os << "{ " << item.GetType() << ", \"" << item.GetText() << "\" }";
+	*os << "{ " << item.GetType() << ", \"" << item.GetText() << "\", ";
+	*os << ::testing::PrintToString(item.GetAttributes());
+	*os << " }";
+	
 }
 
 #endif
