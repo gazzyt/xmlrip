@@ -3,69 +3,106 @@
 #include "gtest/gtest.h"
 #pragma GCC diagnostic pop
 
+#include "recordingprinter.h"
+#include "libxmlxpathprocessor.h"
 #include "libxmlattributecollection.h"
 #include "xmlexpression.h"
 #include "exception/xpathexception.h"
+#include "customprinters.h"
 
 using namespace std;
 
-TEST(XPath, TwoLevelXPath) {
+void RunE2ETest(const string& xmlText, const string& xpathText, const vector<RecordingPrinterItem>& expected) 
+{
 	// Arrange
-	auto expr = XmlExpression::FromText("/aa/bb");
-	LibXmlAttributeCollection attrs{ nullptr };
+	auto expr = XmlExpression::FromText(xpathText);
+	RecordingPrinter printer;
 	
 	// Act
-	auto result1 = expr->ProcessStartTag("aa", attrs);
-	auto result2 = expr->ProcessStartTag("bb", attrs);
+	LibXmlXPathProcessor<RecordingPrinter>::Run(xmlText.c_str(), xmlText.length(), move(expr), printer);
     
 	// Assert
-	EXPECT_EQ(XmlExpression::NO_MATCH, result1);
-	EXPECT_EQ(0, result2);
+	EXPECT_EQ(expected, printer.GetRecordedItems());
+}
+
+TEST(XPath, TwoLevelXPathFromRoot) {
+	// Arrange
+	vector<RecordingPrinterItem> expected = {
+		RecordingPrinterItem{RecordingPrinterItem::START_ELEMENT, "bb"},
+		RecordingPrinterItem{RecordingPrinterItem::END_ELEMENT, ""},
+	};
+	
+	// Act
+	RunE2ETest("<aa><bb></bb></aa>", "/aa/bb", expected);
 }
 
 TEST(XPath, OneLevelXPathFromRoot) {
 	// Arrange
-	auto expr = XmlExpression::FromText("/bb");
-	LibXmlAttributeCollection attrs{ nullptr };
+	vector<RecordingPrinterItem> expected;
 	
 	// Act
-	auto result1 = expr->ProcessStartTag("aa", attrs);
-	auto result2 = expr->ProcessStartTag("bb", attrs);
-    
-	// Assert
-	EXPECT_EQ(XmlExpression::NO_MATCH, result1);
-	EXPECT_EQ(XmlExpression::NO_MATCH, result2);
+	RunE2ETest("<aa><bb></bb></aa>", "/bb", expected);
 }
 
 TEST(XPath, OneLevelXPathAnyDepth) {
 	// Arrange
-	auto expr = XmlExpression::FromText("//bb");
-	LibXmlAttributeCollection attrs{ nullptr };
+	vector<RecordingPrinterItem> expected = {
+		RecordingPrinterItem{RecordingPrinterItem::START_ELEMENT, "bb"},
+		RecordingPrinterItem{RecordingPrinterItem::END_ELEMENT, ""},
+	};
 	
 	// Act
-	auto result1 = expr->ProcessStartTag("aa", attrs);
-	auto result2 = expr->ProcessStartTag("bb", attrs);
-    
-	// Assert
-	EXPECT_EQ(XmlExpression::NO_MATCH, result1);
-	EXPECT_EQ(0, result2);
+	RunE2ETest("<aa><bb></bb></aa>", "//bb", expected);
 }
 
 TEST(XPath, TwoLevelXPathAnyDepth) {
 	// Arrange
-	auto expr = XmlExpression::FromText("//aa//bb");
-	LibXmlAttributeCollection attrs{ nullptr };
+	vector<RecordingPrinterItem> expected = {
+		RecordingPrinterItem{RecordingPrinterItem::START_ELEMENT, "bb"},
+		RecordingPrinterItem{RecordingPrinterItem::END_ELEMENT, ""},
+	};
 
 	// Act
-	auto result1 = expr->ProcessStartTag("xx", attrs);
-	auto result2 = expr->ProcessStartTag("aa", attrs);
-	auto result3 = expr->ProcessStartTag("yy", attrs);
-	auto result4 = expr->ProcessStartTag("bb", attrs);
-    
-	// Assert
-	EXPECT_EQ(XmlExpression::NO_MATCH, result1);
-	EXPECT_EQ(XmlExpression::NO_MATCH, result2);
-	EXPECT_EQ(XmlExpression::NO_MATCH, result3);
-	EXPECT_EQ(0, result4);
+	RunE2ETest("<xx><aa><yy><bb></bb></yy></aa></xx>", "//aa//bb", expected);
 }
 
+TEST(XPath, TwoLevelXPathAnyDepthConsecutive) {
+	// Arrange
+	vector<RecordingPrinterItem> expected = {
+		RecordingPrinterItem{RecordingPrinterItem::START_ELEMENT, "bb"},
+		RecordingPrinterItem{RecordingPrinterItem::END_ELEMENT, ""},
+	};
+
+	// Act
+	RunE2ETest("<xx><aa><yy><bb></bb></yy><bb/></aa></xx>", "//aa/bb", expected);
+}
+
+TEST(XPath, ThreeLevelXPathFromRootMultipleMatches) {
+	// Arrange
+	vector<RecordingPrinterItem> expected = {
+		RecordingPrinterItem{RecordingPrinterItem::START_ELEMENT, "cc"},
+		RecordingPrinterItem{RecordingPrinterItem::END_ELEMENT, ""},
+		RecordingPrinterItem{RecordingPrinterItem::START_ELEMENT, "cc"},
+		RecordingPrinterItem{RecordingPrinterItem::END_ELEMENT, ""},
+		RecordingPrinterItem{RecordingPrinterItem::START_ELEMENT, "cc"},
+		RecordingPrinterItem{RecordingPrinterItem::START_ELEMENT, "dd"},
+		RecordingPrinterItem{RecordingPrinterItem::END_ELEMENT, ""},
+		RecordingPrinterItem{RecordingPrinterItem::END_ELEMENT, ""},
+	};
+
+	// Act
+	RunE2ETest("<aa><bb><cc/><cc/></bb><bb/><bb><cc><dd/></cc></bb></aa>", "/aa/bb/cc", expected);
+}
+
+TEST(XPath, TwoLevelXPathWithAttribute) {
+	// Arrange
+	vector<RecordingPrinterItem> expected = {
+		RecordingPrinterItem{RecordingPrinterItem::START_ELEMENT, "bb", vector<pair<string, string>>{{"a", "1"}}},
+		RecordingPrinterItem{RecordingPrinterItem::END_ELEMENT, ""},
+		RecordingPrinterItem{RecordingPrinterItem::START_ELEMENT, "bb", vector<pair<string, string>>{{"a", "1"},{"b", "2"}}},
+		RecordingPrinterItem{RecordingPrinterItem::END_ELEMENT, ""},
+	};
+
+	// Act
+	RunE2ETest("<aa><bb a='1'></bb><bb a='1' b='2'/><bb a='2'></bb></aa>", "/aa/bb[@a='1']", expected);
+}

@@ -25,7 +25,6 @@ set( BUILD_LIBXMLRIP_MANIFEST
 	customstreamflags.cpp
 	xmlstreammodifiers.cpp
 	libxmlprint.cpp
-	libxmlxpathprocessor.cpp
 	libxmlutils.cpp
 	porting.cpp
 	exception/baseexception.cpp

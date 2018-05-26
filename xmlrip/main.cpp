@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 
+#include "libxmlprint.h"
 #include "libxmlxpathprocessor.h"
 #include "xmlexpression.h"
 #include "exception/baseexception.h"
@@ -27,7 +28,7 @@ int main(int argc, char** argv)
 	try
 	{
 		auto expr = XmlExpression::FromText(xpathText);
-		LibXmlXPathProcessor::Run(argv[1], move(expr));
+		LibXmlXPathProcessor<LibXmlPrint>::Run(argv[1], move(expr));
 	}
 	catch(BaseException& e)
 	{
