@@ -1,6 +1,7 @@
 #ifndef LIBXMLXPATHPROCESSOR_H
 #define LIBXMLXPATHPROCESSOR_H
 
+#include <cassert>
 #include <istream>
 #include <memory>
 
