@@ -16,9 +16,9 @@ void RecordingPrinter::StartElement(const char* tagName, LibXmlAttributeCollecti
 {
 	std::vector<std::pair<std::string, std::string>> attribs;
 	
-	for (auto iter = begin(attrs); iter != end(attrs); ++iter)
+	for (auto attribute : attrs)
 	{
-		attribs.push_back(pair<string, string>((char*) iter->first, (char*) iter->second));
+		attribs.push_back(pair<string, string>((char*)attribute.first, (char*)attribute.second));
 	}
 
 	m_items.push_back(RecordingPrinterItem(RecordingPrinterItem::START_ELEMENT, tagName, move(attribs)));

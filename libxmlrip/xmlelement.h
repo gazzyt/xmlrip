@@ -47,9 +47,9 @@ private:
 template<class T> XmlElement::XmlElement(Type type, const std::string& tagName, const T& attributes, bool isOpeningTag, bool isClosingTag) noexcept
 	: m_type{ type }, m_tagName{ tagName }, m_attributes{}, m_isOpeningTag{ isOpeningTag }, m_isClosingTag{ isClosingTag }
 {
-	for (auto iter = std::begin(attributes); iter != std::end(attributes); ++iter)
+	for (auto attribute : attributes)
 	{
-		m_attributes.push_back(XmlAttribute{ iter->first, iter->second });
+		m_attributes.push_back(XmlAttribute{ attribute.first, attribute.second });
 	}
 }
 

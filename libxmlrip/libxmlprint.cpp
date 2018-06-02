@@ -33,9 +33,9 @@ void LibXmlPrint::StartElement(const char* tagName, LibXmlAttributeCollection at
         throw PrintException("Error at xmlTextWriterStartElement");
     }
 	
-	for (auto iter = begin(attrs); iter != end(attrs); ++iter)
+	for (auto attribute : attrs)
 	{
-		rc = xmlTextWriterWriteAttribute(m_writer, BAD_CAST iter->first, BAD_CAST iter->second);
+		rc = xmlTextWriterWriteAttribute(m_writer, BAD_CAST attribute.first, BAD_CAST attribute.second);
 		if (rc < 0) {
 			throw PrintException("Error at xmlTextWriterWriteAttribute\n");
 		}

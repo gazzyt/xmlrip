@@ -17,10 +17,7 @@ TEST(LibXmlAttributeCollection, MemberBeginIteratesTwoTimes) {
 	unsigned count = 0;
 
 	//Act
-	for (auto iter = coll.begin(); iter != coll.end(); ++iter)
-	{
-		++count;
-	}
+	for_each(begin(coll), end(coll), [&](auto) {++count; });
 
 	// Assert
 	EXPECT_EQ(2U, count);
@@ -32,10 +29,7 @@ TEST(LibXmlAttributeCollection, GlobalBeginIteratesTwoTimes) {
 	unsigned count = 0;
 
 	//Act
-	for (auto iter = begin(coll); iter != end(coll); ++iter)
-	{
-		++count;
-	}
+	for_each(begin(coll), end(coll), [&](auto) {++count; });
 
 	// Assert
 	EXPECT_EQ(2U, count);

@@ -42,9 +42,9 @@ template<class T> bool XmlPredicate::IsMatch(const char* tagName, const T& attri
 	if (!m_attributePredicate)
 		return true;
 
-	for (auto iter = std::begin(attributes); iter != std::end(attributes); ++iter)
+	for (auto attribute : attributes)
 	{
-		if (m_attributePredicate->GetName() == iter->first && m_attributePredicate->GetValue() == iter->second)
+		if (m_attributePredicate->GetName() == attribute.first && m_attributePredicate->GetValue() == attribute.second)
 		{
 			return true;
 		}
