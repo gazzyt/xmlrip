@@ -61,7 +61,7 @@ int XmlExpression::ProcessEndTag(const char* tagName)
 	return NO_MATCH;
 }
 
-unique_ptr<XmlExpression> XmlExpression::FromText(string text)
+unique_ptr<XmlExpression> XmlExpression::FromText(const string& text)
 {
 	auto retval = make_unique<XmlExpression>();
 	XPathTokeniser tokeniser{ text };

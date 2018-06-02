@@ -9,7 +9,7 @@
 class XmlPredicate
 {
 public:
-	XmlPredicate(std::string tagName, std::unique_ptr<XmlAttribute> attributePredicate = std::unique_ptr<XmlAttribute>(),
+	XmlPredicate(const std::string& tagName, std::unique_ptr<XmlAttribute> attributePredicate = std::unique_ptr<XmlAttribute>(),
 		int documentDepthPredicate = -1);
 	XmlPredicate(const XmlPredicate& rhs);
 

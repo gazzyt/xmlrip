@@ -10,11 +10,11 @@ XmlElement::XmlElement() noexcept
 	: m_type{Type::tag}, m_tagName{}, m_attributes{}, m_isOpeningTag{false}, m_isClosingTag{false}
 {}
 
-XmlElement::XmlElement(XmlElement::Type type, string tagName, bool isOpeningTag, bool isClosingTag) noexcept
+XmlElement::XmlElement(XmlElement::Type type, const string& tagName, bool isOpeningTag, bool isClosingTag) noexcept
 	: m_type{type}, m_tagName{tagName}, m_attributes{}, m_isOpeningTag{isOpeningTag}, m_isClosingTag{isClosingTag}
 {}
 
-XmlElement::XmlElement(XmlElement::Type type, string tagName, vector<XmlAttribute>&& attributes, bool isOpeningTag, bool isClosingTag) noexcept
+XmlElement::XmlElement(XmlElement::Type type, const string& tagName, vector<XmlAttribute>&& attributes, bool isOpeningTag, bool isClosingTag) noexcept
 	: m_type{type}, m_tagName{tagName}, m_attributes{move(attributes)}, m_isOpeningTag{isOpeningTag}, m_isClosingTag{isClosingTag}
 {}
 

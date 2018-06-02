@@ -6,7 +6,7 @@
 
 using namespace std;
 
-XmlPredicate::XmlPredicate(string tagName, std::unique_ptr<XmlAttribute> attributePredicate, int documentDepthPredicate)
+XmlPredicate::XmlPredicate(const string& tagName, std::unique_ptr<XmlAttribute> attributePredicate, int documentDepthPredicate)
 	:	m_tagName(tagName), m_attributePredicate(move(attributePredicate)),
 		m_documentDepthPredicate(documentDepthPredicate)
 {}

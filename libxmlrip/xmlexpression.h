@@ -22,7 +22,7 @@ public:
 	template<class T> int ProcessStartTag(const char* tagName, const T& attributes);
 	int ProcessEndTag(const char* tagName);
 	
-	static std::unique_ptr<XmlExpression> FromText(std::string text);
+	static std::unique_ptr<XmlExpression> FromText(const std::string& text);
 	static XmlPredicate ReadPredicate(XPathTokeniser& tokeniser, XPathToken& token);
 	
 	enum NoMatch {NO_MATCH = -1};
