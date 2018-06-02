@@ -1,3 +1,4 @@
+#include <cassert>
 #include "recordingprinter.h"
 
 using namespace std;
@@ -30,5 +31,6 @@ void RecordingPrinter::EndElement()
 
 void RecordingPrinter::PrintText(const char* text, int length)
 {
-	m_items.push_back(RecordingPrinterItem{RecordingPrinterItem::TEXT, string{text, (size_t)length}});
+	assert(length >= 0);
+	m_items.push_back(RecordingPrinterItem{RecordingPrinterItem::TEXT, string{text, static_cast<size_t>(length)}});
 }
