@@ -11,10 +11,10 @@ TEST(LibXmlUtils, IsSpaceReturnsFalseForStringWithNonSpaceChars) {
 	// Arrange
 	const char* testString = "some text";
 	const xmlChar* testXmlString = reinterpret_cast<const xmlChar *>(testString);
-	int len = strlen(testString);
+	auto len = strlen(testString);
 	
 	// Act
-	bool result = isspace(testXmlString, len);
+	bool result = isspace(testXmlString, static_cast<int>(len));
 	
 	// Assert
 	EXPECT_FALSE(result);
@@ -24,10 +24,10 @@ TEST(LibXmlUtils, IsSpaceReturnsTrueForNewlineString) {
 	// Arrange
 	const char* testString = "\n";
 	const xmlChar* testXmlString = reinterpret_cast<const xmlChar *>(testString);
-	int len = strlen(testString);
+	auto len = strlen(testString);
 	
 	// Act
-	bool result = isspace(testXmlString, len);
+	bool result = isspace(testXmlString, static_cast<int>(len));
 	
 	// Assert
 	EXPECT_TRUE(result);

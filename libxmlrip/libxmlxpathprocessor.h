@@ -17,7 +17,7 @@ template <class T> class LibXmlXPathProcessor
 {
 public:
 	static void Run(const char* fileName, std::unique_ptr<XmlExpression> expr);
-	static void Run(const char* xmlText, int xmlTextLength, std::unique_ptr<XmlExpression> expr, T& printer);
+	static void Run(const char* xmlText, size_t xmlTextLength, std::unique_ptr<XmlExpression> expr, T& printer);
 
 	LibXmlXPathProcessor() = delete;
 	
@@ -133,11 +133,13 @@ void LibXmlXPathProcessor<T>::Run(const char* fileName, std::unique_ptr<XmlExpre
 }
 
 template <class T>
-void LibXmlXPathProcessor<T>::Run(const char* xmlText, int xmlTextLength, std::unique_ptr<XmlExpression> expr, T& printer)
+void LibXmlXPathProcessor<T>::Run(const char* xmlText, size_t xmlTextLength, std::unique_ptr<XmlExpression> expr, T& printer)
 {
 	struct ParserState state {move(expr), printer};
 
-	xmlSAXUserParseMemory(&m_handler, &state, xmlText, xmlTextLength);
+	assert(xmlTextLength < std::numeric_limits<int>::max());
+
+	xmlSAXUserParseMemory(&m_handler, &state, xmlText, static_cast<int>(xmlTextLength));
 }
 
 template <class T>
