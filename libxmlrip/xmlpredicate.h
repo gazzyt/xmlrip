@@ -14,6 +14,7 @@ public:
 	XmlPredicate(const XmlPredicate& rhs);
 
 public:
+	XmlPredicate & operator=(const XmlPredicate& rhs) = delete;
 	template<class T> bool IsMatch(const char* tagName, const T& attributes, int documentDepth) const;
 	const std::string& GetTagName() const;
 	const XmlAttribute* GetAttributePredicate() const;
