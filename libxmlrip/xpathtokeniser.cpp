@@ -57,7 +57,7 @@ XPathToken XPathTokeniser::ExtractSingleCharToken(XPathToken::TokenType type, co
 
 XPathToken XPathTokeniser::ExtractSlashToken(const std::string::const_iterator& currentTokenStart)
 {
-	string::const_iterator nextChar{m_nextTokenStart + 1};
+	const auto nextChar = m_nextTokenStart + 1;
 	
 	if (nextChar != m_xpathTextEnd && *nextChar == '/')
 	{
