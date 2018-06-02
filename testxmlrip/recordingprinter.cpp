@@ -30,5 +30,5 @@ void RecordingPrinter::EndElement()
 
 void RecordingPrinter::PrintText(const char* text, int length)
 {
-	m_items.push_back(RecordingPrinterItem{RecordingPrinterItem::TEXT, string{text, length}});
+	m_items.push_back(RecordingPrinterItem{RecordingPrinterItem::TEXT, string{text, (size_t)length}});
 }
