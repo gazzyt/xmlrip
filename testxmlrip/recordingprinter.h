@@ -18,6 +18,7 @@ public:
 	void StartElement(const char* tagName, LibXmlAttributeCollection attrs);
 	void EndElement();
 	void PrintText(const char* text, int length);
+	void PrintCData(const char* text, int length);
 	
 	const std::vector<RecordingPrinterItem>& GetRecordedItems() const { return m_items; }
 	

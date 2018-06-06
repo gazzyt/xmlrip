@@ -6,7 +6,7 @@
 class RecordingPrinterItem
 {
 public:
-	enum ItemType { START_ELEMENT, END_ELEMENT, TEXT };
+	enum ItemType { START_ELEMENT, END_ELEMENT, TEXT, CDATA };
 	
 public:
 	RecordingPrinterItem(ItemType type, const std::string& text)

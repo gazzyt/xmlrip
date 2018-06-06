@@ -106,3 +106,27 @@ TEST(XPath, TwoLevelXPathWithAttribute) {
 	// Act
 	RunE2ETest("<aa><bb a='1'></bb><bb a='1' b='2'/><bb a='2'></bb></aa>", "/aa/bb[@a='1']", expected);
 }
+
+TEST(XPath, SimpleXPathWithText) {
+	// Arrange
+	vector<RecordingPrinterItem> expected = {
+		RecordingPrinterItem{RecordingPrinterItem::START_ELEMENT, "aa"},
+		RecordingPrinterItem{RecordingPrinterItem::TEXT, "Here is the text"},
+		RecordingPrinterItem{RecordingPrinterItem::END_ELEMENT, ""},
+	};
+
+	// Act
+	RunE2ETest("<aa>Here is the text</aa>", "/aa", expected);
+}
+
+TEST(XPath, SimpleXPathWithCData) {
+	// Arrange
+	vector<RecordingPrinterItem> expected = {
+		RecordingPrinterItem{RecordingPrinterItem::START_ELEMENT, "aa"},
+		RecordingPrinterItem{RecordingPrinterItem::CDATA, "Here is the cdata"},
+		RecordingPrinterItem{RecordingPrinterItem::END_ELEMENT, ""},
+	};
+
+	// Act
+	RunE2ETest("<aa><![CDATA[Here is the cdata]]></aa>", "/aa", expected);
+}

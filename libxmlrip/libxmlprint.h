@@ -18,6 +18,7 @@ public:
 	void StartElement(const char* tagName, LibXmlAttributeCollection attrs) const;
 	void EndElement() const;
 	void PrintText(const char* text, int length) const;
+	void PrintCData(const char* text, int length) const;
 	
 private:
 	xmlOutputBufferPtr m_outBuffer;

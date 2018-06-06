@@ -29,6 +29,7 @@ private:
 	static void StartElement(void *ctx, const xmlChar *name, const xmlChar **atts);
 	static void EndElement(void *ctx, const xmlChar *name);
 	static void Characters(void *ctx, const xmlChar *chars, int len);
+	static void CData(void *ctx, const xmlChar *chars, int len);
 	static std::string Indent(int depth);
 
 	struct ParserState {
@@ -70,7 +71,7 @@ xmlSAXHandler LibXmlXPathProcessor<T>::m_handler
 	nullptr, //errorSAXFunc
 	nullptr, //fatalErrorSAXFunc
 	nullptr, //getParameterEntitySAXFunc
-	nullptr, //cdataBlockSAXFunc
+	&CData, //cdataBlockSAXFunc
 	nullptr, //externalSubsetSAXFunc
 	XML_SAX2_MAGIC, //initialized;
 	/* The following fields are extensions available only on version 2 */
@@ -120,6 +121,19 @@ void LibXmlXPathProcessor<T>::Characters(void *ctx, const xmlChar *chars, int le
 	{
 		const char* pChars = reinterpret_cast<const char *>(chars);
 		pCtx->printer.PrintText(pChars, len);
+	}
+}
+
+template <class T>
+void LibXmlXPathProcessor<T>::CData(void * ctx, const xmlChar *chars, int len)
+{
+	auto pCtx = reinterpret_cast<ParserState*>(ctx);
+	auto depth = pCtx->expr->GetCurrentMatchDepth();
+	
+	if (depth != XmlExpression::NO_MATCH)
+	{
+		const char* pChars = reinterpret_cast<const char *>(chars);
+		pCtx->printer.PrintCData(pChars, len);
 	}
 }
 

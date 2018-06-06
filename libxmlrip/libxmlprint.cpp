@@ -57,3 +57,11 @@ void LibXmlPrint::PrintText(const char* text, int length) const
         throw PrintException("Error at xmlTextWriterWriteString");
     }
 }
+
+void LibXmlPrint::PrintCData(const char * text, int length) const
+{
+	int rc = xmlTextWriterWriteCDATA(m_writer, BAD_CAST string (text, length).c_str());
+	if (rc < 0) {
+		throw PrintException("Error at xmlTextWriterWriteCDATA");
+	}
+}

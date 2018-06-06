@@ -34,3 +34,9 @@ void RecordingPrinter::PrintText(const char* text, int length)
 	assert(length >= 0);
 	m_items.push_back(RecordingPrinterItem{RecordingPrinterItem::TEXT, string{text, static_cast<size_t>(length)}});
 }
+
+void RecordingPrinter::PrintCData(const char* text, int length)
+{
+	assert(length >= 0);
+	m_items.push_back(RecordingPrinterItem{RecordingPrinterItem::CDATA, string{text, static_cast<size_t>(length)}});
+}
