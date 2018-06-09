@@ -1,3 +1,4 @@
+#include <cstring>
 #include <ostream>
 
 #include "xmlstreammodifiers.h"
@@ -27,6 +28,13 @@ const string& XmlAttributePredicate::GetValue() const
 
 bool XmlAttributePredicate::IsMatch(const char* name, const char* value) const noexcept
 {
-	return ((m_name == name) && (m_value == value));
+	if (m_mode == MODE_EQUAL)
+	{
+		return ((m_name == name) && (m_value == value));
+	}
+	else
+	{
+		return ((m_name == name) && (::strlen(value) >= m_value.length()) && (::memcmp(value, m_value.c_str(), m_value.length()) == 0));
+	}
 }
 
