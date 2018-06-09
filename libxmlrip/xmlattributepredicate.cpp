@@ -6,10 +6,14 @@
 
 using namespace std;
 
-XmlAttributePredicate::XmlAttributePredicate(string&& attrName, string&& attrValue) noexcept
-	: m_name{attrName}, m_value{attrValue}
+XmlAttributePredicate::XmlAttributePredicate(Mode mode, string&& attrName, string&& attrValue) noexcept
+	: m_mode{mode}, m_name{attrName}, m_value{attrValue}
 {}
 
+XmlAttributePredicate::Mode XmlAttributePredicate::GetMode() const
+{
+	return m_mode;
+}
 
 const string& XmlAttributePredicate::GetName() const
 {

@@ -17,9 +17,10 @@ TEST(XmlAttributePredicate, CreatesCorrectPredicate) {
 	// Arrange
 	
 	// Act
-	XmlAttributePredicate predicate("aname", "avalue");
+	XmlAttributePredicate predicate(XmlAttributePredicate::MODE_EQUAL, "aname", "avalue");
 	
 	// Assert
+	EXPECT_EQ(XmlAttributePredicate::MODE_EQUAL, predicate.GetMode());
 	EXPECT_EQ("aname", predicate.GetName());
 	EXPECT_EQ("avalue", predicate.GetValue());
 }
@@ -27,7 +28,7 @@ TEST(XmlAttributePredicate, CreatesCorrectPredicate) {
 
 TEST(XmlAttributePredicate, AttributeNoMatchWhenAttributeNameDiffers) {
 	// Arrange
-	XmlAttributePredicate predicate("bname", "avalue");
+	XmlAttributePredicate predicate(XmlAttributePredicate::MODE_EQUAL, "bname", "avalue");
 	
 	// Act
 	
@@ -37,7 +38,7 @@ TEST(XmlAttributePredicate, AttributeNoMatchWhenAttributeNameDiffers) {
 
 TEST(XmlAttributePredicate, AttributeNotMatchWhenAttributeValueDiffers) {
 	// Arrange
-	XmlAttributePredicate predicate("aname", "bvalue");
+	XmlAttributePredicate predicate(XmlAttributePredicate::MODE_EQUAL, "aname", "bvalue");
 	
 	// Act
 	
@@ -47,7 +48,7 @@ TEST(XmlAttributePredicate, AttributeNotMatchWhenAttributeValueDiffers) {
 
 TEST(XmlAttributePredicate, AttributeMatchesWhenNameAndValueSame) {
 	// Arrange
-	XmlAttributePredicate predicate("aname", "avalue");
+	XmlAttributePredicate predicate(XmlAttributePredicate::MODE_EQUAL, "aname", "avalue");
 	
 	// Act
 	

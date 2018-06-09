@@ -145,7 +145,9 @@ XmlPredicate XmlExpression::ReadPredicate(XPathTokeniser& tokeniser, XPathToken&
 
 			token = tokeniser.GetNextToken();
 
-			return XmlPredicate{ elementName, make_unique<XmlAttributePredicate>(move(attributeName), move(attributeValue)), depthPredicate };
+			return XmlPredicate{ elementName, 
+				make_unique<XmlAttributePredicate>(XmlAttributePredicate::MODE_EQUAL, move(attributeName), move(attributeValue)), 
+				depthPredicate };
 		}
 
 	case XPathToken::TOK_DBLSLASH:
