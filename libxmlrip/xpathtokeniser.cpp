@@ -33,6 +33,15 @@ XPathToken XPathTokeniser::GetNextToken()
 		case ']':
 			return ExtractSingleCharToken(XPathToken::TOK_RIGHTSQUAREBRACKET, currentTokenStart);
 
+		case '(':
+			return ExtractSingleCharToken(XPathToken::TOK_LEFTBRACKET, currentTokenStart);
+
+		case ')':
+			return ExtractSingleCharToken(XPathToken::TOK_RIGHTBRACKET, currentTokenStart);
+
+		case ',':
+			return ExtractSingleCharToken(XPathToken::TOK_COMMA, currentTokenStart);
+
 		case '=':
 			return ExtractSingleCharToken(XPathToken::TOK_EQUALS, currentTokenStart);
 	
@@ -72,7 +81,8 @@ XPathToken XPathTokeniser::ExtractSlashToken(const std::string::const_iterator& 
 
 XPathToken XPathTokeniser::ExtractStringToken(const std::string::const_iterator& currentTokenStart)
 {
-	auto stringEnd = find_if_not(currentTokenStart, m_xpathTextEnd, ::isalnum);
+	auto isValidChar = [](char c){return ::isalnum(c) || c == '-';};
+	auto stringEnd = find_if_not(currentTokenStart, m_xpathTextEnd, isValidChar);
 	
 	m_nextTokenStart = stringEnd;
 	

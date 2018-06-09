@@ -225,7 +225,7 @@ TEST(XmlExpression, FromTextThrowsXPathExceptionIfXPathNotBeginWithSlash) {
 	catch (XPathException& e)
 	{
 		exceptionThrown = true;
-		EXPECT_EQ("XPath must begin with / or //", e.GetMessage());
+		EXPECT_STREQ("XPath must begin with / or //", e.what());
 	}
 
 	EXPECT_TRUE(exceptionThrown);
@@ -282,7 +282,7 @@ TEST(XmlExpression, ReadPredicateThrowsXPathExceptionIfXPathNotBeginWithSlash) {
 	catch (XPathException& e)
 	{
 		exceptionThrown = true;
-		EXPECT_EQ("Expected / or //", e.GetMessage());
+		EXPECT_STREQ("Expected / or //", e.what());
 	}
 
 	EXPECT_TRUE(exceptionThrown);
@@ -300,7 +300,7 @@ TEST(XmlExpression, ReadPredicateThrowsXPathExceptionIfXPathNotContainTagName) {
 	catch (XPathException& e)
 	{
 		exceptionThrown = true;
-		EXPECT_EQ("Expected element name", e.GetMessage());
+		EXPECT_STREQ("Expected element name", e.what());
 	}
 
 	EXPECT_TRUE(exceptionThrown);
@@ -318,7 +318,7 @@ TEST(XmlExpression, ReadPredicateThrowsXPathExceptionIfXPathContainDot) {
 	catch (XPathException& e)
 	{
 		exceptionThrown = true;
-		EXPECT_EQ("Unexpected character in XPath: .", e.GetMessage());
+		EXPECT_STREQ("Unexpected character in XPath: .", e.what());
 	}
 
 	EXPECT_TRUE(exceptionThrown);
@@ -336,7 +336,7 @@ TEST(XmlExpression, ReadPredicateThrowsXPathExceptionIfXPathConditionMissingAt) 
 	catch (XPathException& e)
 	{
 		exceptionThrown = true;
-		EXPECT_EQ("Expected @ token", e.GetMessage());
+		EXPECT_STREQ("Expected @ token", e.what());
 	}
 
 	EXPECT_TRUE(exceptionThrown);
@@ -354,7 +354,7 @@ TEST(XmlExpression, ReadPredicateThrowsXPathExceptionIfXPathConditionMissingAttr
 	catch (XPathException& e)
 	{
 		exceptionThrown = true;
-		EXPECT_EQ("Expected attribute name", e.GetMessage());
+		EXPECT_STREQ("Expected attribute name", e.what());
 	}
 
 	EXPECT_TRUE(exceptionThrown);
@@ -372,7 +372,7 @@ TEST(XmlExpression, ReadPredicateThrowsXPathExceptionIfXPathConditionMissingEqua
 	catch (XPathException& e)
 	{
 		exceptionThrown = true;
-		EXPECT_EQ("Expected = token", e.GetMessage());
+		EXPECT_STREQ("Expected = token", e.what());
 	}
 
 	EXPECT_TRUE(exceptionThrown);
@@ -390,7 +390,7 @@ TEST(XmlExpression, ReadPredicateThrowsXPathExceptionIfXPathConditionMissingValu
 	catch (XPathException& e)
 	{
 		exceptionThrown = true;
-		EXPECT_EQ("Expected attribute value", e.GetMessage());
+		EXPECT_STREQ("Expected attribute value", e.what());
 	}
 
 	EXPECT_TRUE(exceptionThrown);
@@ -408,7 +408,7 @@ TEST(XmlExpression, ReadPredicateThrowsXPathExceptionIfXPathConditionClosingBrac
 	catch (XPathException& e)
 	{
 		exceptionThrown = true;
-		EXPECT_EQ("Expected ] token", e.GetMessage());
+		EXPECT_STREQ("Expected ] token", e.what());
 	}
 
 	EXPECT_TRUE(exceptionThrown);

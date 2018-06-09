@@ -9,11 +9,6 @@ BaseException::BaseException(std::string&& message) noexcept
 BaseException::~BaseException() noexcept
 {}
 
-const string& BaseException::GetMessage() const
-{
-	return m_message;
-}
-
 void BaseException::Print(std::ostream& os) const
 {
 	os << m_message;
