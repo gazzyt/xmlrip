@@ -456,6 +456,20 @@ TEST(XmlExpression, ReadPredicateReturnsPredicateForSimpleTagNameWithAttributeSi
     
 	EXPECT_EQ("simpletagname", pred.GetTagName());
 	ASSERT_NE(nullptr, pred.GetAttributePredicate());
+	EXPECT_EQ(XmlAttributePredicate::MODE_EQUAL, pred.GetAttributePredicate()->GetMode());
+	EXPECT_EQ("attr", pred.GetAttributePredicate()->GetName());
+	EXPECT_EQ("val", pred.GetAttributePredicate()->GetValue());
+}
+
+TEST(XmlExpression, ReadPredicateReturnsPredicateForSimpleTagNameWithAttributeStartsWith) {
+    // Arrange
+	
+	// Act
+	XmlPredicate pred = GetTestPredicate("/simpletagname[starts-with(@attr,'val')]");
+    
+	EXPECT_EQ("simpletagname", pred.GetTagName());
+	ASSERT_NE(nullptr, pred.GetAttributePredicate());
+	EXPECT_EQ(XmlAttributePredicate::MODE_STARTSWITH, pred.GetAttributePredicate()->GetMode());
 	EXPECT_EQ("attr", pred.GetAttributePredicate()->GetName());
 	EXPECT_EQ("val", pred.GetAttributePredicate()->GetValue());
 }
