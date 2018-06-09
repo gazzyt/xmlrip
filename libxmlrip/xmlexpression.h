@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "xmlpredicate.h"
+#include "xmlelement.h"
 #include "xpathtoken.h"
 #include "xpathtokeniser.h"
 

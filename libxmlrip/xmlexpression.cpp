@@ -145,13 +145,13 @@ XmlPredicate XmlExpression::ReadPredicate(XPathTokeniser& tokeniser, XPathToken&
 
 			token = tokeniser.GetNextToken();
 
-			return XmlPredicate{ elementName, make_unique<XmlAttribute>(move(attributeName), move(attributeValue)), depthPredicate };
+			return XmlPredicate{ elementName, make_unique<XmlAttributePredicate>(move(attributeName), move(attributeValue)), depthPredicate };
 		}
 
 	case XPathToken::TOK_DBLSLASH:
 	case XPathToken::TOK_SLASH:
 	case XPathToken::TOK_NULL:
-		return (XmlPredicate{ elementName, unique_ptr<XmlAttribute>(), depthPredicate });
+		return (XmlPredicate{ elementName, depthPredicate });
 
 	default:
 		throw XPathException{ "Unexpected token" };

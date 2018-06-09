@@ -1,0 +1,24 @@
+#ifndef XMLATTRIBUTEPREDICATE_H
+#define XMLATTRIBUTEPREDICATE_H
+
+#include <string>
+
+#include "xmlattribute.h"
+
+class XmlAttributePredicate
+{
+public:
+	XmlAttributePredicate(std::string&& attrName, std::string&& attrValue) noexcept;
+
+public:
+	const std::string& GetName() const;
+	const std::string& GetValue() const;
+
+	bool IsMatch(const char* name, const char* value) const noexcept;
+
+private:
+	std::string m_name;
+	std::string m_value;
+};
+
+#endif

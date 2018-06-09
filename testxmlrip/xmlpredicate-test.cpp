@@ -20,7 +20,7 @@ using namespace std;
 
 TEST(XmlPredicate, CopyConstructorWorksWithAttributePredicate) {
 	// Arrange
-	XmlPredicate xp1{"TestTagName", make_unique<XmlAttribute>("attrName", "attrValue")};
+	XmlPredicate xp1{"TestTagName", make_unique<XmlAttributePredicate>("attrName", "attrValue")};
 	
 	// Act
 	XmlPredicate xp2(xp1);
@@ -51,7 +51,7 @@ TEST(XmlPredicate, CopyConstructorWorksWithoutAttributePredicate) {
 
 TEST(XmlPredicate, CopyConstructorCopiesDocumentDepthPredicate) {
 	// Arrange
-	XmlPredicate xp1{"TestTagName", unique_ptr<XmlAttribute>(), 14};
+	XmlPredicate xp1{"TestTagName", 14};
 	
 	// Act
 	XmlPredicate xp2(xp1);
@@ -94,7 +94,7 @@ TEST(XmlPredicate, IsMatchReturnsTrueWhenTagNamesAndAttributesMatch) {
 	// Arrange
 	static const xmlChar* testAttrs[] = { BAD_CAST "attname1", BAD_CAST "attvalue1", BAD_CAST "attname2", BAD_CAST "attvalue2" };
 	LibXmlAttributeCollection attrs{ testAttrs };
-	XmlPredicate testPredicate("aa", make_unique<XmlAttribute>("attname2", "attvalue2"));
+	XmlPredicate testPredicate("aa", make_unique<XmlAttributePredicate>("attname2", "attvalue2"));
 
 	// Act
 	bool result = testPredicate.IsMatch("aa", attrs, 0);
@@ -107,7 +107,7 @@ TEST(XmlPredicate, IsMatchReturnsFalseWhenTagNamesMatchAndAttributeNameNoMatch) 
 	// Arrange
 	static const xmlChar* testAttrs[] = { BAD_CAST "attname1", BAD_CAST "attvalue1", BAD_CAST "attname2", BAD_CAST "attvalue2" };
 	LibXmlAttributeCollection attrs{ testAttrs };
-	XmlPredicate testPredicate("aa", make_unique<XmlAttribute>("attname3", "attvalue2"));
+	XmlPredicate testPredicate("aa", make_unique<XmlAttributePredicate>("attname3", "attvalue2"));
 
 	// Act
 	bool result = testPredicate.IsMatch("aa", attrs, 0);
@@ -120,7 +120,7 @@ TEST(XmlPredicate, IsMatchReturnsFalseWhenTagNamesMatchAndAttributeValueNameNoMa
 	// Arrange
 	static const xmlChar* testAttrs[] = { BAD_CAST "attname1", BAD_CAST "attvalue1", BAD_CAST "attname2", BAD_CAST "attvalue2" };
 	LibXmlAttributeCollection attrs{ testAttrs };
-	XmlPredicate testPredicate("aa", make_unique<XmlAttribute>("attname2", "attvalue3"));
+	XmlPredicate testPredicate("aa", make_unique<XmlAttributePredicate>("attname2", "attvalue3"));
 
 	// Act
 	bool result = testPredicate.IsMatch("aa", attrs, 0);
@@ -132,7 +132,7 @@ TEST(XmlPredicate, IsMatchReturnsFalseWhenTagNamesMatchAndAttributeValueNameNoMa
 TEST(XmlPredicate, IsMatchReturnsTrueWhenTagNamesAndDepthMatch) {
 	// Arrange
 	LibXmlAttributeCollection attrs{ nullptr };
-	XmlPredicate testPredicate("aa", unique_ptr<XmlAttribute>(), 0);
+	XmlPredicate testPredicate("aa", 0);
 
 	// Act
 	bool result = testPredicate.IsMatch("aa", attrs, 0);
@@ -144,7 +144,7 @@ TEST(XmlPredicate, IsMatchReturnsTrueWhenTagNamesAndDepthMatch) {
 TEST(XmlPredicate, IsMatchReturnsFalseWhenTagNamesMatchAndDepthNoMatch) {
 	// Arrange
 	LibXmlAttributeCollection attrs{ nullptr };
-	XmlPredicate testPredicate("aa", unique_ptr<XmlAttribute>(), 0);
+	XmlPredicate testPredicate("aa", 0);
 
 	// Act
 	bool result = testPredicate.IsMatch("aa", attrs, 1);
