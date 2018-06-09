@@ -12,8 +12,11 @@
 
 using namespace std;
 
+/******************************************************************************************/
+/* constructor tests                                                                      */
+/******************************************************************************************/
 
-TEST(XmlAttributePredicate, CreatesCorrectPredicate) {
+TEST(XmlAttributePredicate, ConstructorCreatesCorrectPredicate) {
 	// Arrange
 	
 	// Act
@@ -25,8 +28,11 @@ TEST(XmlAttributePredicate, CreatesCorrectPredicate) {
 	EXPECT_EQ("avalue", predicate.GetValue());
 }
 
+/******************************************************************************************/
+/* IsMatch tests                                                                          */
+/******************************************************************************************/
 
-TEST(XmlAttributePredicate, AttributeNoMatchWhenAttributeNameDiffers) {
+TEST(XmlAttributePredicate, IsMatchReturnsFalseInEqualsModeWhenAttributeNameDiffers) {
 	// Arrange
 	XmlAttributePredicate predicate(XmlAttributePredicate::MODE_EQUAL, "bname", "avalue");
 	
@@ -36,7 +42,7 @@ TEST(XmlAttributePredicate, AttributeNoMatchWhenAttributeNameDiffers) {
 	EXPECT_FALSE(predicate.IsMatch("aname", "avalue"));
 }
 
-TEST(XmlAttributePredicate, AttributeNotMatchWhenAttributeValueDiffers) {
+TEST(XmlAttributePredicate, IsMatchReturnsFalseInEqualsModeWhenAttributeValueDiffers) {
 	// Arrange
 	XmlAttributePredicate predicate(XmlAttributePredicate::MODE_EQUAL, "aname", "bvalue");
 	
@@ -46,7 +52,7 @@ TEST(XmlAttributePredicate, AttributeNotMatchWhenAttributeValueDiffers) {
 	EXPECT_FALSE(predicate.IsMatch("aname", "avalue"));
 }
 
-TEST(XmlAttributePredicate, AttributeMatchesWhenNameAndValueSame) {
+TEST(XmlAttributePredicate, IsMatchReturnsTrueInEqualsModeWhenNameAndValueSame) {
 	// Arrange
 	XmlAttributePredicate predicate(XmlAttributePredicate::MODE_EQUAL, "aname", "avalue");
 	
@@ -56,4 +62,52 @@ TEST(XmlAttributePredicate, AttributeMatchesWhenNameAndValueSame) {
 	EXPECT_TRUE(predicate.IsMatch("aname", "avalue"));
 }
 
+TEST(XmlAttributePredicate, IsMatchReturnsTrueInStartsWithModeWhenNameAndValueSame) {
+	// Arrange
+	XmlAttributePredicate predicate(XmlAttributePredicate::MODE_EQUAL, "aname", "avalue");
+	
+	// Act
+	
+	// Assert
+	EXPECT_TRUE(predicate.IsMatch("aname", "avalue"));
+}
 
+TEST(XmlAttributePredicate, IsMatchReturnsTrueInStartsWithModeWhenNameSameAndValueStartsWith) {
+	// Arrange
+	XmlAttributePredicate predicate(XmlAttributePredicate::MODE_STARTSWITH, "aname", "av");
+	
+	// Act
+	
+	// Assert
+	EXPECT_TRUE(predicate.IsMatch("aname", "avalue"));
+}
+
+TEST(XmlAttributePredicate, IsMatchReturnsFalseInStartsWithModeWhenNameSameAndValueTooShort) {
+	// Arrange
+	XmlAttributePredicate predicate(XmlAttributePredicate::MODE_STARTSWITH, "aname", "avalue");
+	
+	// Act
+	
+	// Assert
+	EXPECT_FALSE(predicate.IsMatch("aname", "av"));
+}
+
+TEST(XmlAttributePredicate, IsMatchReturnsFalseInStartsWithModeWhenNameSameAndValueDiffers) {
+	// Arrange
+	XmlAttributePredicate predicate(XmlAttributePredicate::MODE_STARTSWITH, "aname", "av");
+	
+	// Act
+	
+	// Assert
+	EXPECT_FALSE(predicate.IsMatch("aname", "bvalue"));
+}
+
+TEST(XmlAttributePredicate, IsMatchReturnsFalseInStartsWithModeWhenNameDiffers) {
+	// Arrange
+	XmlAttributePredicate predicate(XmlAttributePredicate::MODE_STARTSWITH, "aname", "avalue");
+	
+	// Act
+	
+	// Assert
+	EXPECT_FALSE(predicate.IsMatch("bname", "avalue"));
+}
