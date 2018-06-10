@@ -6,9 +6,13 @@
 
 using namespace std;
 
-XmlPredicate::XmlPredicate(const string& tagName, std::unique_ptr<XmlAttribute> attributePredicate, int documentDepthPredicate)
+XmlPredicate::XmlPredicate(const string& tagName, std::unique_ptr<XmlAttributePredicate> attributePredicate, int documentDepthPredicate)
 	:	m_tagName(tagName), m_attributePredicate(move(attributePredicate)),
 		m_documentDepthPredicate(documentDepthPredicate)
+{}
+
+XmlPredicate::XmlPredicate(const string& tagName, int documentDepthPredicate)
+	:	XmlPredicate(tagName, std::unique_ptr<XmlAttributePredicate>(), documentDepthPredicate)
 {}
 
 XmlPredicate::XmlPredicate(const XmlPredicate& rhs)
@@ -23,7 +27,7 @@ const string& XmlPredicate::GetTagName() const
 	return m_tagName;
 }
 
-const XmlAttribute* XmlPredicate::GetAttributePredicate() const
+const XmlAttributePredicate* XmlPredicate::GetAttributePredicate() const
 {
 	return m_attributePredicate.get();
 }

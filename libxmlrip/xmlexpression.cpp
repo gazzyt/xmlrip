@@ -1,3 +1,5 @@
+#include <cassert>
+
 #include "xmlexpression.h"
 #include "stringutils.h"
 #include "exception/xpathexception.h"
@@ -109,52 +111,123 @@ XmlPredicate XmlExpression::ReadPredicate(XPathTokeniser& tokeniser, XPathToken&
 	switch (token.GetType())
 	{
 	case XPathToken::TOK_LEFTSQUAREBRACKET:
-		{
-			token = tokeniser.GetNextToken();
-
-			if (token.GetType() != XPathToken::TOK_AT)
-				throw XPathException("Expected @ token");
-
-			token = tokeniser.GetNextToken();
-
-			if (token.GetType() != XPathToken::TOK_STRING)
-			{
-				throw XPathException("Expected attribute name");
-			}
-
-			string attributeName{ token.GetString() };
-
-			token = tokeniser.GetNextToken();
-
-			if (token.GetType() != XPathToken::TOK_EQUALS)
-				throw XPathException("Expected = token");
-
-			token = tokeniser.GetNextToken();
-
-			if (token.GetType() != XPathToken::TOK_STRING)
-			{
-				throw XPathException("Expected attribute value");
-			}
-
-			string attributeValue{ token.GetString() };
-
-			token = tokeniser.GetNextToken();
-
-			if (token.GetType() != XPathToken::TOK_RIGHTSQUAREBRACKET)
-				throw XPathException("Expected ] token");
-
-			token = tokeniser.GetNextToken();
-
-			return XmlPredicate{ elementName, make_unique<XmlAttribute>(move(attributeName), move(attributeValue)), depthPredicate };
-		}
+		return XmlPredicate{ elementName, 
+			ReadAttributePredicate(tokeniser, token), 
+			depthPredicate };
 
 	case XPathToken::TOK_DBLSLASH:
 	case XPathToken::TOK_SLASH:
 	case XPathToken::TOK_NULL:
-		return (XmlPredicate{ elementName, unique_ptr<XmlAttribute>(), depthPredicate });
+		return (XmlPredicate{ elementName, depthPredicate });
 
 	default:
 		throw XPathException{ "Unexpected token" };
 
+	}
+}
+
+unique_ptr<XmlAttributePredicate> XmlExpression::ReadAttributePredicate(XPathTokeniser& tokeniser, XPathToken& token)
+{
+	assert(token.GetType() == XPathToken::TOK_LEFTSQUAREBRACKET);
+	
+	token = tokeniser.GetNextToken();
+
+	if (token.GetType() == XPathToken::TOK_AT)
+	{
+		token = tokeniser.GetNextToken();
+
+		if (token.GetType() != XPathToken::TOK_STRING)
+		{
+			throw XPathException("Expected attribute name");
+		}
+
+		string attributeName{ token.GetString() };
+
+		token = tokeniser.GetNextToken();
+
+		if (token.GetType() != XPathToken::TOK_EQUALS)
+			throw XPathException("Expected = token");
+
+		token = tokeniser.GetNextToken();
+
+		if (token.GetType() != XPathToken::TOK_STRING)
+		{
+			throw XPathException("Expected attribute value");
+		}
+
+		string attributeValue{ token.GetString() };
+
+		token = tokeniser.GetNextToken();
+
+		if (token.GetType() != XPathToken::TOK_RIGHTSQUAREBRACKET)
+			throw XPathException("Expected ] token");
+
+		token = tokeniser.GetNextToken();
+
+		return make_unique<XmlAttributePredicate>(XmlAttributePredicate::MODE_EQUAL, move(attributeName), move(attributeValue));
+	}
+	else if (token.GetType() == XPathToken::TOK_STRING)
+	{
+		auto functionName = token.GetString();
+		
+		token = tokeniser.GetNextToken();
+
+		if (token.GetType() != XPathToken::TOK_LEFTBRACKET)
+		{
+			throw XPathException("Expected '('");
+		}
+		
+		token = tokeniser.GetNextToken();
+		
+		if (token.GetType() != XPathToken::TOK_AT)
+		{
+			throw XPathException("Expected '@'");
+		}
+
+		token = tokeniser.GetNextToken();
+		
+		if (token.GetType() != XPathToken::TOK_STRING)
+		{
+			throw XPathException("Expected attribute name");
+		}
+
+		auto attributeName = token.GetString();
+		
+		token = tokeniser.GetNextToken();
+		
+		if (token.GetType() != XPathToken::TOK_COMMA)
+		{
+			throw XPathException("Expected ','");
+		}
+
+		token = tokeniser.GetNextToken();
+		
+		if (token.GetType() != XPathToken::TOK_STRING)
+		{
+			throw XPathException("Expected attribute value");
+		}
+
+		auto attributeValue = token.GetString();
+
+		token = tokeniser.GetNextToken();
+		
+		if (token.GetType() != XPathToken::TOK_RIGHTBRACKET)
+		{
+			throw XPathException("Expected ')'");
+		}
+
+		token = tokeniser.GetNextToken();
+
+		if (token.GetType() != XPathToken::TOK_RIGHTSQUAREBRACKET)
+			throw XPathException("Expected ] token");
+
+		token = tokeniser.GetNextToken();
+
+		return make_unique<XmlAttributePredicate>(XmlAttributePredicate::MODE_STARTSWITH, move(attributeName), move(attributeValue));
+		
+	}
+	else
+	{
+		throw XPathException("Unexpected token");
 	}
 }

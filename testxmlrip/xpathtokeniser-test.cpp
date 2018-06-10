@@ -177,7 +177,7 @@ TEST(XPathTokeniser, GetNextTokenThrowsXPathExceptionForMissingClosingDoubleQuot
 	catch (XPathException& e)
 	{
 		exceptionThrown = true;
-		EXPECT_EQ("Missing closing quote", e.GetMessage());
+		EXPECT_STREQ("Missing closing quote", e.what());
 	}
 
 	EXPECT_TRUE(exceptionThrown);
@@ -222,7 +222,7 @@ TEST(XPathTokeniser, GetNextTokenThrowsXPathExceptionForMissingClosingSingleQuot
 	catch (XPathException& e)
 	{
 		exceptionThrown = true;
-		EXPECT_EQ("Missing closing quote", e.GetMessage());
+		EXPECT_STREQ("Missing closing quote", e.what());
 	}
 
 	EXPECT_TRUE(exceptionThrown);
@@ -242,9 +242,80 @@ TEST(XPathTokeniser, GetNextTokenThrowsXPathExceptionForIllegalCharactor) {
 	catch (XPathException& e)
 	{
 		exceptionThrown = true;
-		EXPECT_EQ("Unexpected character in XPath: |", e.GetMessage());
+		EXPECT_STREQ("Unexpected character in XPath: |", e.what());
 	}
 
 	EXPECT_TRUE(exceptionThrown);
 }
 
+TEST(XPathTokeniser, GetNextTokenReturnsCorrectTokenSequenceForFunction) {
+	// Arrange
+	string xpath("/inner[starts-with(@x,\"EP\")]");
+	XPathTokeniser tokeniser(xpath);
+	
+	// Act
+	XPathToken token1 = tokeniser.GetNextToken();
+	XPathToken token2 = tokeniser.GetNextToken();
+	XPathToken token3 = tokeniser.GetNextToken();
+	XPathToken token4 = tokeniser.GetNextToken();
+	XPathToken token5 = tokeniser.GetNextToken();
+	XPathToken token6 = tokeniser.GetNextToken();
+	XPathToken token7 = tokeniser.GetNextToken();
+	XPathToken token8 = tokeniser.GetNextToken();
+	XPathToken token9 = tokeniser.GetNextToken();
+	XPathToken token10 = tokeniser.GetNextToken();
+	XPathToken token11 = tokeniser.GetNextToken();
+
+	// Assert
+	EXPECT_EQ(XPathToken::TOK_SLASH, token1.GetType());
+	EXPECT_EQ(XPathToken::TOK_STRING, token2.GetType());
+	EXPECT_EQ("inner", token2.GetString());
+	EXPECT_EQ(XPathToken::TOK_LEFTSQUAREBRACKET, token3.GetType());
+	EXPECT_EQ(XPathToken::TOK_STRING, token4.GetType());
+	EXPECT_EQ("starts-with", token4.GetString());
+	EXPECT_EQ(XPathToken::TOK_LEFTBRACKET, token5.GetType());
+	EXPECT_EQ(XPathToken::TOK_AT, token6.GetType());
+	EXPECT_EQ(XPathToken::TOK_STRING, token7.GetType());
+	EXPECT_EQ("x", token7.GetString());
+	EXPECT_EQ(XPathToken::TOK_COMMA, token8.GetType());
+	EXPECT_EQ(XPathToken::TOK_STRING, token9.GetType());
+	EXPECT_EQ("EP", token9.GetString());
+	EXPECT_EQ(XPathToken::TOK_RIGHTBRACKET, token10.GetType());
+	EXPECT_EQ(XPathToken::TOK_RIGHTSQUAREBRACKET, token11.GetType());
+}
+
+TEST(XPathTokeniser, GetNextTokenReturnsCorrectTokenSequenceForFunctionWithSpace) {
+	// Arrange
+	string xpath("/inner[starts-with(@x, \"EP\")]");
+	XPathTokeniser tokeniser(xpath);
+	
+	// Act
+	XPathToken token1 = tokeniser.GetNextToken();
+	XPathToken token2 = tokeniser.GetNextToken();
+	XPathToken token3 = tokeniser.GetNextToken();
+	XPathToken token4 = tokeniser.GetNextToken();
+	XPathToken token5 = tokeniser.GetNextToken();
+	XPathToken token6 = tokeniser.GetNextToken();
+	XPathToken token7 = tokeniser.GetNextToken();
+	XPathToken token8 = tokeniser.GetNextToken();
+	XPathToken token9 = tokeniser.GetNextToken();
+	XPathToken token10 = tokeniser.GetNextToken();
+	XPathToken token11 = tokeniser.GetNextToken();
+
+	// Assert
+	EXPECT_EQ(XPathToken::TOK_SLASH, token1.GetType());
+	EXPECT_EQ(XPathToken::TOK_STRING, token2.GetType());
+	EXPECT_EQ("inner", token2.GetString());
+	EXPECT_EQ(XPathToken::TOK_LEFTSQUAREBRACKET, token3.GetType());
+	EXPECT_EQ(XPathToken::TOK_STRING, token4.GetType());
+	EXPECT_EQ("starts-with", token4.GetString());
+	EXPECT_EQ(XPathToken::TOK_LEFTBRACKET, token5.GetType());
+	EXPECT_EQ(XPathToken::TOK_AT, token6.GetType());
+	EXPECT_EQ(XPathToken::TOK_STRING, token7.GetType());
+	EXPECT_EQ("x", token7.GetString());
+	EXPECT_EQ(XPathToken::TOK_COMMA, token8.GetType());
+	EXPECT_EQ(XPathToken::TOK_STRING, token9.GetType());
+	EXPECT_EQ("EP", token9.GetString());
+	EXPECT_EQ(XPathToken::TOK_RIGHTBRACKET, token10.GetType());
+	EXPECT_EQ(XPathToken::TOK_RIGHTSQUAREBRACKET, token11.GetType());
+}

@@ -17,6 +17,7 @@ project( "libxmlrip" )
 set( BUILD_LIBXMLRIP_MANIFEST
     xmlelement.cpp
 	xmlattribute.cpp
+	xmlattributepredicate.cpp
     xmlpredicate.cpp
 	xpathtoken.cpp
 	xpathtokeniser.cpp
@@ -35,6 +36,7 @@ set( BUILD_LIBXMLRIP_MANIFEST
 set( BUILD_LIBXMLRIP_MANIFEST_HEADERS
     xmlelement.h
 	xmlattribute.h
+	xmlattributepredicate.h
     xmlpredicate.h
 	xpathtoken.h
 	xpathtokeniser.h

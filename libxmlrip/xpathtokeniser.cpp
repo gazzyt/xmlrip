@@ -14,10 +14,16 @@ XPathTokeniser::XPathTokeniser(const std::string& xpathText)
 
 XPathToken XPathTokeniser::GetNextToken()
 {
-	string::const_iterator currentTokenStart(m_nextTokenStart);
+	// Skip any whitespace
+	while (m_nextTokenStart != m_xpathTextEnd && ::isblank(*m_nextTokenStart))
+	{
+		++m_nextTokenStart;
+	}
 	
 	if (m_nextTokenStart == m_xpathTextEnd)
 		return XPathToken{XPathToken::TOK_NULL};
+	
+	const auto currentTokenStart = m_nextTokenStart;
 	
 	switch (*m_nextTokenStart)
 	{
@@ -32,6 +38,15 @@ XPathToken XPathTokeniser::GetNextToken()
 
 		case ']':
 			return ExtractSingleCharToken(XPathToken::TOK_RIGHTSQUAREBRACKET, currentTokenStart);
+
+		case '(':
+			return ExtractSingleCharToken(XPathToken::TOK_LEFTBRACKET, currentTokenStart);
+
+		case ')':
+			return ExtractSingleCharToken(XPathToken::TOK_RIGHTBRACKET, currentTokenStart);
+
+		case ',':
+			return ExtractSingleCharToken(XPathToken::TOK_COMMA, currentTokenStart);
 
 		case '=':
 			return ExtractSingleCharToken(XPathToken::TOK_EQUALS, currentTokenStart);
@@ -72,7 +87,8 @@ XPathToken XPathTokeniser::ExtractSlashToken(const std::string::const_iterator& 
 
 XPathToken XPathTokeniser::ExtractStringToken(const std::string::const_iterator& currentTokenStart)
 {
-	auto stringEnd = find_if_not(currentTokenStart, m_xpathTextEnd, ::isalnum);
+	auto isValidChar = [](char c){return ::isalnum(c) || c == '-';};
+	auto stringEnd = find_if_not(currentTokenStart, m_xpathTextEnd, isValidChar);
 	
 	m_nextTokenStart = stringEnd;
 	

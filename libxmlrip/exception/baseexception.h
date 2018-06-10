@@ -4,14 +4,14 @@
 #include <ostream>
 #include <string>
 
-class BaseException
+class BaseException : public std::exception
 {
 public:
 	BaseException(std::string&& message) noexcept;
 	virtual ~BaseException() noexcept;
 
-	virtual const std::string& GetMessage() const;
 	virtual void Print(std::ostream& os) const;
+	virtual const char* what() const noexcept;
 
 private:
 	std::string m_message;
