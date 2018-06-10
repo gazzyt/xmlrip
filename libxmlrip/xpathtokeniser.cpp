@@ -14,10 +14,16 @@ XPathTokeniser::XPathTokeniser(const std::string& xpathText)
 
 XPathToken XPathTokeniser::GetNextToken()
 {
-	string::const_iterator currentTokenStart(m_nextTokenStart);
+	// Skip any whitespace
+	while (m_nextTokenStart != m_xpathTextEnd && ::isblank(*m_nextTokenStart))
+	{
+		++m_nextTokenStart;
+	}
 	
 	if (m_nextTokenStart == m_xpathTextEnd)
 		return XPathToken{XPathToken::TOK_NULL};
+	
+	const auto currentTokenStart = m_nextTokenStart;
 	
 	switch (*m_nextTokenStart)
 	{
