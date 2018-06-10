@@ -130,3 +130,16 @@ TEST(XPath, SimpleXPathWithCData) {
 	// Act
 	RunE2ETest("<aa><![CDATA[Here is the cdata]]></aa>", "/aa", expected);
 }
+
+TEST(XPath, SimpleXPathWithStartsWith) {
+	// Arrange
+	vector<RecordingPrinterItem> expected = {
+		RecordingPrinterItem{RecordingPrinterItem::START_ELEMENT, "bb"},
+		RecordingPrinterItem{RecordingPrinterItem::END_ELEMENT, ""},
+		RecordingPrinterItem{RecordingPrinterItem::START_ELEMENT, "bb"},
+		RecordingPrinterItem{RecordingPrinterItem::END_ELEMENT, ""},
+	};
+
+	// Act
+	RunE2ETest("<aa><bb c='abc'/><bb c='a'/><bb c='abcd'/><bb/></aa>", "//bb[starts-with(@c,'ab')]", expected);
+}
