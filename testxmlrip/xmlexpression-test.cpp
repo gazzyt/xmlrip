@@ -336,7 +336,6 @@ TEST(XmlExpression, ReadPredicateThrowsXPathExceptionIfXPathConditionMissingAt) 
 	catch (XPathException& e)
 	{
 		exceptionThrown = true;
-		EXPECT_STREQ("Expected @ token", e.what());
 	}
 
 	EXPECT_TRUE(exceptionThrown);

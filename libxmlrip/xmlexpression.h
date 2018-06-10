@@ -25,6 +25,7 @@ public:
 	
 	static std::unique_ptr<XmlExpression> FromText(const std::string& text);
 	static XmlPredicate ReadPredicate(XPathTokeniser& tokeniser, XPathToken& token);
+	static std::unique_ptr<XmlAttributePredicate> ReadAttributePredicate(XPathTokeniser& tokeniser, XPathToken& token);
 	
 	enum NoMatch {NO_MATCH = -1};
 
