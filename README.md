@@ -14,7 +14,7 @@ Building
 Linux
 -----
 Requires GCC, cmake and make installed:
-	sudo apt-get install libxml2-dev gcc g++ make cmake
+    sudo apt-get install libxml2-dev gcc g++ make cmake
 
 From the folder containing the checked out code do:
 ````
@@ -25,10 +25,10 @@ make
 ````
 
 To run the tests:
-	./testxmlrip/testxmlrip
+    ./testxmlrip/testxmlrip
 	
 To run the app:
-	./xmlrip/xmlrip ../test3.xml '//outer'
+    ./xmlrip/xmlrip ../test3.xml '//outer'
 
 Windows
 -------
