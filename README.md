@@ -6,7 +6,7 @@ The full list of things you can do is:
 * Find elements at any depth `//inner`
 * Find elements by path `/outer/inner` or `/outer//inner`
 * Filter elements on specific attribute value `/outer/inner[@c="EP1234"]`
-* Filter elements on attribute values beginning with a sequence of characters `/outer/inner[starts-with(@c,"EP"]`
+* Filter elements on attribute values beginning with a sequence of characters `/outer/inner[starts-with(@c,"EP")]`
 
 Building
 ========
