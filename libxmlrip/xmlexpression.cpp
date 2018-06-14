@@ -132,6 +132,7 @@ unique_ptr<XmlAttributePredicate> XmlExpression::ReadAttributePredicate(XPathTok
 	
 	token = tokeniser.GetNextToken();
 
+	// Is this an @attrib="xx" type predicate?
 	if (token.GetType() == XPathToken::TOK_AT)
 	{
 		token = tokeniser.GetNextToken();
@@ -175,6 +176,12 @@ unique_ptr<XmlAttributePredicate> XmlExpression::ReadAttributePredicate(XPathTok
 		if (token.GetType() != XPathToken::TOK_LEFTBRACKET)
 		{
 			throw XPathException("Expected '('");
+		}
+
+		// We got a function in the predicate. Is it one we know?
+		if (functionName != "starts-with")
+		{
+			throw XPathException("Unknown function name: " + functionName);
 		}
 		
 		token = tokeniser.GetNextToken();

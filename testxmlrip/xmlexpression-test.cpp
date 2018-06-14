@@ -472,3 +472,21 @@ TEST(XmlExpression, ReadPredicateReturnsPredicateForSimpleTagNameWithAttributeSt
 	EXPECT_EQ("attr", pred.GetAttributePredicate()->GetName());
 	EXPECT_EQ("val", pred.GetAttributePredicate()->GetValue());
 }
+
+TEST(XmlExpression, ReadPredicateThrowsXPathExceptionIfXPathFunctionNameUnrecognised) {
+	// Arrange
+	bool exceptionThrown = false;
+
+	// Act
+	try
+	{
+		XmlPredicate pred = GetTestPredicate("/simpletagname[staxxxxrts-with(@attr,'val')]");
+	}
+	catch (XPathException& e)
+	{
+		exceptionThrown = true;
+		EXPECT_STREQ("Unknown function name: staxxxxrts-with", e.what());
+	}
+
+	EXPECT_TRUE(exceptionThrown);
+}
