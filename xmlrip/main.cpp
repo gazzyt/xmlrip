@@ -32,7 +32,7 @@ int main(int argc, char** argv)
 	}
 	catch(BaseException& e)
 	{
-		cerr << e << endl;
+		cerr << e.what() << endl;
 	}
 
 	cout << endl << endl;
