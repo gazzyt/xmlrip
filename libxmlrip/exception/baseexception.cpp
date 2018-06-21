@@ -2,9 +2,10 @@
 
 using namespace std;
 
-BaseException::BaseException(std::string&& message) noexcept
+BaseException::BaseException(string message) noexcept
 :	m_message(message)
-{}
+{
+}
 
 BaseException::~BaseException() noexcept
 {}

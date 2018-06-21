@@ -4,7 +4,7 @@
 
 using namespace std;
 
-PrintException::PrintException(std::string&& message) noexcept
-:	BaseException(move(message))
+PrintException::PrintException(string message) noexcept
+:	BaseException(message)
 {}
 

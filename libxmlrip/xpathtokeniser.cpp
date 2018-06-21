@@ -8,8 +8,8 @@ using namespace std;
 
 XPathTokeniser::XPathTokeniser(const std::string& xpathText)
 :	m_xpathText{xpathText},
-	m_nextTokenStart{xpathText.begin()},
-	m_xpathTextEnd{xpathText.end()}
+	m_nextTokenStart{m_xpathText.begin()},
+	m_xpathTextEnd{m_xpathText.end()}
 {}
 
 XPathToken XPathTokeniser::GetNextToken()
@@ -21,7 +21,7 @@ XPathToken XPathTokeniser::GetNextToken()
 	}
 	
 	if (m_nextTokenStart == m_xpathTextEnd)
-		return XPathToken{XPathToken::TOK_NULL};
+		return XPathToken{XPathToken::TOK_NULL, GetPosition(m_nextTokenStart)};
 	
 	const auto currentTokenStart = m_nextTokenStart;
 	
@@ -59,15 +59,16 @@ XPathToken XPathTokeniser::GetNextToken()
 			if (::isalnum(*m_nextTokenStart))
 				return ExtractStringToken(currentTokenStart);
 			else
-				throw XPathException(string("Unexpected character in XPath: ") + *m_nextTokenStart);
+				throw XPathException(string("Unexpected character in XPath: ") + *m_nextTokenStart, GetPosition(currentTokenStart));
 	};
 }
+
 
 XPathToken XPathTokeniser::ExtractSingleCharToken(XPathToken::TokenType type, const std::string::const_iterator& currentTokenStart)
 {
 	++m_nextTokenStart;
 	
-	return XPathToken{type, currentTokenStart, m_nextTokenStart};
+	return XPathToken{type, GetPosition(currentTokenStart), currentTokenStart, m_nextTokenStart};
 }
 
 XPathToken XPathTokeniser::ExtractSlashToken(const std::string::const_iterator& currentTokenStart)
@@ -92,7 +93,7 @@ XPathToken XPathTokeniser::ExtractStringToken(const std::string::const_iterator&
 	
 	m_nextTokenStart = stringEnd;
 	
-	return XPathToken{XPathToken::TOK_STRING, currentTokenStart, m_nextTokenStart};
+	return XPathToken{XPathToken::TOK_STRING, GetPosition(currentTokenStart), currentTokenStart, m_nextTokenStart};
 }
 
 XPathToken XPathTokeniser::ExtractQuotedString(const string::const_iterator& currentTokenStart)
@@ -103,9 +104,9 @@ XPathToken XPathTokeniser::ExtractQuotedString(const string::const_iterator& cur
 	auto closingQuote = find(m_nextTokenStart, m_xpathTextEnd, quote);
 		
 	if (closingQuote == m_xpathTextEnd)
-		throw XPathException("Missing closing quote");
+		throw XPathException("Missing closing quote", GetPosition(closingQuote - 1));
 	
 	m_nextTokenStart = closingQuote + 1;
 	
-	return XPathToken{XPathToken::TOK_STRING, currentTokenStart + 1, closingQuote};
+	return XPathToken{XPathToken::TOK_STRING, GetPosition(currentTokenStart), currentTokenStart + 1, closingQuote};
 }

@@ -71,7 +71,7 @@ unique_ptr<XmlExpression> XmlExpression::FromText(const string& text)
 
 	if (token.GetType() != XPathToken::TOK_DBLSLASH && token.GetType() != XPathToken::TOK_SLASH)
 	{
-		throw XPathException("XPath must begin with / or //");
+		throw XPathException("XPath must begin with / or //", token.GetPosition());
 	}
 
 	while (token.GetType() != XPathToken::TOK_NULL)
@@ -94,14 +94,14 @@ XmlPredicate XmlExpression::ReadPredicate(XPathTokeniser& tokeniser, XPathToken&
 	}
 	else if (token.GetType() != XPathToken::TOK_DBLSLASH)
 	{
-		throw XPathException("Expected / or //");
+		throw XPathException("Expected / or //", token.GetPosition());
 	}
 
 	token = tokeniser.GetNextToken();
 
 	if (token.GetType() != XPathToken::TOK_STRING)
 	{
-		throw XPathException("Expected element name");
+		throw XPathException("Expected element name", token.GetPosition());
 	}
 
 	string elementName{ token.GetString() };
@@ -139,7 +139,7 @@ unique_ptr<XmlAttributePredicate> XmlExpression::ReadAttributePredicate(XPathTok
 
 		if (token.GetType() != XPathToken::TOK_STRING)
 		{
-			throw XPathException("Expected attribute name");
+			throw XPathException("Expected attribute name", token.GetPosition());
 		}
 
 		string attributeName{ token.GetString() };
@@ -147,13 +147,13 @@ unique_ptr<XmlAttributePredicate> XmlExpression::ReadAttributePredicate(XPathTok
 		token = tokeniser.GetNextToken();
 
 		if (token.GetType() != XPathToken::TOK_EQUALS)
-			throw XPathException("Expected = token");
+			throw XPathException("Expected = token", token.GetPosition());
 
 		token = tokeniser.GetNextToken();
 
 		if (token.GetType() != XPathToken::TOK_STRING)
 		{
-			throw XPathException("Expected attribute value");
+			throw XPathException("Expected attribute value", token.GetPosition());
 		}
 
 		string attributeValue{ token.GetString() };
@@ -161,7 +161,7 @@ unique_ptr<XmlAttributePredicate> XmlExpression::ReadAttributePredicate(XPathTok
 		token = tokeniser.GetNextToken();
 
 		if (token.GetType() != XPathToken::TOK_RIGHTSQUAREBRACKET)
-			throw XPathException("Expected ] token");
+			throw XPathException("Expected ] token", token.GetPosition());
 
 		token = tokeniser.GetNextToken();
 
@@ -170,6 +170,7 @@ unique_ptr<XmlAttributePredicate> XmlExpression::ReadAttributePredicate(XPathTok
 	else if (token.GetType() == XPathToken::TOK_STRING)
 	{
 		auto functionName = token.GetString();
+		auto functionNamePos = token.GetPosition();
 		
 		token = tokeniser.GetNextToken();
 
@@ -181,7 +182,7 @@ unique_ptr<XmlAttributePredicate> XmlExpression::ReadAttributePredicate(XPathTok
 		// We got a function in the predicate. Is it one we know?
 		if (functionName != "starts-with")
 		{
-			throw XPathException("Unknown function name: " + functionName);
+			throw XPathException("Unknown function name: " + functionName, functionNamePos);
 		}
 		
 		token = tokeniser.GetNextToken();

@@ -6,7 +6,7 @@
 class PrintException : public BaseException
 {
 public:
-	PrintException(std::string&& message) noexcept;
+	PrintException(std::string message) noexcept;
 
 };
 
