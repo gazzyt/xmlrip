@@ -121,7 +121,7 @@ XmlPredicate XmlExpression::ReadPredicate(XPathTokeniser& tokeniser, XPathToken&
 		return (XmlPredicate{ elementName, depthPredicate });
 
 	default:
-		throw XPathException{ "Unexpected token" };
+		throw XPathException{ "Unexpected token", token.GetPosition() };
 
 	}
 }
@@ -176,7 +176,7 @@ unique_ptr<XmlAttributePredicate> XmlExpression::ReadAttributePredicate(XPathTok
 
 		if (token.GetType() != XPathToken::TOK_LEFTBRACKET)
 		{
-			throw XPathException("Expected '('");
+			throw XPathException("Expected '('", token.GetPosition());
 		}
 
 		// We got a function in the predicate. Is it one we know?
@@ -189,14 +189,14 @@ unique_ptr<XmlAttributePredicate> XmlExpression::ReadAttributePredicate(XPathTok
 		
 		if (token.GetType() != XPathToken::TOK_AT)
 		{
-			throw XPathException("Expected '@'");
+			throw XPathException("Expected '@'", token.GetPosition());
 		}
 
 		token = tokeniser.GetNextToken();
 		
 		if (token.GetType() != XPathToken::TOK_STRING)
 		{
-			throw XPathException("Expected attribute name");
+			throw XPathException("Expected attribute name", token.GetPosition());
 		}
 
 		auto attributeName = token.GetString();
@@ -205,14 +205,14 @@ unique_ptr<XmlAttributePredicate> XmlExpression::ReadAttributePredicate(XPathTok
 		
 		if (token.GetType() != XPathToken::TOK_COMMA)
 		{
-			throw XPathException("Expected ','");
+			throw XPathException("Expected ','", token.GetPosition());
 		}
 
 		token = tokeniser.GetNextToken();
 		
 		if (token.GetType() != XPathToken::TOK_STRING)
 		{
-			throw XPathException("Expected attribute value");
+			throw XPathException("Expected attribute value", token.GetPosition());
 		}
 
 		auto attributeValue = token.GetString();
@@ -221,13 +221,13 @@ unique_ptr<XmlAttributePredicate> XmlExpression::ReadAttributePredicate(XPathTok
 		
 		if (token.GetType() != XPathToken::TOK_RIGHTBRACKET)
 		{
-			throw XPathException("Expected ')'");
+			throw XPathException("Expected ')'", token.GetPosition());
 		}
 
 		token = tokeniser.GetNextToken();
 
 		if (token.GetType() != XPathToken::TOK_RIGHTSQUAREBRACKET)
-			throw XPathException("Expected ] token");
+			throw XPathException("Expected ] token", token.GetPosition());
 
 		token = tokeniser.GetNextToken();
 
@@ -236,6 +236,6 @@ unique_ptr<XmlAttributePredicate> XmlExpression::ReadAttributePredicate(XPathTok
 	}
 	else
 	{
-		throw XPathException("Unexpected token");
+		throw XPathException("Unexpected token", token.GetPosition());
 	}
 }
