@@ -20,7 +20,8 @@ using namespace std;
 
 TEST(XmlPredicate, CopyConstructorWorksWithAttributePredicate) {
 	// Arrange
-	XmlPredicate xp1{"TestTagName", make_unique<XmlAttributePredicate>(XmlAttributePredicate::MODE_EQUAL, "attrName", "attrValue")};
+	XmlPredicate xp1{"TestTagName"};
+	xp1.AddPredicate(XmlAttributePredicate{XmlAttributePredicate::MODE_EQUAL, "attrName", "attrValue"});
 	
 	// Act
 	XmlPredicate xp2(xp1);
@@ -28,10 +29,9 @@ TEST(XmlPredicate, CopyConstructorWorksWithAttributePredicate) {
 	// Assert
 	EXPECT_EQ(xp1.GetTagName(), xp2.GetTagName());
 	EXPECT_NE(&xp1.GetTagName(), &xp2.GetTagName());
-	ASSERT_NE(nullptr, xp2.GetAttributePredicate());
-	EXPECT_NE(xp1.GetAttributePredicate(), xp2.GetAttributePredicate());
-	EXPECT_EQ(xp1.GetAttributePredicate()->GetName(), xp2.GetAttributePredicate()->GetName());
-	EXPECT_EQ(xp1.GetAttributePredicate()->GetValue(), xp2.GetAttributePredicate()->GetValue());
+	ASSERT_EQ(1U, xp2.GetAttributePredicates().size());
+	EXPECT_EQ(xp1.GetAttributePredicates()[0].GetName(), xp2.GetAttributePredicates()[0].GetName());
+	EXPECT_EQ(xp1.GetAttributePredicates()[0].GetValue(), xp2.GetAttributePredicates()[0].GetValue());
 	
 }
 
@@ -45,7 +45,7 @@ TEST(XmlPredicate, CopyConstructorWorksWithoutAttributePredicate) {
 	// Assert
 	EXPECT_EQ(xp1.GetTagName(), xp2.GetTagName());
 	EXPECT_NE(&xp1.GetTagName(), &xp2.GetTagName());
-	ASSERT_EQ(nullptr, xp2.GetAttributePredicate());
+	ASSERT_EQ(0U, xp2.GetAttributePredicates().size());
 	
 }
 
@@ -94,7 +94,8 @@ TEST(XmlPredicate, IsMatchReturnsTrueWhenTagNamesAndAttributesMatch) {
 	// Arrange
 	static const xmlChar* testAttrs[] = { BAD_CAST "attname1", BAD_CAST "attvalue1", BAD_CAST "attname2", BAD_CAST "attvalue2" };
 	LibXmlAttributeCollection attrs{ testAttrs };
-	XmlPredicate testPredicate("aa", make_unique<XmlAttributePredicate>(XmlAttributePredicate::MODE_EQUAL, "attname2", "attvalue2"));
+	XmlPredicate testPredicate("aa");
+	testPredicate.AddPredicate(XmlAttributePredicate{XmlAttributePredicate::MODE_EQUAL, "attname2", "attvalue2"});
 
 	// Act
 	bool result = testPredicate.IsMatch("aa", attrs, 0);
@@ -107,7 +108,8 @@ TEST(XmlPredicate, IsMatchReturnsFalseWhenTagNamesMatchAndAttributeNameNoMatch) 
 	// Arrange
 	static const xmlChar* testAttrs[] = { BAD_CAST "attname1", BAD_CAST "attvalue1", BAD_CAST "attname2", BAD_CAST "attvalue2" };
 	LibXmlAttributeCollection attrs{ testAttrs };
-	XmlPredicate testPredicate("aa", make_unique<XmlAttributePredicate>(XmlAttributePredicate::MODE_EQUAL, "attname3", "attvalue2"));
+	XmlPredicate testPredicate("aa");
+	testPredicate.AddPredicate(XmlAttributePredicate{XmlAttributePredicate::MODE_EQUAL, "attname3", "attvalue2"});
 
 	// Act
 	bool result = testPredicate.IsMatch("aa", attrs, 0);
@@ -120,7 +122,8 @@ TEST(XmlPredicate, IsMatchReturnsFalseWhenTagNamesMatchAndAttributeValueNameNoMa
 	// Arrange
 	static const xmlChar* testAttrs[] = { BAD_CAST "attname1", BAD_CAST "attvalue1", BAD_CAST "attname2", BAD_CAST "attvalue2" };
 	LibXmlAttributeCollection attrs{ testAttrs };
-	XmlPredicate testPredicate("aa", make_unique<XmlAttributePredicate>(XmlAttributePredicate::MODE_EQUAL, "attname2", "attvalue3"));
+	XmlPredicate testPredicate("aa");
+	testPredicate.AddPredicate(XmlAttributePredicate{XmlAttributePredicate::MODE_EQUAL, "attname2", "attvalue3"});
 
 	// Act
 	bool result = testPredicate.IsMatch("aa", attrs, 0);

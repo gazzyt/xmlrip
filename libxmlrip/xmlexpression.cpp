@@ -104,21 +104,20 @@ XmlPredicate XmlExpression::ReadPredicate(XPathTokeniser& tokeniser, XPathToken&
 		throw XPathException("Expected element name", token.GetPosition());
 	}
 
-	string elementName{ token.GetString() };
+	XmlPredicate predicate{ token.GetString(), depthPredicate };
 
 	token = tokeniser.GetNextToken();
 
 	switch (token.GetType())
 	{
 	case XPathToken::TOK_LEFTSQUAREBRACKET:
-		return XmlPredicate{ elementName, 
-			ReadAttributePredicate(tokeniser, token), 
-			depthPredicate };
+		predicate.AddPredicate(ReadAttributePredicate(tokeniser, token));
+		return predicate;
 
 	case XPathToken::TOK_DBLSLASH:
 	case XPathToken::TOK_SLASH:
 	case XPathToken::TOK_NULL:
-		return (XmlPredicate{ elementName, depthPredicate });
+		return predicate;
 
 	default:
 		throw XPathException{ "Unexpected token", token.GetPosition() };
@@ -126,7 +125,7 @@ XmlPredicate XmlExpression::ReadPredicate(XPathTokeniser& tokeniser, XPathToken&
 	}
 }
 
-unique_ptr<XmlAttributePredicate> XmlExpression::ReadAttributePredicate(XPathTokeniser& tokeniser, XPathToken& token)
+XmlAttributePredicate XmlExpression::ReadAttributePredicate(XPathTokeniser& tokeniser, XPathToken& token)
 {
 	assert(token.GetType() == XPathToken::TOK_LEFTSQUAREBRACKET);
 	
@@ -165,7 +164,7 @@ unique_ptr<XmlAttributePredicate> XmlExpression::ReadAttributePredicate(XPathTok
 
 		token = tokeniser.GetNextToken();
 
-		return make_unique<XmlAttributePredicate>(XmlAttributePredicate::MODE_EQUAL, move(attributeName), move(attributeValue));
+		return XmlAttributePredicate{XmlAttributePredicate::MODE_EQUAL, move(attributeName), move(attributeValue)};
 	}
 	else if (token.GetType() == XPathToken::TOK_STRING)
 	{
@@ -231,7 +230,7 @@ unique_ptr<XmlAttributePredicate> XmlExpression::ReadAttributePredicate(XPathTok
 
 		token = tokeniser.GetNextToken();
 
-		return make_unique<XmlAttributePredicate>(XmlAttributePredicate::MODE_STARTSWITH, move(attributeName), move(attributeValue));
+		return XmlAttributePredicate{XmlAttributePredicate::MODE_STARTSWITH, move(attributeName), move(attributeValue)};
 		
 	}
 	else

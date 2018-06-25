@@ -6,19 +6,21 @@
 
 using namespace std;
 
-XmlPredicate::XmlPredicate(const string& tagName, std::unique_ptr<XmlAttributePredicate> attributePredicate, int documentDepthPredicate)
-	:	m_tagName(tagName), m_attributePredicate(move(attributePredicate)),
-		m_documentDepthPredicate(documentDepthPredicate)
+XmlPredicate::XmlPredicate(const string& tagName, int documentDepthPredicate)
+	:	m_tagName{tagName},
+		m_attributePredicates{},
+		m_documentDepthPredicate{documentDepthPredicate}
 {}
 
-XmlPredicate::XmlPredicate(const string& tagName, int documentDepthPredicate)
-	:	XmlPredicate(tagName, std::unique_ptr<XmlAttributePredicate>(), documentDepthPredicate)
-{}
+void XmlPredicate::AddPredicate(XmlAttributePredicate&& predicate)
+{
+	m_attributePredicates.push_back(predicate);
+}
 
 XmlPredicate::XmlPredicate(const XmlPredicate& rhs)
-:	m_tagName(rhs.m_tagName),
-	m_attributePredicate(copy_unique(rhs.m_attributePredicate)),
-	m_documentDepthPredicate(rhs.m_documentDepthPredicate)
+:	m_tagName{rhs.m_tagName},
+	m_attributePredicates{rhs.m_attributePredicates},
+	m_documentDepthPredicate{rhs.m_documentDepthPredicate}
 {}
 
 
@@ -27,9 +29,9 @@ const string& XmlPredicate::GetTagName() const
 	return m_tagName;
 }
 
-const XmlAttributePredicate* XmlPredicate::GetAttributePredicate() const
+const vector<XmlAttributePredicate>& XmlPredicate::GetAttributePredicates() const
 {
-	return m_attributePredicate.get();
+	return m_attributePredicates;
 }
 
 int XmlPredicate::GetDocumentDepthPredicate() const

@@ -420,7 +420,7 @@ TEST(XmlExpression, ReadPredicateReturnsPredicateForSimpleTagName) {
 	XmlPredicate pred = GetTestPredicate("/simpletagname");
     
 	EXPECT_EQ("simpletagname", pred.GetTagName());
-	EXPECT_EQ(nullptr, pred.GetAttributePredicate());
+	EXPECT_EQ(0U, pred.GetAttributePredicates().size());
 	EXPECT_EQ(1, pred.GetDocumentDepthPredicate());
 }
 
@@ -431,7 +431,7 @@ TEST(XmlExpression, ReadPredicateReturnsPredicateForSimpleTagNameWithDepth) {
 	XmlPredicate pred = GetTestPredicate("//simpletagname");
     
 	EXPECT_EQ("simpletagname", pred.GetTagName());
-	EXPECT_EQ(nullptr, pred.GetAttributePredicate());
+	EXPECT_EQ(0U, pred.GetAttributePredicates().size());
 	EXPECT_EQ(-1, pred.GetDocumentDepthPredicate());
 }
 
@@ -442,9 +442,9 @@ TEST(XmlExpression, ReadPredicateReturnsPredicateForSimpleTagNameWithAttributeDo
 	XmlPredicate pred = GetTestPredicate("/simpletagname[@attr=\"val\"]");
     
 	EXPECT_EQ("simpletagname", pred.GetTagName());
-	ASSERT_NE(nullptr, pred.GetAttributePredicate());
-	EXPECT_EQ("attr", pred.GetAttributePredicate()->GetName());
-	EXPECT_EQ("val", pred.GetAttributePredicate()->GetValue());
+	ASSERT_EQ(1U, pred.GetAttributePredicates().size());
+	EXPECT_EQ("attr", pred.GetAttributePredicates()[0].GetName());
+	EXPECT_EQ("val", pred.GetAttributePredicates()[0].GetValue());
 }
 
 TEST(XmlExpression, ReadPredicateReturnsPredicateForSimpleTagNameWithAttributeSingleQuote) {
@@ -454,10 +454,10 @@ TEST(XmlExpression, ReadPredicateReturnsPredicateForSimpleTagNameWithAttributeSi
 	XmlPredicate pred = GetTestPredicate("/simpletagname[@attr='val']");
     
 	EXPECT_EQ("simpletagname", pred.GetTagName());
-	ASSERT_NE(nullptr, pred.GetAttributePredicate());
-	EXPECT_EQ(XmlAttributePredicate::MODE_EQUAL, pred.GetAttributePredicate()->GetMode());
-	EXPECT_EQ("attr", pred.GetAttributePredicate()->GetName());
-	EXPECT_EQ("val", pred.GetAttributePredicate()->GetValue());
+	ASSERT_EQ(1U, pred.GetAttributePredicates().size());
+	EXPECT_EQ(XmlAttributePredicate::MODE_EQUAL, pred.GetAttributePredicates()[0].GetMode());
+	EXPECT_EQ("attr", pred.GetAttributePredicates()[0].GetName());
+	EXPECT_EQ("val", pred.GetAttributePredicates()[0].GetValue());
 }
 
 TEST(XmlExpression, ReadPredicateReturnsPredicateForSimpleTagNameWithAttributeStartsWith) {
@@ -467,10 +467,10 @@ TEST(XmlExpression, ReadPredicateReturnsPredicateForSimpleTagNameWithAttributeSt
 	XmlPredicate pred = GetTestPredicate("/simpletagname[starts-with(@attr,'val')]");
     
 	EXPECT_EQ("simpletagname", pred.GetTagName());
-	ASSERT_NE(nullptr, pred.GetAttributePredicate());
-	EXPECT_EQ(XmlAttributePredicate::MODE_STARTSWITH, pred.GetAttributePredicate()->GetMode());
-	EXPECT_EQ("attr", pred.GetAttributePredicate()->GetName());
-	EXPECT_EQ("val", pred.GetAttributePredicate()->GetValue());
+	ASSERT_EQ(1U, pred.GetAttributePredicates().size());
+	EXPECT_EQ(XmlAttributePredicate::MODE_STARTSWITH, pred.GetAttributePredicates()[0].GetMode());
+	EXPECT_EQ("attr", pred.GetAttributePredicates()[0].GetName());
+	EXPECT_EQ("val", pred.GetAttributePredicates()[0].GetValue());
 }
 
 TEST(XmlExpression, ReadPredicateThrowsXPathExceptionIfXPathFunctionNameUnrecognised) {
