@@ -225,7 +225,7 @@ TEST(XmlExpression, FromTextThrowsXPathExceptionIfXPathNotBeginWithSlash) {
 	catch (XPathException& e)
 	{
 		exceptionThrown = true;
-		EXPECT_STREQ("XPath must begin with / or //", e.what());
+		EXPECT_STREQ("XPath must begin with / or // at position 0", e.what());
 	}
 
 	EXPECT_TRUE(exceptionThrown);
@@ -282,7 +282,7 @@ TEST(XmlExpression, ReadPredicateThrowsXPathExceptionIfXPathNotBeginWithSlash) {
 	catch (XPathException& e)
 	{
 		exceptionThrown = true;
-		EXPECT_STREQ("Expected / or //", e.what());
+		EXPECT_STREQ("Expected / or // at position 0", e.what());
 	}
 
 	EXPECT_TRUE(exceptionThrown);
@@ -300,7 +300,7 @@ TEST(XmlExpression, ReadPredicateThrowsXPathExceptionIfXPathNotContainTagName) {
 	catch (XPathException& e)
 	{
 		exceptionThrown = true;
-		EXPECT_STREQ("Expected element name", e.what());
+		EXPECT_STREQ("Expected element name at position 2", e.what());
 	}
 
 	EXPECT_TRUE(exceptionThrown);
@@ -318,7 +318,7 @@ TEST(XmlExpression, ReadPredicateThrowsXPathExceptionIfXPathContainDot) {
 	catch (XPathException& e)
 	{
 		exceptionThrown = true;
-		EXPECT_STREQ("Unexpected character in XPath: .", e.what());
+		EXPECT_STREQ("Unexpected character in XPath: . at position 5", e.what());
 	}
 
 	EXPECT_TRUE(exceptionThrown);
@@ -353,7 +353,7 @@ TEST(XmlExpression, ReadPredicateThrowsXPathExceptionIfXPathConditionMissingAttr
 	catch (XPathException& e)
 	{
 		exceptionThrown = true;
-		EXPECT_STREQ("Expected attribute name", e.what());
+		EXPECT_STREQ("Expected attribute name at position 7", e.what());
 	}
 
 	EXPECT_TRUE(exceptionThrown);
@@ -371,7 +371,7 @@ TEST(XmlExpression, ReadPredicateThrowsXPathExceptionIfXPathConditionMissingEqua
 	catch (XPathException& e)
 	{
 		exceptionThrown = true;
-		EXPECT_STREQ("Expected = token", e.what());
+		EXPECT_STREQ("Expected = token at position 8", e.what());
 	}
 
 	EXPECT_TRUE(exceptionThrown);
@@ -389,7 +389,7 @@ TEST(XmlExpression, ReadPredicateThrowsXPathExceptionIfXPathConditionMissingValu
 	catch (XPathException& e)
 	{
 		exceptionThrown = true;
-		EXPECT_STREQ("Expected attribute value", e.what());
+		EXPECT_STREQ("Expected attribute value at position 9", e.what());
 	}
 
 	EXPECT_TRUE(exceptionThrown);
@@ -407,7 +407,7 @@ TEST(XmlExpression, ReadPredicateThrowsXPathExceptionIfXPathConditionClosingBrac
 	catch (XPathException& e)
 	{
 		exceptionThrown = true;
-		EXPECT_STREQ("Expected ] token", e.what());
+		EXPECT_STREQ("Expected ] token at position 12", e.what());
 	}
 
 	EXPECT_TRUE(exceptionThrown);
@@ -485,7 +485,7 @@ TEST(XmlExpression, ReadPredicateThrowsXPathExceptionIfXPathFunctionNameUnrecogn
 	catch (XPathException& e)
 	{
 		exceptionThrown = true;
-		EXPECT_STREQ("Unknown function name: staxxxxrts-with", e.what());
+		EXPECT_STREQ("Unknown function name: staxxxxrts-with at position 15", e.what());
 	}
 
 	EXPECT_TRUE(exceptionThrown);

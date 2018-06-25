@@ -6,7 +6,13 @@
 class XPathException : public BaseException
 {
 public:
-	XPathException(std::string&& message) noexcept;
+	XPathException(std::string message, int position) noexcept;
+	
+public:
+	int GetPosition() const;
+	
+private:
+	int m_position;
 
 };
 

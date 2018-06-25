@@ -18,7 +18,7 @@ TEST(XPathToken, ThreeParamConstructorSetsType) {
 	string chars("//");
 	
 	// Act
-	XPathToken token{XPathToken::TOK_SLASH, begin(chars), end(chars)};
+	XPathToken token{XPathToken::TOK_SLASH, 5, begin(chars), end(chars)};
 	
 	// Assert
 	EXPECT_EQ(XPathToken::TOK_SLASH, token.GetType());
@@ -29,7 +29,7 @@ TEST(XPathToken, OneParamConstructorSetsType) {
 	// Arrange
 	
 	// Act
-	XPathToken token{XPathToken::TOK_NULL};
+	XPathToken token{XPathToken::TOK_NULL, -1};
 	
 	// Assert
 	EXPECT_EQ(XPathToken::TOK_NULL, token.GetType());
@@ -45,7 +45,7 @@ TEST(XPathToken, GetStringReturnsTokenText) {
 	string chars("tokenText");
 	
 	// Act
-	XPathToken token{XPathToken::TOK_STRING, begin(chars), end(chars)};
+	XPathToken token{XPathToken::TOK_STRING, 5, begin(chars), end(chars)};
 	
 	// Assert
 	EXPECT_EQ(chars, token.GetString());
@@ -56,9 +56,26 @@ TEST(XPathToken, GetStringReturnsEmptyStringWhenNoTokenText) {
 	// Arrange
 	
 	// Act
-	XPathToken token{XPathToken::TOK_NULL};
+	XPathToken token{XPathToken::TOK_NULL, -1};
 	
 	// Assert
 	EXPECT_EQ("", token.GetString());
 	
 }
+
+/******************************************************************************************/
+/* GetPosition tests                                                                 */
+/******************************************************************************************/
+
+TEST(XPathToken, GetPositionReturnsPosition) {
+	// Arrange
+	string chars("tokenText");
+
+	// Act
+	XPathToken token{ XPathToken::TOK_STRING, 5, begin(chars), end(chars) };
+
+	// Assert
+	EXPECT_EQ(5, token.GetPosition());
+
+}
+

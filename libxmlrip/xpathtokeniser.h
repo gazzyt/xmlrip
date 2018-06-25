@@ -20,6 +20,10 @@ private:
 	XPathToken ExtractSlashToken(const std::string::const_iterator& currentTokenStart);
 	XPathToken ExtractStringToken(const std::string::const_iterator& currentTokenStart);
 	XPathToken ExtractQuotedString(const std::string::const_iterator& currentTokenStart);
+	int GetPosition(const std::string::const_iterator& currentTokenStart)
+	{
+		return static_cast<int>(currentTokenStart - begin(m_xpathText));
+	}
 
 private:
 	const std::string m_xpathText;

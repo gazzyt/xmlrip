@@ -6,6 +6,7 @@
 #include "libxmlxpathprocessor.h"
 #include "xmlexpression.h"
 #include "exception/baseexception.h"
+#include "exception/xpathexception.h"
 
 using namespace std;
 
@@ -30,9 +31,15 @@ int main(int argc, char** argv)
 		auto expr = XmlExpression::FromText(xpathText);
 		LibXmlXPathProcessor<LibXmlPrint>::Run(argv[1], move(expr));
 	}
+	catch(XPathException& e)
+	{
+		cerr << e.what() << endl;
+		cerr << xpathText << endl;
+		cerr << string(e.GetPosition(), '-') << '^' << endl;
+	}
 	catch(BaseException& e)
 	{
-		cerr << e << endl;
+		cerr << e.what() << endl;
 	}
 
 	cout << endl << endl;

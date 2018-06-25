@@ -177,7 +177,7 @@ TEST(XPathTokeniser, GetNextTokenThrowsXPathExceptionForMissingClosingDoubleQuot
 	catch (XPathException& e)
 	{
 		exceptionThrown = true;
-		EXPECT_STREQ("Missing closing quote", e.what());
+		EXPECT_STREQ("Missing closing quote at position 20", e.what());
 	}
 
 	EXPECT_TRUE(exceptionThrown);
@@ -222,7 +222,7 @@ TEST(XPathTokeniser, GetNextTokenThrowsXPathExceptionForMissingClosingSingleQuot
 	catch (XPathException& e)
 	{
 		exceptionThrown = true;
-		EXPECT_STREQ("Missing closing quote", e.what());
+		EXPECT_STREQ("Missing closing quote at position 20", e.what());
 	}
 
 	EXPECT_TRUE(exceptionThrown);
@@ -242,7 +242,7 @@ TEST(XPathTokeniser, GetNextTokenThrowsXPathExceptionForIllegalCharactor) {
 	catch (XPathException& e)
 	{
 		exceptionThrown = true;
-		EXPECT_STREQ("Unexpected character in XPath: |", e.what());
+		EXPECT_STREQ("Unexpected character in XPath: | at position 0", e.what());
 	}
 
 	EXPECT_TRUE(exceptionThrown);
