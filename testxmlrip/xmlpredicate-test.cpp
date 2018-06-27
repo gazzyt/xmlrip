@@ -156,3 +156,32 @@ TEST(XmlPredicate, IsMatchReturnsFalseWhenTagNamesMatchAndDepthNoMatch) {
 	EXPECT_FALSE(result);
 }
 
+TEST(XmlPredicate, IsMatchReturnsTrueWhenTagNamesAndBothAttributesMatchTwoAttributePredicates) {
+	// Arrange
+	static const xmlChar* testAttrs[] = { BAD_CAST "attname1", BAD_CAST "attvalue1", BAD_CAST "attname2", BAD_CAST "attvalue2" };
+	LibXmlAttributeCollection attrs{ testAttrs };
+	XmlPredicate testPredicate("aa");
+	testPredicate.AddPredicate(XmlAttributePredicate{XmlAttributePredicate::MODE_EQUAL, "attname1", "attvalue1"});
+	testPredicate.AddPredicate(XmlAttributePredicate{XmlAttributePredicate::MODE_EQUAL, "attname2", "attvalue2"});
+
+	// Act
+	bool result = testPredicate.IsMatch("aa", attrs, 0);
+
+	// Assert
+	EXPECT_TRUE(result);
+}
+
+TEST(XmlPredicate, IsMatchReturnsFalseWhenTagNamesAndOneAttributeMatchesTwoAttributePredicates) {
+	// Arrange
+	static const xmlChar* testAttrs[] = { BAD_CAST "attname1", BAD_CAST "attvalue1", BAD_CAST "attname2", BAD_CAST "attvalue2" };
+	LibXmlAttributeCollection attrs{ testAttrs };
+	XmlPredicate testPredicate("aa");
+	testPredicate.AddPredicate(XmlAttributePredicate{XmlAttributePredicate::MODE_EQUAL, "attname1", "attvalue1"});
+	testPredicate.AddPredicate(XmlAttributePredicate{XmlAttributePredicate::MODE_EQUAL, "attname3", "attvalue2"});
+
+	// Act
+	bool result = testPredicate.IsMatch("aa", attrs, 0);
+
+	// Assert
+	EXPECT_FALSE(result);
+}
