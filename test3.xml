@@ -8,4 +8,7 @@ Here is some text &amp; and some more.
 <inner c="EP1234">
 <![CDATA[Some <text> here]]>
 </inner>
+<inner c="EP1234" d="99">
+Another inner with two attributes
+</inner>
 </outer>

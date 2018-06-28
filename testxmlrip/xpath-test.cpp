@@ -107,6 +107,17 @@ TEST(XPath, TwoLevelXPathWithAttribute) {
 	RunE2ETest("<aa><bb a='1'></bb><bb a='1' b='2'/><bb a='2'></bb></aa>", "/aa/bb[@a='1']", expected);
 }
 
+TEST(XPath, TwoLevelXPathWithTwoAttributeFilters) {
+	// Arrange
+	vector<RecordingPrinterItem> expected = {
+		RecordingPrinterItem{RecordingPrinterItem::START_ELEMENT, "bb", vector<pair<string, string>>{{"a", "1"},{"b", "2"}}},
+		RecordingPrinterItem{RecordingPrinterItem::END_ELEMENT, ""},
+	};
+
+	// Act
+	RunE2ETest("<aa><bb a='1'></bb><bb a='1' b='2'/><bb b='2'></bb></aa>", "/aa/bb[@a='1'][@b='2']", expected);
+}
+
 TEST(XPath, SimpleXPathWithText) {
 	// Arrange
 	vector<RecordingPrinterItem> expected = {

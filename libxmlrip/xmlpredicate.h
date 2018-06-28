@@ -46,7 +46,7 @@ template<class T> bool XmlPredicate::IsMatch(const char* tagName, const T& attri
 
 	return std::all_of(std::begin(m_attributePredicates),
 		std::end(m_attributePredicates),
-		[&](const auto& a){ return a.IsMatch(attributes); });
+		[&attributes](const auto& a){ return a.IsMatch(attributes); });
 }
 
 

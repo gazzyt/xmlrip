@@ -490,3 +490,17 @@ TEST(XmlExpression, ReadPredicateThrowsXPathExceptionIfXPathFunctionNameUnrecogn
 
 	EXPECT_TRUE(exceptionThrown);
 }
+
+TEST(XmlExpression, ReadPredicateReturnsPredicateForSimpleTagNameWithTwoAttributeFilters) {
+    // Arrange
+	
+	// Act
+	XmlPredicate pred = GetTestPredicate("/simpletagname[@attr=\"val\"][@attr2=\"val2\"]");
+    
+	EXPECT_EQ("simpletagname", pred.GetTagName());
+	ASSERT_EQ(2U, pred.GetAttributePredicates().size());
+	EXPECT_EQ("attr", pred.GetAttributePredicates()[0].GetName());
+	EXPECT_EQ("val", pred.GetAttributePredicates()[0].GetValue());
+	EXPECT_EQ("attr2", pred.GetAttributePredicates()[1].GetName());
+	EXPECT_EQ("val2", pred.GetAttributePredicates()[1].GetValue());
+}

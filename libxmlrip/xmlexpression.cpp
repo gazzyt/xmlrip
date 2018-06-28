@@ -106,23 +106,31 @@ XmlPredicate XmlExpression::ReadPredicate(XPathTokeniser& tokeniser, XPathToken&
 
 	XmlPredicate predicate{ token.GetString(), depthPredicate };
 
-	token = tokeniser.GetNextToken();
-
-	switch (token.GetType())
+	bool done = false;
+	
+	while (!done)
 	{
-	case XPathToken::TOK_LEFTSQUAREBRACKET:
-		predicate.AddPredicate(ReadAttributePredicate(tokeniser, token));
-		return predicate;
+		token = tokeniser.GetNextToken();
 
-	case XPathToken::TOK_DBLSLASH:
-	case XPathToken::TOK_SLASH:
-	case XPathToken::TOK_NULL:
-		return predicate;
+		switch (token.GetType())
+		{
+		case XPathToken::TOK_LEFTSQUAREBRACKET:
+			predicate.AddPredicate(ReadAttributePredicate(tokeniser, token));
+			break;
 
-	default:
-		throw XPathException{ "Unexpected token", token.GetPosition() };
+		case XPathToken::TOK_DBLSLASH:
+		case XPathToken::TOK_SLASH:
+		case XPathToken::TOK_NULL:
+			done = true;
+			break;
 
+		default:
+			throw XPathException{ "Unexpected token", token.GetPosition() };
+
+		}
 	}
+	
+	return predicate;
 }
 
 XmlAttributePredicate XmlExpression::ReadAttributePredicate(XPathTokeniser& tokeniser, XPathToken& token)
@@ -161,8 +169,6 @@ XmlAttributePredicate XmlExpression::ReadAttributePredicate(XPathTokeniser& toke
 
 		if (token.GetType() != XPathToken::TOK_RIGHTSQUAREBRACKET)
 			throw XPathException("Expected ] token", token.GetPosition());
-
-		token = tokeniser.GetNextToken();
 
 		return XmlAttributePredicate{XmlAttributePredicate::MODE_EQUAL, move(attributeName), move(attributeValue)};
 	}
@@ -227,8 +233,6 @@ XmlAttributePredicate XmlExpression::ReadAttributePredicate(XPathTokeniser& toke
 
 		if (token.GetType() != XPathToken::TOK_RIGHTSQUAREBRACKET)
 			throw XPathException("Expected ] token", token.GetPosition());
-
-		token = tokeniser.GetNextToken();
 
 		return XmlAttributePredicate{XmlAttributePredicate::MODE_STARTSWITH, move(attributeName), move(attributeValue)};
 		
