@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 
+#include "libxmlattributecollection.h"
 #include "xmlattributepredicate.h"
 
 class XmlStepExpr
@@ -17,7 +18,7 @@ public:
 public:
 	void AddPredicate(XmlAttributePredicate&& predicate);
 	XmlStepExpr & operator=(const XmlStepExpr& rhs) = delete;
-	template<class T> bool IsMatch(const char* tagName, const T& attributes, int documentDepth) const;
+	bool IsMatch(const char* tagName, const LibXmlAttributeCollection& attributes, int documentDepth) const;
 	const std::string& GetTagName() const;
 	const std::vector<XmlAttributePredicate>& GetAttributePredicates() const;
 	int GetDocumentDepthPredicate() const;
@@ -28,26 +29,6 @@ private:
 	int m_documentDepthPredicate;
 };
 
-
-template<class T> bool XmlStepExpr::IsMatch(const char* tagName, const T& attributes, int documentDepth) const
-{
-	bool tagMatch = m_tagName == tagName;
-
-	if (!tagMatch)
-		return false;
-	
-	bool depthMatch = m_documentDepthPredicate == -1 || m_documentDepthPredicate == documentDepth;
-
-	if (!depthMatch)
-		return false;
-
-	if (m_attributePredicates.size() == 0)
-		return true;
-
-	return std::all_of(std::begin(m_attributePredicates),
-		std::end(m_attributePredicates),
-		[&attributes](const auto& a){ return a.IsMatch(attributes); });
-}
 
 
 #endif
