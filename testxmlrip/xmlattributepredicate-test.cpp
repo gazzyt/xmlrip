@@ -29,7 +29,7 @@ TEST(XmlAttributePredicate, ConstructorCreatesCorrectPredicate) {
 }
 
 /******************************************************************************************/
-/* IsMatch tests                                                                          */
+/* IsMatch(string,string) tests                                                                          */
 /******************************************************************************************/
 
 TEST(XmlAttributePredicate, IsMatchReturnsFalseInEqualsModeWhenAttributeNameDiffers) {
@@ -110,4 +110,72 @@ TEST(XmlAttributePredicate, IsMatchReturnsFalseInStartsWithModeWhenNameDiffers) 
 	
 	// Assert
 	EXPECT_FALSE(predicate.IsMatch("bname", "avalue"));
+}
+
+/******************************************************************************************/
+/* IsMatch(const LibXmlAttributeCollection&) tests                                                                          */
+/******************************************************************************************/
+
+TEST(XmlAttributePredicate, IsMatchReturnsTrueInEqualsModeWhenAttrsContainsMatchingAttribute) {
+	// Arrange
+	const xmlChar* attrs[] = {
+		BAD_CAST "aname", BAD_CAST "avalue",
+		BAD_CAST "bname", BAD_CAST "bvalue",
+		nullptr
+	};
+	LibXmlAttributeCollection libXmlAttrs{attrs};
+	XmlAttributePredicate predicate(XmlAttributePredicate::MODE_EQUAL, "bname", "bvalue");
+	
+	// Act
+	
+	// Assert
+	EXPECT_TRUE(predicate.IsMatch(libXmlAttrs));
+}
+
+TEST(XmlAttributePredicate, IsMatchReturnsFalseInEqualsModeWhenAttrsContainsNoMatchingAttribute) {
+	// Arrange
+	const xmlChar* attrs[] = {
+		BAD_CAST "aname", BAD_CAST "avalue",
+		BAD_CAST "bname", BAD_CAST "bvalue",
+		nullptr
+	};
+	LibXmlAttributeCollection libXmlAttrs{attrs};
+	XmlAttributePredicate predicate(XmlAttributePredicate::MODE_EQUAL, "cname", "cvalue");
+	
+	// Act
+	
+	// Assert
+	EXPECT_FALSE(predicate.IsMatch(libXmlAttrs));
+}
+
+TEST(XmlAttributePredicate, IsMatchReturnsFalseInEqualsModeWhenAttrsContainsNameOnlyMatchingAttribute) {
+	// Arrange
+	const xmlChar* attrs[] = {
+		BAD_CAST "aname", BAD_CAST "avalue",
+		BAD_CAST "bname", BAD_CAST "bvalue",
+		nullptr
+	};
+	LibXmlAttributeCollection libXmlAttrs{attrs};
+	XmlAttributePredicate predicate(XmlAttributePredicate::MODE_EQUAL, "aname", "cvalue");
+	
+	// Act
+	
+	// Assert
+	EXPECT_FALSE(predicate.IsMatch(libXmlAttrs));
+}
+
+TEST(XmlAttributePredicate, IsMatchReturnsFalseInEqualsModeWhenAttrsContainsValueOnlyMatchingAttribute) {
+	// Arrange
+	const xmlChar* attrs[] = {
+		BAD_CAST "aname", BAD_CAST "avalue",
+		BAD_CAST "bname", BAD_CAST "bvalue",
+		nullptr
+	};
+	LibXmlAttributeCollection libXmlAttrs{attrs};
+	XmlAttributePredicate predicate(XmlAttributePredicate::MODE_EQUAL, "dname", "bvalue");
+	
+	// Act
+	
+	// Assert
+	EXPECT_FALSE(predicate.IsMatch(libXmlAttrs));
 }
