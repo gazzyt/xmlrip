@@ -36,6 +36,7 @@ set( BUILD_LIBXMLRIP_MANIFEST
 set( BUILD_LIBXMLRIP_MANIFEST_HEADERS
     xmlelement.h
 	xmlattribute.h
+	xmlpredicate.h
 	xmlattributepredicate.h
     xmlstepexpr.h
 	xpathtoken.h

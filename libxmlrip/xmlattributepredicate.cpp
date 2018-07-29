@@ -38,3 +38,14 @@ bool XmlAttributePredicate::IsMatch(const char* name, const char* value) const n
 	}
 }
 
+bool XmlAttributePredicate::IsMatch(const LibXmlAttributeCollection& attributes) const noexcept
+{
+	for (auto attribute : attributes)
+	{
+		if (IsMatch(attribute.first, attribute.second))
+		{
+			return true;
+		}
+	}
+	return false;
+}
