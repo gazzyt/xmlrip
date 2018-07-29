@@ -26,7 +26,7 @@ TEST(XmlExpression, CurrentMatchDepthIsNoMatchForNewExpression) {
 TEST(XmlExpression, CurrentMatchDepthIsNoMatchWhenNoMatch) {
 	// Arrange
     XmlExpression expr;
-	expr.AddPredicate(XmlPredicate{"aa"});
+	expr.AddStepExpr(XmlStepExpr{"aa"});
 	LibXmlAttributeCollection attrs{ nullptr };
 	
 	// Act
@@ -39,7 +39,7 @@ TEST(XmlExpression, CurrentMatchDepthIsNoMatchWhenNoMatch) {
 TEST(XmlExpression, CurrentMatchDepthIsZeroOnMatch) {
 	// Arrange
     XmlExpression expr;
-	expr.AddPredicate(XmlPredicate{"aa"});
+	expr.AddStepExpr(XmlStepExpr{"aa"});
 	LibXmlAttributeCollection attrs{ nullptr };
     
 	// Act
@@ -52,7 +52,7 @@ TEST(XmlExpression, CurrentMatchDepthIsZeroOnMatch) {
 TEST(XmlExpression, CurrentMatchIsOneForChildTagsOfFullMatch) {
 	// Arrange
     XmlExpression expr;
-	expr.AddPredicate(XmlPredicate{"aa"});
+	expr.AddStepExpr(XmlStepExpr{"aa"});
 	LibXmlAttributeCollection attrs{ nullptr };
 	
 	// Act
@@ -111,7 +111,7 @@ TEST(XmlExpression, CurrentDocumentDepthDecrementsAfterEndTag) {
 TEST(XmlExpression, ProcessStartTagReturnsZeroWithSingleTagExpressionWhenTagMatches) {
 	// Arrange
     XmlExpression expr;
-	expr.AddPredicate(XmlPredicate{"aa"});
+	expr.AddStepExpr(XmlStepExpr{"aa"});
 	LibXmlAttributeCollection attrs{ nullptr };
 	
 	// Act
@@ -125,7 +125,7 @@ TEST(XmlExpression, ProcessStartTagReturnsZeroWithSingleTagExpressionWhenTagMatc
 TEST(XmlExpression, ProcessStartTagReturnsNoMatchWithSingleTagExpressionWhenTagDoesNotMatch) {
 	// Arrange
     XmlExpression expr;
-	expr.AddPredicate(XmlPredicate{"aa"});
+	expr.AddStepExpr(XmlStepExpr{"aa"});
 	LibXmlAttributeCollection attrs{ nullptr };
     
 	// Act
@@ -138,7 +138,7 @@ TEST(XmlExpression, ProcessStartTagReturnsNoMatchWithSingleTagExpressionWhenTagD
 TEST(XmlExpression, ProcessStartTagReturnsOneForChildTagsOfFullMatch) {
 	// Arrange
     XmlExpression expr;
-	expr.AddPredicate(XmlPredicate{"aa"});
+	expr.AddStepExpr(XmlStepExpr{"aa"});
 	LibXmlAttributeCollection attrs{ nullptr };
 	
 	// Act
@@ -152,7 +152,7 @@ TEST(XmlExpression, ProcessStartTagReturnsOneForChildTagsOfFullMatch) {
 TEST(XmlExpression, ProcessStartTagReturnsNoMatchAfterMatchingTagClosed) {
 	// Arrange
     XmlExpression expr;
-	expr.AddPredicate(XmlPredicate{"aa"});
+	expr.AddStepExpr(XmlStepExpr{"aa"});
 	LibXmlAttributeCollection attrs{ nullptr };
 	
 	// Act
@@ -167,8 +167,8 @@ TEST(XmlExpression, ProcessStartTagReturnsNoMatchAfterMatchingTagClosed) {
 TEST(XmlExpression, ProcessStartTagProcessesTwoPrecidatesCorrectly) {
 	// Arrange
     XmlExpression expr;
- 	expr.AddPredicate(XmlPredicate{"aa"});
-	expr.AddPredicate(XmlPredicate{"bb"});
+ 	expr.AddStepExpr(XmlStepExpr{"aa"});
+	expr.AddStepExpr(XmlStepExpr{"bb"});
 	LibXmlAttributeCollection attrs{ nullptr };
 	
 	// Act
@@ -197,7 +197,7 @@ TEST(XmlExpression, ProcessStartTagProcessesTwoPrecidatesCorrectly) {
 TEST(XmlExpression, ProcessStartTagReturnsZeroForClosingTagOfFullMatch) {
 	// Arrange
     XmlExpression expr;
-	expr.AddPredicate(XmlPredicate{"aa"});
+	expr.AddStepExpr(XmlStepExpr{"aa"});
 	LibXmlAttributeCollection attrs{ nullptr };
 	
 	// Act
@@ -240,7 +240,7 @@ TEST(XmlExpression, FromTextCreatesSingleItemExpressionCorrectly) {
 	// Assert
 	ASSERT_TRUE((bool)expr);
 
-	auto predicates = expr->GetPredicates();
+	auto predicates = expr->GetStepExprs();
 	EXPECT_EQ(1U, predicates.size());
 	EXPECT_EQ("aa", predicates[0].GetTagName());
 }
@@ -254,30 +254,30 @@ TEST(XmlExpression, FromTextCreatesTwoItemExpressionCorrectly) {
 	// Assert
 	ASSERT_TRUE((bool)expr);
 
-	auto predicates = expr->GetPredicates();
+	auto predicates = expr->GetStepExprs();
 	EXPECT_EQ(2U, predicates.size());
 	EXPECT_EQ("aa", predicates[0].GetTagName());
 	EXPECT_EQ("bb", predicates[1].GetTagName());
 }
 
 /******************************************************************************************/
-/* ReadPredicate tests */
+/* ReadStepExpr tests */
 /******************************************************************************************/
-XmlPredicate GetTestPredicate(const string xpath)
+XmlStepExpr GetTestStepExpr(const string xpath)
 {
 	XPathTokeniser tokeniser{ xpath };
 	XPathToken token = tokeniser.GetNextToken();
-	return XmlExpression::ReadPredicate(tokeniser, token);
+	return XmlExpression::ReadStepExpr(tokeniser, token);
 }
 
-TEST(XmlExpression, ReadPredicateThrowsXPathExceptionIfXPathNotBeginWithSlash) {
+TEST(XmlExpression, ReadStepExprThrowsXPathExceptionIfXPathNotBeginWithSlash) {
 	// Arrange
 	bool exceptionThrown = false;
 
 	// Act
 	try
 	{
-		XmlPredicate pred = GetTestPredicate("simpletagname");
+		XmlStepExpr pred = GetTestStepExpr("simpletagname");
 	}
 	catch (XPathException& e)
 	{
@@ -288,14 +288,14 @@ TEST(XmlExpression, ReadPredicateThrowsXPathExceptionIfXPathNotBeginWithSlash) {
 	EXPECT_TRUE(exceptionThrown);
 }
 
-TEST(XmlExpression, ReadPredicateThrowsXPathExceptionIfXPathNotContainTagName) {
+TEST(XmlExpression, ReadStepExprThrowsXPathExceptionIfXPathNotContainTagName) {
 	// Arrange
 	bool exceptionThrown = false;
 
 	// Act
 	try
 	{
-		XmlPredicate pred = GetTestPredicate("//@");
+		XmlStepExpr pred = GetTestStepExpr("//@");
 	}
 	catch (XPathException& e)
 	{
@@ -306,14 +306,14 @@ TEST(XmlExpression, ReadPredicateThrowsXPathExceptionIfXPathNotContainTagName) {
 	EXPECT_TRUE(exceptionThrown);
 }
 
-TEST(XmlExpression, ReadPredicateThrowsXPathExceptionIfXPathContainDot) {
+TEST(XmlExpression, ReadStepExprThrowsXPathExceptionIfXPathContainDot) {
 	// Arrange
 	bool exceptionThrown = false;
 
 	// Act
 	try
 	{
-		XmlPredicate pred = GetTestPredicate("//tag.");
+		XmlStepExpr pred = GetTestStepExpr("//tag.");
 	}
 	catch (XPathException& e)
 	{
@@ -324,14 +324,14 @@ TEST(XmlExpression, ReadPredicateThrowsXPathExceptionIfXPathContainDot) {
 	EXPECT_TRUE(exceptionThrown);
 }
 
-TEST(XmlExpression, ReadPredicateThrowsXPathExceptionIfXPathConditionMissingAt) {
+TEST(XmlExpression, ReadStepExprThrowsXPathExceptionIfXPathConditionMissingAt) {
 	// Arrange
 	bool exceptionThrown = false;
 
 	// Act
 	try
 	{
-		XmlPredicate pred = GetTestPredicate("//tag[a='t']");
+		XmlStepExpr pred = GetTestStepExpr("//tag[a='t']");
 	}
 	catch (XPathException& e)
 	{
@@ -341,14 +341,14 @@ TEST(XmlExpression, ReadPredicateThrowsXPathExceptionIfXPathConditionMissingAt) 
 	EXPECT_TRUE(exceptionThrown);
 }
 
-TEST(XmlExpression, ReadPredicateThrowsXPathExceptionIfXPathConditionMissingAttributeName) {
+TEST(XmlExpression, ReadStepExprThrowsXPathExceptionIfXPathConditionMissingAttributeName) {
 	// Arrange
 	bool exceptionThrown = false;
 
 	// Act
 	try
 	{
-		XmlPredicate pred = GetTestPredicate("//tag[@='t']");
+		XmlStepExpr pred = GetTestStepExpr("//tag[@='t']");
 	}
 	catch (XPathException& e)
 	{
@@ -359,14 +359,14 @@ TEST(XmlExpression, ReadPredicateThrowsXPathExceptionIfXPathConditionMissingAttr
 	EXPECT_TRUE(exceptionThrown);
 }
 
-TEST(XmlExpression, ReadPredicateThrowsXPathExceptionIfXPathConditionMissingEquals) {
+TEST(XmlExpression, ReadStepExprThrowsXPathExceptionIfXPathConditionMissingEquals) {
 	// Arrange
 	bool exceptionThrown = false;
 
 	// Act
 	try
 	{
-		XmlPredicate pred = GetTestPredicate("//tag[@a't']");
+		XmlStepExpr pred = GetTestStepExpr("//tag[@a't']");
 	}
 	catch (XPathException& e)
 	{
@@ -377,14 +377,14 @@ TEST(XmlExpression, ReadPredicateThrowsXPathExceptionIfXPathConditionMissingEqua
 	EXPECT_TRUE(exceptionThrown);
 }
 
-TEST(XmlExpression, ReadPredicateThrowsXPathExceptionIfXPathConditionMissingValue) {
+TEST(XmlExpression, ReadStepExprThrowsXPathExceptionIfXPathConditionMissingValue) {
 	// Arrange
 	bool exceptionThrown = false;
 
 	// Act
 	try
 	{
-		XmlPredicate pred = GetTestPredicate("//tag[@a=]");
+		XmlStepExpr pred = GetTestStepExpr("//tag[@a=]");
 	}
 	catch (XPathException& e)
 	{
@@ -395,14 +395,14 @@ TEST(XmlExpression, ReadPredicateThrowsXPathExceptionIfXPathConditionMissingValu
 	EXPECT_TRUE(exceptionThrown);
 }
 
-TEST(XmlExpression, ReadPredicateThrowsXPathExceptionIfXPathConditionClosingBracket) {
+TEST(XmlExpression, ReadStepExprThrowsXPathExceptionIfXPathConditionClosingBracket) {
 	// Arrange
 	bool exceptionThrown = false;
 
 	// Act
 	try
 	{
-		XmlPredicate pred = GetTestPredicate("//tag[@a='b'");
+		XmlStepExpr pred = GetTestStepExpr("//tag[@a='b'");
 	}
 	catch (XPathException& e)
 	{
@@ -413,33 +413,33 @@ TEST(XmlExpression, ReadPredicateThrowsXPathExceptionIfXPathConditionClosingBrac
 	EXPECT_TRUE(exceptionThrown);
 }
 	
-TEST(XmlExpression, ReadPredicateReturnsPredicateForSimpleTagName) {
+TEST(XmlExpression, ReadStepExprReturnsStepExprForSimpleTagName) {
     // Arrange
 	
 	// Act
-	XmlPredicate pred = GetTestPredicate("/simpletagname");
+	XmlStepExpr pred = GetTestStepExpr("/simpletagname");
     
 	EXPECT_EQ("simpletagname", pred.GetTagName());
 	EXPECT_EQ(0U, pred.GetAttributePredicates().size());
 	EXPECT_EQ(1, pred.GetDocumentDepthPredicate());
 }
 
-TEST(XmlExpression, ReadPredicateReturnsPredicateForSimpleTagNameWithDepth) {
+TEST(XmlExpression, ReadStepExprReturnsStepExprForSimpleTagNameWithDepth) {
     // Arrange
 	
 	// Act
-	XmlPredicate pred = GetTestPredicate("//simpletagname");
+	XmlStepExpr pred = GetTestStepExpr("//simpletagname");
     
 	EXPECT_EQ("simpletagname", pred.GetTagName());
 	EXPECT_EQ(0U, pred.GetAttributePredicates().size());
 	EXPECT_EQ(-1, pred.GetDocumentDepthPredicate());
 }
 
-TEST(XmlExpression, ReadPredicateReturnsPredicateForSimpleTagNameWithAttributeDoubleQuote) {
+TEST(XmlExpression, ReadStepExprReturnsStepExprForSimpleTagNameWithAttributeDoubleQuote) {
     // Arrange
 	
 	// Act
-	XmlPredicate pred = GetTestPredicate("/simpletagname[@attr=\"val\"]");
+	XmlStepExpr pred = GetTestStepExpr("/simpletagname[@attr=\"val\"]");
     
 	EXPECT_EQ("simpletagname", pred.GetTagName());
 	ASSERT_EQ(1U, pred.GetAttributePredicates().size());
@@ -447,11 +447,11 @@ TEST(XmlExpression, ReadPredicateReturnsPredicateForSimpleTagNameWithAttributeDo
 	EXPECT_EQ("val", pred.GetAttributePredicates()[0].GetValue());
 }
 
-TEST(XmlExpression, ReadPredicateReturnsPredicateForSimpleTagNameWithAttributeSingleQuote) {
+TEST(XmlExpression, ReadStepExprReturnsStepExprForSimpleTagNameWithAttributeSingleQuote) {
     // Arrange
 	
 	// Act
-	XmlPredicate pred = GetTestPredicate("/simpletagname[@attr='val']");
+	XmlStepExpr pred = GetTestStepExpr("/simpletagname[@attr='val']");
     
 	EXPECT_EQ("simpletagname", pred.GetTagName());
 	ASSERT_EQ(1U, pred.GetAttributePredicates().size());
@@ -460,11 +460,11 @@ TEST(XmlExpression, ReadPredicateReturnsPredicateForSimpleTagNameWithAttributeSi
 	EXPECT_EQ("val", pred.GetAttributePredicates()[0].GetValue());
 }
 
-TEST(XmlExpression, ReadPredicateReturnsPredicateForSimpleTagNameWithAttributeStartsWith) {
+TEST(XmlExpression, ReadStepExprReturnsStepExprForSimpleTagNameWithAttributeStartsWith) {
     // Arrange
 	
 	// Act
-	XmlPredicate pred = GetTestPredicate("/simpletagname[starts-with(@attr,'val')]");
+	XmlStepExpr pred = GetTestStepExpr("/simpletagname[starts-with(@attr,'val')]");
     
 	EXPECT_EQ("simpletagname", pred.GetTagName());
 	ASSERT_EQ(1U, pred.GetAttributePredicates().size());
@@ -473,14 +473,14 @@ TEST(XmlExpression, ReadPredicateReturnsPredicateForSimpleTagNameWithAttributeSt
 	EXPECT_EQ("val", pred.GetAttributePredicates()[0].GetValue());
 }
 
-TEST(XmlExpression, ReadPredicateThrowsXPathExceptionIfXPathFunctionNameUnrecognised) {
+TEST(XmlExpression, ReadStepExprThrowsXPathExceptionIfXPathFunctionNameUnrecognised) {
 	// Arrange
 	bool exceptionThrown = false;
 
 	// Act
 	try
 	{
-		XmlPredicate pred = GetTestPredicate("/simpletagname[staxxxxrts-with(@attr,'val')]");
+		XmlStepExpr pred = GetTestStepExpr("/simpletagname[staxxxxrts-with(@attr,'val')]");
 	}
 	catch (XPathException& e)
 	{
@@ -491,11 +491,11 @@ TEST(XmlExpression, ReadPredicateThrowsXPathExceptionIfXPathFunctionNameUnrecogn
 	EXPECT_TRUE(exceptionThrown);
 }
 
-TEST(XmlExpression, ReadPredicateReturnsPredicateForSimpleTagNameWithTwoAttributeFilters) {
+TEST(XmlExpression, ReadStepExprReturnsStepExprForSimpleTagNameWithTwoAttributeFilters) {
     // Arrange
 	
 	// Act
-	XmlPredicate pred = GetTestPredicate("/simpletagname[@attr=\"val\"][@attr2=\"val2\"]");
+	XmlStepExpr pred = GetTestStepExpr("/simpletagname[@attr=\"val\"][@attr2=\"val2\"]");
     
 	EXPECT_EQ("simpletagname", pred.GetTagName());
 	ASSERT_EQ(2U, pred.GetAttributePredicates().size());

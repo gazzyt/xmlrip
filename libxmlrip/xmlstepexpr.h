@@ -1,5 +1,5 @@
-#ifndef XMLPREDICATE_H
-#define XMLPREDICATE_H
+#ifndef XMLSTEPEXPR_H
+#define XMLSTEPEXPR_H
 
 #include <algorithm>
 #include <memory>
@@ -8,15 +8,15 @@
 
 #include "xmlattributepredicate.h"
 
-class XmlPredicate
+class XmlStepExpr
 {
 public:
-	XmlPredicate(const std::string& tagName, int documentDepthPredicate = -1);
-	XmlPredicate(const XmlPredicate& rhs);
+	XmlStepExpr(const std::string& tagName, int documentDepthPredicate = -1);
+	XmlStepExpr(const XmlStepExpr& rhs);
 
 public:
 	void AddPredicate(XmlAttributePredicate&& predicate);
-	XmlPredicate & operator=(const XmlPredicate& rhs) = delete;
+	XmlStepExpr & operator=(const XmlStepExpr& rhs) = delete;
 	template<class T> bool IsMatch(const char* tagName, const T& attributes, int documentDepth) const;
 	const std::string& GetTagName() const;
 	const std::vector<XmlAttributePredicate>& GetAttributePredicates() const;
@@ -29,7 +29,7 @@ private:
 };
 
 
-template<class T> bool XmlPredicate::IsMatch(const char* tagName, const T& attributes, int documentDepth) const
+template<class T> bool XmlStepExpr::IsMatch(const char* tagName, const T& attributes, int documentDepth) const
 {
 	bool tagMatch = m_tagName == tagName;
 

@@ -7,17 +7,17 @@
 using namespace std;
 
 XmlExpression::XmlExpression()
-:	m_predicates{}, m_matches{}
+:	m_stepExprs{}, m_matches{}
 {}
 
-void XmlExpression::AddPredicate(XmlPredicate predicate)
+void XmlExpression::AddStepExpr(XmlStepExpr stepExpr)
 {
-	m_predicates.push_back(predicate);
+	m_stepExprs.push_back(stepExpr);
 }
 
-const vector<XmlPredicate>& XmlExpression::GetPredicates() const
+const vector<XmlStepExpr>& XmlExpression::GetStepExprs() const
 {
-	return m_predicates;
+	return m_stepExprs;
 }
 
 int XmlExpression::GetCurrentMatchDepth() const
@@ -42,7 +42,7 @@ int XmlExpression::ProcessEndTag(const char* tagName)
 		// It does
 		m_matches.pop();
 
-		if (matchIndex == m_predicates.size())
+		if (matchIndex == m_stepExprs.size())
 		{
 			// We matched the last predicate
 			return m_matchDepth--;
@@ -55,7 +55,7 @@ int XmlExpression::ProcessEndTag(const char* tagName)
 	}
 	
 	// If we already have a full match for all predicates
-	if (matchIndex == m_predicates.size())
+	if (matchIndex == m_stepExprs.size())
 	{
 		return m_matchDepth--;
 	}
@@ -76,7 +76,7 @@ unique_ptr<XmlExpression> XmlExpression::FromText(const string& text)
 
 	while (token.GetType() != XPathToken::TOK_NULL)
 	{
-		retval->AddPredicate(ReadPredicate(tokeniser, token));
+		retval->AddStepExpr(ReadStepExpr(tokeniser, token));
 
 		//token = tokeniser.GetNextToken();
 	}
@@ -84,7 +84,7 @@ unique_ptr<XmlExpression> XmlExpression::FromText(const string& text)
 	return retval;
 }
 
-XmlPredicate XmlExpression::ReadPredicate(XPathTokeniser& tokeniser, XPathToken& token)
+XmlStepExpr XmlExpression::ReadStepExpr(XPathTokeniser& tokeniser, XPathToken& token)
 {
 	int depthPredicate = -1;
 
@@ -104,7 +104,7 @@ XmlPredicate XmlExpression::ReadPredicate(XPathTokeniser& tokeniser, XPathToken&
 		throw XPathException("Expected element name", token.GetPosition());
 	}
 
-	XmlPredicate predicate{ token.GetString(), depthPredicate };
+	XmlStepExpr stepExpr{ token.GetString(), depthPredicate };
 
 	bool done = false;
 	
@@ -115,7 +115,7 @@ XmlPredicate XmlExpression::ReadPredicate(XPathTokeniser& tokeniser, XPathToken&
 		switch (token.GetType())
 		{
 		case XPathToken::TOK_LEFTSQUAREBRACKET:
-			predicate.AddPredicate(ReadAttributePredicate(tokeniser, token));
+			stepExpr.AddPredicate(ReadAttributePredicate(tokeniser, token));
 			break;
 
 		case XPathToken::TOK_DBLSLASH:
@@ -130,7 +130,7 @@ XmlPredicate XmlExpression::ReadPredicate(XPathTokeniser& tokeniser, XPathToken&
 		}
 	}
 	
-	return predicate;
+	return stepExpr;
 }
 
 XmlAttributePredicate XmlExpression::ReadAttributePredicate(XPathTokeniser& tokeniser, XPathToken& token)

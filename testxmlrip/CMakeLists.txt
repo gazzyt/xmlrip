@@ -24,7 +24,7 @@ endif()
 set( BUILD_TEST_MANIFEST
     main.cpp
 	recordingprinter.cpp
-    xmlpredicate-test.cpp
+    xmlstepexpr-test.cpp
 	xpathtoken-test.cpp
 	xpathtokeniser-test.cpp
 	xmlexpression-test.cpp
