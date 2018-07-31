@@ -3,6 +3,8 @@
 #include "gtest/gtest.h"
 #pragma GCC diagnostic pop
 
+#include <memory>
+
 #include "libxmlattributecollection.h"
 #include "xmlexpression.h"
 #include "exception/xpathexception.h"
@@ -26,7 +28,7 @@ TEST(XmlExpression, CurrentMatchDepthIsNoMatchForNewExpression) {
 TEST(XmlExpression, CurrentMatchDepthIsNoMatchWhenNoMatch) {
 	// Arrange
     XmlExpression expr;
-	expr.AddStepExpr(XmlStepExpr{"aa"});
+	expr.AddStepExpr(make_unique<XmlStepExpr>("aa"));
 	LibXmlAttributeCollection attrs{ nullptr };
 	
 	// Act
@@ -39,7 +41,7 @@ TEST(XmlExpression, CurrentMatchDepthIsNoMatchWhenNoMatch) {
 TEST(XmlExpression, CurrentMatchDepthIsZeroOnMatch) {
 	// Arrange
     XmlExpression expr;
-	expr.AddStepExpr(XmlStepExpr{"aa"});
+	expr.AddStepExpr(make_unique<XmlStepExpr>("aa"));
 	LibXmlAttributeCollection attrs{ nullptr };
     
 	// Act
@@ -52,7 +54,7 @@ TEST(XmlExpression, CurrentMatchDepthIsZeroOnMatch) {
 TEST(XmlExpression, CurrentMatchIsOneForChildTagsOfFullMatch) {
 	// Arrange
     XmlExpression expr;
-	expr.AddStepExpr(XmlStepExpr{"aa"});
+	expr.AddStepExpr(make_unique<XmlStepExpr>("aa"));
 	LibXmlAttributeCollection attrs{ nullptr };
 	
 	// Act
@@ -111,7 +113,7 @@ TEST(XmlExpression, CurrentDocumentDepthDecrementsAfterEndTag) {
 TEST(XmlExpression, ProcessStartTagReturnsZeroWithSingleTagExpressionWhenTagMatches) {
 	// Arrange
     XmlExpression expr;
-	expr.AddStepExpr(XmlStepExpr{"aa"});
+	expr.AddStepExpr(make_unique<XmlStepExpr>("aa"));
 	LibXmlAttributeCollection attrs{ nullptr };
 	
 	// Act
@@ -125,7 +127,7 @@ TEST(XmlExpression, ProcessStartTagReturnsZeroWithSingleTagExpressionWhenTagMatc
 TEST(XmlExpression, ProcessStartTagReturnsNoMatchWithSingleTagExpressionWhenTagDoesNotMatch) {
 	// Arrange
     XmlExpression expr;
-	expr.AddStepExpr(XmlStepExpr{"aa"});
+	expr.AddStepExpr(make_unique<XmlStepExpr>("aa"));
 	LibXmlAttributeCollection attrs{ nullptr };
     
 	// Act
@@ -138,7 +140,7 @@ TEST(XmlExpression, ProcessStartTagReturnsNoMatchWithSingleTagExpressionWhenTagD
 TEST(XmlExpression, ProcessStartTagReturnsOneForChildTagsOfFullMatch) {
 	// Arrange
     XmlExpression expr;
-	expr.AddStepExpr(XmlStepExpr{"aa"});
+	expr.AddStepExpr(make_unique<XmlStepExpr>("aa"));
 	LibXmlAttributeCollection attrs{ nullptr };
 	
 	// Act
@@ -152,7 +154,7 @@ TEST(XmlExpression, ProcessStartTagReturnsOneForChildTagsOfFullMatch) {
 TEST(XmlExpression, ProcessStartTagReturnsNoMatchAfterMatchingTagClosed) {
 	// Arrange
     XmlExpression expr;
-	expr.AddStepExpr(XmlStepExpr{"aa"});
+	expr.AddStepExpr(make_unique<XmlStepExpr>("aa"));
 	LibXmlAttributeCollection attrs{ nullptr };
 	
 	// Act
@@ -167,8 +169,8 @@ TEST(XmlExpression, ProcessStartTagReturnsNoMatchAfterMatchingTagClosed) {
 TEST(XmlExpression, ProcessStartTagProcessesTwoPrecidatesCorrectly) {
 	// Arrange
     XmlExpression expr;
- 	expr.AddStepExpr(XmlStepExpr{"aa"});
-	expr.AddStepExpr(XmlStepExpr{"bb"});
+ 	expr.AddStepExpr(make_unique<XmlStepExpr>("aa"));
+	expr.AddStepExpr(make_unique<XmlStepExpr>("bb"));
 	LibXmlAttributeCollection attrs{ nullptr };
 	
 	// Act
@@ -197,7 +199,7 @@ TEST(XmlExpression, ProcessStartTagProcessesTwoPrecidatesCorrectly) {
 TEST(XmlExpression, ProcessStartTagReturnsZeroForClosingTagOfFullMatch) {
 	// Arrange
     XmlExpression expr;
-	expr.AddStepExpr(XmlStepExpr{"aa"});
+	expr.AddStepExpr(make_unique<XmlStepExpr>("aa"));
 	LibXmlAttributeCollection attrs{ nullptr };
 	
 	// Act
@@ -240,9 +242,9 @@ TEST(XmlExpression, FromTextCreatesSingleItemExpressionCorrectly) {
 	// Assert
 	ASSERT_TRUE((bool)expr);
 
-	auto predicates = expr->GetStepExprs();
+	auto& predicates = expr->GetStepExprs();
 	EXPECT_EQ(1U, predicates.size());
-	EXPECT_EQ("aa", predicates[0].GetTagName());
+	EXPECT_EQ("aa", predicates[0]->GetTagName());
 }
 
 TEST(XmlExpression, FromTextCreatesTwoItemExpressionCorrectly) {
@@ -254,16 +256,16 @@ TEST(XmlExpression, FromTextCreatesTwoItemExpressionCorrectly) {
 	// Assert
 	ASSERT_TRUE((bool)expr);
 
-	auto predicates = expr->GetStepExprs();
+	auto& predicates = expr->GetStepExprs();
 	EXPECT_EQ(2U, predicates.size());
-	EXPECT_EQ("aa", predicates[0].GetTagName());
-	EXPECT_EQ("bb", predicates[1].GetTagName());
+	EXPECT_EQ("aa", predicates[0]->GetTagName());
+	EXPECT_EQ("bb", predicates[1]->GetTagName());
 }
 
 /******************************************************************************************/
 /* ReadStepExpr tests */
 /******************************************************************************************/
-XmlStepExpr GetTestStepExpr(const string xpath)
+unique_ptr<XmlStepExpr> GetTestStepExpr(const string xpath)
 {
 	XPathTokeniser tokeniser{ xpath };
 	XPathToken token = tokeniser.GetNextToken();
@@ -277,7 +279,7 @@ TEST(XmlExpression, ReadStepExprThrowsXPathExceptionIfXPathNotBeginWithSlash) {
 	// Act
 	try
 	{
-		XmlStepExpr pred = GetTestStepExpr("simpletagname");
+		auto pred = GetTestStepExpr("simpletagname");
 	}
 	catch (XPathException& e)
 	{
@@ -295,7 +297,7 @@ TEST(XmlExpression, ReadStepExprThrowsXPathExceptionIfXPathNotContainTagName) {
 	// Act
 	try
 	{
-		XmlStepExpr pred = GetTestStepExpr("//@");
+		auto pred = GetTestStepExpr("//@");
 	}
 	catch (XPathException& e)
 	{
@@ -313,7 +315,7 @@ TEST(XmlExpression, ReadStepExprThrowsXPathExceptionIfXPathContainDot) {
 	// Act
 	try
 	{
-		XmlStepExpr pred = GetTestStepExpr("//tag.");
+		auto pred = GetTestStepExpr("//tag.");
 	}
 	catch (XPathException& e)
 	{
@@ -331,7 +333,7 @@ TEST(XmlExpression, ReadStepExprThrowsXPathExceptionIfXPathConditionMissingAt) {
 	// Act
 	try
 	{
-		XmlStepExpr pred = GetTestStepExpr("//tag[a='t']");
+		auto pred = GetTestStepExpr("//tag[a='t']");
 	}
 	catch (XPathException& e)
 	{
@@ -348,7 +350,7 @@ TEST(XmlExpression, ReadStepExprThrowsXPathExceptionIfXPathConditionMissingAttri
 	// Act
 	try
 	{
-		XmlStepExpr pred = GetTestStepExpr("//tag[@='t']");
+		auto pred = GetTestStepExpr("//tag[@='t']");
 	}
 	catch (XPathException& e)
 	{
@@ -366,7 +368,7 @@ TEST(XmlExpression, ReadStepExprThrowsXPathExceptionIfXPathConditionMissingEqual
 	// Act
 	try
 	{
-		XmlStepExpr pred = GetTestStepExpr("//tag[@a't']");
+		auto pred = GetTestStepExpr("//tag[@a't']");
 	}
 	catch (XPathException& e)
 	{
@@ -384,7 +386,7 @@ TEST(XmlExpression, ReadStepExprThrowsXPathExceptionIfXPathConditionMissingValue
 	// Act
 	try
 	{
-		XmlStepExpr pred = GetTestStepExpr("//tag[@a=]");
+		auto pred = GetTestStepExpr("//tag[@a=]");
 	}
 	catch (XPathException& e)
 	{
@@ -402,7 +404,7 @@ TEST(XmlExpression, ReadStepExprThrowsXPathExceptionIfXPathConditionClosingBrack
 	// Act
 	try
 	{
-		XmlStepExpr pred = GetTestStepExpr("//tag[@a='b'");
+		auto pred = GetTestStepExpr("//tag[@a='b'");
 	}
 	catch (XPathException& e)
 	{
@@ -417,60 +419,66 @@ TEST(XmlExpression, ReadStepExprReturnsStepExprForSimpleTagName) {
     // Arrange
 	
 	// Act
-	XmlStepExpr pred = GetTestStepExpr("/simpletagname");
+	auto pred = GetTestStepExpr("/simpletagname");
     
-	EXPECT_EQ("simpletagname", pred.GetTagName());
-	EXPECT_EQ(0U, pred.GetAttributePredicates().size());
-	EXPECT_EQ(1, pred.GetDocumentDepthPredicate());
+	EXPECT_EQ("simpletagname", pred->GetTagName());
+	EXPECT_EQ(0U, pred->GetPredicates().size());
+	EXPECT_EQ(1, pred->GetDocumentDepthPredicate());
 }
 
 TEST(XmlExpression, ReadStepExprReturnsStepExprForSimpleTagNameWithDepth) {
     // Arrange
 	
 	// Act
-	XmlStepExpr pred = GetTestStepExpr("//simpletagname");
+	auto pred = GetTestStepExpr("//simpletagname");
     
-	EXPECT_EQ("simpletagname", pred.GetTagName());
-	EXPECT_EQ(0U, pred.GetAttributePredicates().size());
-	EXPECT_EQ(-1, pred.GetDocumentDepthPredicate());
+	EXPECT_EQ("simpletagname", pred->GetTagName());
+	EXPECT_EQ(0U, pred->GetPredicates().size());
+	EXPECT_EQ(-1, pred->GetDocumentDepthPredicate());
 }
 
 TEST(XmlExpression, ReadStepExprReturnsStepExprForSimpleTagNameWithAttributeDoubleQuote) {
     // Arrange
 	
 	// Act
-	XmlStepExpr pred = GetTestStepExpr("/simpletagname[@attr=\"val\"]");
+	auto pred = GetTestStepExpr("/simpletagname[@attr=\"val\"]");
     
-	EXPECT_EQ("simpletagname", pred.GetTagName());
-	ASSERT_EQ(1U, pred.GetAttributePredicates().size());
-	EXPECT_EQ("attr", pred.GetAttributePredicates()[0].GetName());
-	EXPECT_EQ("val", pred.GetAttributePredicates()[0].GetValue());
+	EXPECT_EQ("simpletagname", pred->GetTagName());
+	ASSERT_EQ(1U, pred->GetPredicates().size());
+	auto p0 = dynamic_cast<XmlAttributePredicate*>(pred->GetPredicates()[0].get());
+	ASSERT_NE(p0, nullptr);
+	EXPECT_EQ("attr", p0->GetName());
+	EXPECT_EQ("val", p0->GetValue());
 }
 
 TEST(XmlExpression, ReadStepExprReturnsStepExprForSimpleTagNameWithAttributeSingleQuote) {
     // Arrange
 	
 	// Act
-	XmlStepExpr pred = GetTestStepExpr("/simpletagname[@attr='val']");
+	auto pred = GetTestStepExpr("/simpletagname[@attr='val']");
     
-	EXPECT_EQ("simpletagname", pred.GetTagName());
-	ASSERT_EQ(1U, pred.GetAttributePredicates().size());
-	EXPECT_EQ(XmlAttributePredicate::MODE_EQUAL, pred.GetAttributePredicates()[0].GetMode());
-	EXPECT_EQ("attr", pred.GetAttributePredicates()[0].GetName());
-	EXPECT_EQ("val", pred.GetAttributePredicates()[0].GetValue());
+	EXPECT_EQ("simpletagname", pred->GetTagName());
+	ASSERT_EQ(1U, pred->GetPredicates().size());
+	auto p0 = dynamic_cast<XmlAttributePredicate*>(pred->GetPredicates()[0].get());
+	ASSERT_NE(p0, nullptr);
+	EXPECT_EQ(XmlAttributePredicate::MODE_EQUAL, p0->GetMode());
+	EXPECT_EQ("attr", p0->GetName());
+	EXPECT_EQ("val", p0->GetValue());
 }
 
 TEST(XmlExpression, ReadStepExprReturnsStepExprForSimpleTagNameWithAttributeStartsWith) {
     // Arrange
 	
 	// Act
-	XmlStepExpr pred = GetTestStepExpr("/simpletagname[starts-with(@attr,'val')]");
+	auto pred = GetTestStepExpr("/simpletagname[starts-with(@attr,'val')]");
     
-	EXPECT_EQ("simpletagname", pred.GetTagName());
-	ASSERT_EQ(1U, pred.GetAttributePredicates().size());
-	EXPECT_EQ(XmlAttributePredicate::MODE_STARTSWITH, pred.GetAttributePredicates()[0].GetMode());
-	EXPECT_EQ("attr", pred.GetAttributePredicates()[0].GetName());
-	EXPECT_EQ("val", pred.GetAttributePredicates()[0].GetValue());
+	EXPECT_EQ("simpletagname", pred->GetTagName());
+	ASSERT_EQ(1U, pred->GetPredicates().size());
+	auto p0 = dynamic_cast<XmlAttributePredicate*>(pred->GetPredicates()[0].get());
+	ASSERT_NE(p0, nullptr);
+	EXPECT_EQ(XmlAttributePredicate::MODE_STARTSWITH, p0->GetMode());
+	EXPECT_EQ("attr", p0->GetName());
+	EXPECT_EQ("val", p0->GetValue());
 }
 
 TEST(XmlExpression, ReadStepExprThrowsXPathExceptionIfXPathFunctionNameUnrecognised) {
@@ -480,7 +488,7 @@ TEST(XmlExpression, ReadStepExprThrowsXPathExceptionIfXPathFunctionNameUnrecogni
 	// Act
 	try
 	{
-		XmlStepExpr pred = GetTestStepExpr("/simpletagname[staxxxxrts-with(@attr,'val')]");
+		auto pred = GetTestStepExpr("/simpletagname[staxxxxrts-with(@attr,'val')]");
 	}
 	catch (XPathException& e)
 	{
@@ -495,12 +503,16 @@ TEST(XmlExpression, ReadStepExprReturnsStepExprForSimpleTagNameWithTwoAttributeF
     // Arrange
 	
 	// Act
-	XmlStepExpr pred = GetTestStepExpr("/simpletagname[@attr=\"val\"][@attr2=\"val2\"]");
+	auto pred = GetTestStepExpr("/simpletagname[@attr=\"val\"][@attr2=\"val2\"]");
     
-	EXPECT_EQ("simpletagname", pred.GetTagName());
-	ASSERT_EQ(2U, pred.GetAttributePredicates().size());
-	EXPECT_EQ("attr", pred.GetAttributePredicates()[0].GetName());
-	EXPECT_EQ("val", pred.GetAttributePredicates()[0].GetValue());
-	EXPECT_EQ("attr2", pred.GetAttributePredicates()[1].GetName());
-	EXPECT_EQ("val2", pred.GetAttributePredicates()[1].GetValue());
+	EXPECT_EQ("simpletagname", pred->GetTagName());
+	ASSERT_EQ(2U, pred->GetPredicates().size());
+	auto p0 = dynamic_cast<XmlAttributePredicate*>(pred->GetPredicates()[0].get());
+	auto p1 = dynamic_cast<XmlAttributePredicate*>(pred->GetPredicates()[1].get());
+	ASSERT_NE(p0, nullptr);
+	ASSERT_NE(p1, nullptr);
+	EXPECT_EQ("attr", p0->GetName());
+	EXPECT_EQ("val", p0->GetValue());
+	EXPECT_EQ("attr2", p1->GetName());
+	EXPECT_EQ("val2", p1->GetValue());
 }

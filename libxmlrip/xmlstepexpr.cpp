@@ -9,20 +9,14 @@ using namespace std;
 
 XmlStepExpr::XmlStepExpr(const string& tagName, int documentDepthPredicate)
 	:	m_tagName{tagName},
-		m_attributePredicates{},
+		m_predicates{},
 		m_documentDepthPredicate{documentDepthPredicate}
 {}
 
-void XmlStepExpr::AddPredicate(XmlAttributePredicate&& predicate)
+void XmlStepExpr::AddPredicate(unique_ptr<XmlPredicate> predicate)
 {
-	m_attributePredicates.push_back(predicate);
+	m_predicates.push_back(move(predicate));
 }
-
-XmlStepExpr::XmlStepExpr(const XmlStepExpr& rhs)
-:	m_tagName{rhs.m_tagName},
-	m_attributePredicates{rhs.m_attributePredicates},
-	m_documentDepthPredicate{rhs.m_documentDepthPredicate}
-{}
 
 
 const string& XmlStepExpr::GetTagName() const
@@ -30,9 +24,9 @@ const string& XmlStepExpr::GetTagName() const
 	return m_tagName;
 }
 
-const vector<XmlAttributePredicate>& XmlStepExpr::GetAttributePredicates() const
+const vector<unique_ptr<XmlPredicate> >& XmlStepExpr::GetPredicates() const
 {
-	return m_attributePredicates;
+	return m_predicates;
 }
 
 int XmlStepExpr::GetDocumentDepthPredicate() const
@@ -52,11 +46,11 @@ bool XmlStepExpr::IsMatch(const char* tagName, const LibXmlAttributeCollection& 
 	if (!depthMatch)
 		return false;
 
-	if (m_attributePredicates.size() == 0)
+	if (m_predicates.size() == 0)
 		return true;
 
-	return std::all_of(std::begin(m_attributePredicates),
-		std::end(m_attributePredicates),
-		[&attributes](const auto& a){ return a.IsMatch(attributes); });
+	return std::all_of(std::begin(m_predicates),
+		std::end(m_predicates),
+		[&attributes](const auto& a){ return a->IsMatch(attributes); });
 }
 

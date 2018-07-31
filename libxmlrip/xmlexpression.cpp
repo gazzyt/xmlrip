@@ -10,12 +10,12 @@ XmlExpression::XmlExpression()
 :	m_stepExprs{}, m_matches{}
 {}
 
-void XmlExpression::AddStepExpr(XmlStepExpr stepExpr)
+void XmlExpression::AddStepExpr(unique_ptr<XmlStepExpr> stepExpr)
 {
-	m_stepExprs.push_back(stepExpr);
+	m_stepExprs.push_back(move(stepExpr));
 }
 
-const vector<XmlStepExpr>& XmlExpression::GetStepExprs() const
+const vector<unique_ptr<XmlStepExpr> >& XmlExpression::GetStepExprs() const
 {
 	return m_stepExprs;
 }
@@ -84,7 +84,7 @@ unique_ptr<XmlExpression> XmlExpression::FromText(const string& text)
 	return retval;
 }
 
-XmlStepExpr XmlExpression::ReadStepExpr(XPathTokeniser& tokeniser, XPathToken& token)
+unique_ptr<XmlStepExpr> XmlExpression::ReadStepExpr(XPathTokeniser& tokeniser, XPathToken& token)
 {
 	int depthPredicate = -1;
 
@@ -104,7 +104,7 @@ XmlStepExpr XmlExpression::ReadStepExpr(XPathTokeniser& tokeniser, XPathToken& t
 		throw XPathException("Expected element name", token.GetPosition());
 	}
 
-	XmlStepExpr stepExpr{ token.GetString(), depthPredicate };
+	auto stepExpr = make_unique<XmlStepExpr>(token.GetString(), depthPredicate);
 
 	bool done = false;
 	
@@ -115,7 +115,7 @@ XmlStepExpr XmlExpression::ReadStepExpr(XPathTokeniser& tokeniser, XPathToken& t
 		switch (token.GetType())
 		{
 		case XPathToken::TOK_LEFTSQUAREBRACKET:
-			stepExpr.AddPredicate(ReadAttributePredicate(tokeniser, token));
+			stepExpr->AddPredicate(ReadAttributePredicate(tokeniser, token));
 			break;
 
 		case XPathToken::TOK_DBLSLASH:
@@ -133,7 +133,7 @@ XmlStepExpr XmlExpression::ReadStepExpr(XPathTokeniser& tokeniser, XPathToken& t
 	return stepExpr;
 }
 
-XmlAttributePredicate XmlExpression::ReadAttributePredicate(XPathTokeniser& tokeniser, XPathToken& token)
+unique_ptr<XmlAttributePredicate> XmlExpression::ReadAttributePredicate(XPathTokeniser& tokeniser, XPathToken& token)
 {
 	assert(token.GetType() == XPathToken::TOK_LEFTSQUAREBRACKET);
 	
@@ -170,7 +170,7 @@ XmlAttributePredicate XmlExpression::ReadAttributePredicate(XPathTokeniser& toke
 		if (token.GetType() != XPathToken::TOK_RIGHTSQUAREBRACKET)
 			throw XPathException("Expected ] token", token.GetPosition());
 
-		return XmlAttributePredicate{XmlAttributePredicate::MODE_EQUAL, move(attributeName), move(attributeValue)};
+		return make_unique<XmlAttributePredicate>(XmlAttributePredicate::MODE_EQUAL, move(attributeName), move(attributeValue));
 	}
 	else if (token.GetType() == XPathToken::TOK_STRING)
 	{
@@ -234,7 +234,7 @@ XmlAttributePredicate XmlExpression::ReadAttributePredicate(XPathTokeniser& toke
 		if (token.GetType() != XPathToken::TOK_RIGHTSQUAREBRACKET)
 			throw XPathException("Expected ] token", token.GetPosition());
 
-		return XmlAttributePredicate{XmlAttributePredicate::MODE_STARTSWITH, move(attributeName), move(attributeValue)};
+		return make_unique<XmlAttributePredicate>(XmlAttributePredicate::MODE_STARTSWITH, move(attributeName), move(attributeValue));
 		
 	}
 	else

@@ -16,16 +16,16 @@ public:
 	XmlExpression();
 
 public:
-	void AddStepExpr(XmlStepExpr stepExpr);
-	const std::vector<XmlStepExpr>& GetStepExprs() const;
+	void AddStepExpr(std::unique_ptr<XmlStepExpr> stepExpr);
+	const std::vector<std::unique_ptr<XmlStepExpr> >& GetStepExprs() const;
 	int GetCurrentMatchDepth() const;
 	int GetCurrentDocumentDepth() const;
 	template<class T> int ProcessStartTag(const char* tagName, const T& attributes);
 	int ProcessEndTag(const char* tagName);
 	
 	static std::unique_ptr<XmlExpression> FromText(const std::string& text);
-	static XmlStepExpr ReadStepExpr(XPathTokeniser& tokeniser, XPathToken& token);
-	static XmlAttributePredicate ReadAttributePredicate(XPathTokeniser& tokeniser, XPathToken& token);
+	static std::unique_ptr<XmlStepExpr> ReadStepExpr(XPathTokeniser& tokeniser, XPathToken& token);
+	static std::unique_ptr<XmlAttributePredicate> ReadAttributePredicate(XPathTokeniser& tokeniser, XPathToken& token);
 	
 	enum NoMatch {NO_MATCH = -1};
 
@@ -33,7 +33,7 @@ private:
 	struct Match { XmlElement element; int documentDepth; };
 
 private:
-	std::vector<XmlStepExpr> m_stepExprs;
+	std::vector<std::unique_ptr<XmlStepExpr> > m_stepExprs;
 	std::stack<Match> m_matches;
 	int m_matchDepth = NO_MATCH;
 	int m_documentDepth = 0;
@@ -60,7 +60,7 @@ template<class T> int XmlExpression::ProcessStartTag(const char* tagName, const 
 
 	auto& nextStepExpr = m_stepExprs[matchIndex];
 	
-	if (nextStepExpr.IsMatch(tagName, attributes, m_documentDepth - lastMatchDocumentDepth))
+	if (nextStepExpr->IsMatch(tagName, attributes, m_documentDepth - lastMatchDocumentDepth))
 	{
 		//m_matchingElements.push(XmlElement{XmlElement::Type::tag, tagName, attributes, true, false});
 		m_matches.push(Match { XmlElement{XmlElement::Type::tag, tagName, attributes, true, false}, m_documentDepth });
