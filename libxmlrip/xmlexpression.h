@@ -39,6 +39,8 @@ private:
 	int m_documentDepth = 0;
 };
 
+// Process an XML start tag with its attributes
+// Returns the current match depth
 template<class T> int XmlExpression::ProcessStartTag(const char* tagName, const T& attributes)
 {
 	int lastMatchDocumentDepth = 0;

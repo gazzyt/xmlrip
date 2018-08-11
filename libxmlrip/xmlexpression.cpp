@@ -20,16 +20,23 @@ const vector<unique_ptr<XmlStepExpr> >& XmlExpression::GetStepExprs() const
 	return m_stepExprs;
 }
 
+// Returns the current document depth relative to the last full xpath match.
+// A value of NO_MATCH indicates we haven't had a full xpath match yet
+// A value of 0 indicates the last XML tag provided full xpath match
+// A value > 0 indicates descendant tags of the full xpath match tag
 int XmlExpression::GetCurrentMatchDepth() const
 {
 	return m_matchDepth;
 }
 
+// Returns the current document depth within the XML document
 int XmlExpression::GetCurrentDocumentDepth() const
 {
 	return m_documentDepth;
 }
 
+// Process an XML end tag
+// Returns the current match depth
 int XmlExpression::ProcessEndTag(const char* tagName)
 {
 	--m_documentDepth;
@@ -63,6 +70,7 @@ int XmlExpression::ProcessEndTag(const char* tagName)
 	return NO_MATCH;
 }
 
+// Create an XmlExpression by parsing an xpath expression as a string
 unique_ptr<XmlExpression> XmlExpression::FromText(const string& text)
 {
 	auto retval = make_unique<XmlExpression>();
