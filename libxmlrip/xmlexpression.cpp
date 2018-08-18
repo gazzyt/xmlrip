@@ -7,12 +7,13 @@
 using namespace std;
 
 XmlExpression::XmlExpression()
-:	m_stepExprs{}, m_matches{}
+:	m_stepExprs{}, m_nextStepExpr{nullptr}, m_matches{}
 {}
 
 void XmlExpression::AddStepExpr(unique_ptr<XmlStepExpr> stepExpr)
 {
 	m_stepExprs.push_back(move(stepExpr));
+	m_nextStepExpr = m_stepExprs[0].get();
 }
 
 const vector<unique_ptr<XmlStepExpr> >& XmlExpression::GetStepExprs() const
@@ -48,10 +49,14 @@ int XmlExpression::ProcessEndTag(const char* tagName)
 	{
 		// It does
 		m_matches.pop();
+		SetNextStepExpr();
 
 		if (matchIndex == m_stepExprs.size())
 		{
-			// We matched the last predicate
+			// We closed the tag that gave us the full match
+			// Decrement m_matchDepth to NO_MATCH and
+			// return 0 as this closing tag is the final part of the match
+			assert(m_matchDepth == 0);
 			return m_matchDepth--;
 		}
 		else
@@ -61,7 +66,7 @@ int XmlExpression::ProcessEndTag(const char* tagName)
 		}
 	}
 	
-	// If we already have a full match for all predicates
+	// If we already have a full match for all stepExprs
 	if (matchIndex == m_stepExprs.size())
 	{
 		return m_matchDepth--;

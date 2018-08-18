@@ -14,8 +14,10 @@ class XmlExpression
 {
 public:
 	XmlExpression();
+	XmlExpression(const XmlExpression& rhs) = delete;
 
 public:
+	XmlExpression& operator=(const XmlExpression& rhs) = delete;
 	void AddStepExpr(std::unique_ptr<XmlStepExpr> stepExpr);
 	const std::vector<std::unique_ptr<XmlStepExpr> >& GetStepExprs() const;
 	int GetCurrentMatchDepth() const;
@@ -30,10 +32,14 @@ public:
 	enum NoMatch {NO_MATCH = -1};
 
 private:
+	void SetNextStepExpr();
+	
+private:
 	struct Match { XmlElement element; int documentDepth; };
 
 private:
 	std::vector<std::unique_ptr<XmlStepExpr> > m_stepExprs;
+	XmlStepExpr* m_nextStepExpr;
 	std::stack<Match> m_matches;
 	int m_matchDepth = NO_MATCH;
 	int m_documentDepth = 0;
@@ -60,23 +66,23 @@ template<class T> int XmlExpression::ProcessStartTag(const char* tagName, const 
 		return ++m_matchDepth;
 	}
 
-	auto& nextStepExpr = m_stepExprs[matchIndex];
-	
-	if (nextStepExpr->IsMatch(tagName, attributes, m_documentDepth - lastMatchDocumentDepth))
+	if (m_nextStepExpr->IsMatch(tagName, attributes, m_documentDepth - lastMatchDocumentDepth))
 	{
 		//m_matchingElements.push(XmlElement{XmlElement::Type::tag, tagName, attributes, true, false});
 		m_matches.push(Match { XmlElement{XmlElement::Type::tag, tagName, attributes, true, false}, m_documentDepth });
 		
 		if (matchIndex == (m_stepExprs.size() - 1))
 		{
-			// We matched the last predicate
+			// We matched the last stepExpr
 			m_matchDepth = 0;
+			m_nextStepExpr = nullptr;
 			return (m_matchDepth);
 		}
 		else
 		{
 			// Only a partial match
 			m_matchDepth = NO_MATCH;
+			SetNextStepExpr();
 			return (m_matchDepth);
 		}
 	}
@@ -86,6 +92,11 @@ template<class T> int XmlExpression::ProcessStartTag(const char* tagName, const 
 		return (m_matchDepth);
 	}
 
+}
+
+inline void XmlExpression::SetNextStepExpr()
+{
+	m_nextStepExpr = m_stepExprs[m_matches.size()].get();
 }
 
 #endif
