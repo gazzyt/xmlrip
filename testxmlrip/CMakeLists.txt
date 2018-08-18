@@ -35,6 +35,7 @@ set( BUILD_TEST_MANIFEST
 	libxmlattributecollection-test.cpp
 	libxmlattributecollection-iterator-test.cpp
 	libxmlutils-test.cpp
+	resettingptr-test.cpp
 )
 
 set( BUILD_TEST_MANIFEST_HEADERS

@@ -51,6 +51,7 @@ set( BUILD_LIBXMLRIP_MANIFEST_HEADERS
 	libxmlattributecollection.h
 	libxmlattributecollection-iterator.h
 	libxmlutils.h
+	resettingptr.h
 	porting.h
 	exception/baseexception.h
 	exception/xpathexception.h
