@@ -68,7 +68,6 @@ template<class T> int XmlExpression::ProcessStartTag(const char* tagName, const 
 
 	if (m_nextStepExpr->IsMatch(tagName, attributes, m_documentDepth - lastMatchDocumentDepth))
 	{
-		//m_matchingElements.push(XmlElement{XmlElement::Type::tag, tagName, attributes, true, false});
 		m_matches.push(Match { XmlElement{XmlElement::Type::tag, tagName, attributes, true, false}, m_documentDepth });
 		
 		if (matchIndex == (m_stepExprs.size() - 1))
@@ -96,6 +95,9 @@ template<class T> int XmlExpression::ProcessStartTag(const char* tagName, const 
 
 inline void XmlExpression::SetNextStepExpr()
 {
+	// assert that we don't call this when all step expressions have been matched already
+	assert(m_matches.size() < m_stepExprs.size());
+	
 	m_nextStepExpr = m_stepExprs[m_matches.size()].get();
 }
 
