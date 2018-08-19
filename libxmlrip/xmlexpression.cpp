@@ -7,7 +7,7 @@
 using namespace std;
 
 XmlExpression::XmlExpression()
-:	m_stepExprs{}, m_nextStepExpr{nullptr}, m_matches{}
+:	m_stepExprs{}, m_nextStepExpr{}, m_matches{}
 {}
 
 void XmlExpression::AddStepExpr(unique_ptr<XmlStepExpr> stepExpr)

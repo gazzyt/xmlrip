@@ -9,6 +9,7 @@
 #include "xmlelement.h"
 #include "xpathtoken.h"
 #include "xpathtokeniser.h"
+#include "resettingptr.h"
 
 class XmlExpression
 {
@@ -39,7 +40,7 @@ private:
 
 private:
 	std::vector<std::unique_ptr<XmlStepExpr> > m_stepExprs;
-	XmlStepExpr* m_nextStepExpr;
+	ResettingPtr<XmlStepExpr> m_nextStepExpr;
 	std::stack<Match> m_matches;
 	int m_matchDepth = NO_MATCH;
 	int m_documentDepth = 0;
