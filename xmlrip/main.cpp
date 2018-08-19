@@ -4,6 +4,7 @@
 
 #include "libxmlprint.h"
 #include "libxmlxpathprocessor.h"
+#include "xpathreader.h"
 #include "xmlexpression.h"
 #include "exception/baseexception.h"
 #include "exception/xpathexception.h"
@@ -28,7 +29,7 @@ int main(int argc, char** argv)
 
 	try
 	{
-		auto expr = XmlExpression::FromText(xpathText);
+		auto expr = XPathReader::FromText(xpathText);
 		LibXmlXPathProcessor<LibXmlPrint>::Run(argv[1], move(expr));
 	}
 	catch(XPathException& e)

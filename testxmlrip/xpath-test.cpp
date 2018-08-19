@@ -6,6 +6,7 @@
 #include "recordingprinter.h"
 #include "libxmlxpathprocessor.h"
 #include "libxmlattributecollection.h"
+#include "xpathreader.h"
 #include "xmlexpression.h"
 #include "exception/xpathexception.h"
 #include "customprinters.h"
@@ -15,7 +16,7 @@ using namespace std;
 void RunE2ETest(const string& xmlText, const string& xpathText, const vector<RecordingPrinterItem>& expected) 
 {
 	// Arrange
-	auto expr = XmlExpression::FromText(xpathText);
+	auto expr = XPathReader::FromText(xpathText);
 	RecordingPrinter printer;
 	
 	// Act

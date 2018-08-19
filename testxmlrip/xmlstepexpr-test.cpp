@@ -10,6 +10,7 @@
 #include "libxmlattributecollection.h"
 #include "libxmlattributecollection-iterator.h"
 #include "xmlstepexpr.h"
+#include "xmlattributepredicate.h"
 #include "exception/xpathexception.h"
 
 using namespace std;

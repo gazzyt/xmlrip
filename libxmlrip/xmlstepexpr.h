@@ -7,7 +7,7 @@
 #include <vector>
 
 #include "libxmlattributecollection.h"
-#include "xmlattributepredicate.h"
+#include "xmlpredicate.h"
 
 class XmlStepExpr
 {

@@ -22,6 +22,7 @@ set( BUILD_LIBXMLRIP_MANIFEST
 	xpathtoken.cpp
 	xpathtokeniser.cpp
 	xmlexpression.cpp
+	xpathreader.cpp
 	stringutils.cpp
 	customstreamflags.cpp
 	xmlstreammodifiers.cpp
@@ -42,6 +43,7 @@ set( BUILD_LIBXMLRIP_MANIFEST_HEADERS
 	xpathtoken.h
 	xpathtokeniser.h
 	xmlexpression.h
+	xpathreader.h
 	stringutils.h
 	memoryutils.h
 	customstreamflags.h
