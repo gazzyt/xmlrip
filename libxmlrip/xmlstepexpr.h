@@ -22,6 +22,7 @@ public:
 	const std::string& GetTagName() const;
 	const std::vector<std::unique_ptr<XmlPredicate> >& GetPredicates() const;
 	int GetDocumentDepthPredicate() const;
+	void Reset();
 
 private:
 	std::string m_tagName;

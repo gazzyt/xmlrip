@@ -54,3 +54,10 @@ bool XmlStepExpr::IsMatch(const char* tagName, const LibXmlAttributeCollection& 
 		[&attributes](const auto& a){ return a->IsMatch(attributes); });
 }
 
+// Resets any matching state
+void XmlStepExpr::Reset()
+{
+	for_each(begin(m_predicates),
+		end(m_predicates),
+		[] (auto& p) { p->Reset(); });
+}

@@ -138,3 +138,29 @@ TEST(XmlStepExpr, IsMatchReturnsFalseWhenTagNamesAndOneAttributeMatchesTwoAttrib
 	// Assert
 	EXPECT_FALSE(result);
 }
+
+/******************************************************************************************/
+/* Reset() tests                                                                          */
+/******************************************************************************************/
+
+class ResetPredicateTester : public XmlPredicate
+{
+public:
+	ResetPredicateTester() : m_resetCalls{0} {}
+	virtual void Reset() { ++m_resetCalls; }
+	virtual bool IsMatch(const LibXmlAttributeCollection& /*attributes*/) const noexcept { return false; };
+	int m_resetCalls;
+};
+
+TEST(XmlStepExpr, ResetResetsAllPredicates) {
+	// Arrange
+	ResetPredicateTester* pPredicate1 = new ResetPredicateTester();
+	XmlStepExpr testStepExpr("aa");
+	testStepExpr.AddPredicate(unique_ptr<XmlPredicate>{pPredicate1});
+
+	// Act
+	testStepExpr.Reset();
+
+	// Assert
+	EXPECT_EQ(1, pPredicate1->m_resetCalls);
+}
