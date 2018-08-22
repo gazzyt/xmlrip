@@ -5,7 +5,7 @@
 
 #include "xmlexpression.h"
 #include "xmlstepexpr.h"
-#include "xmlattributepredicate.h"
+#include "xmlpredicate.h"
 
 class XPathReader
 {
@@ -18,7 +18,7 @@ public:
 	
 	static std::unique_ptr<XmlExpression> FromText(const std::string& text);
 	static std::unique_ptr<XmlStepExpr> ReadStepExpr(XPathTokeniser& tokeniser, XPathToken& token);
-	static std::unique_ptr<XmlAttributePredicate> ReadAttributePredicate(XPathTokeniser& tokeniser, XPathToken& token);
+	static std::unique_ptr<XmlPredicate> ReadPredicate(XPathTokeniser& tokeniser, XPathToken& token);
 	
 };
 

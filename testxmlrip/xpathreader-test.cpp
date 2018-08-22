@@ -6,6 +6,7 @@
 #include <memory>
 
 #include "xpathreader.h"
+#include "xmlattributepredicate.h"
 #include "exception/xpathexception.h"
 
 using namespace std;

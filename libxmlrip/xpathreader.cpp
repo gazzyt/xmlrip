@@ -1,6 +1,7 @@
 #include <cassert>
 
 #include "xpathreader.h"
+#include "xmlattributepredicate.h"
 #include "stringutils.h"
 #include "exception/xpathexception.h"
 
@@ -59,7 +60,7 @@ unique_ptr<XmlStepExpr> XPathReader::ReadStepExpr(XPathTokeniser& tokeniser, XPa
 		switch (token.GetType())
 		{
 		case XPathToken::TOK_LEFTSQUAREBRACKET:
-			stepExpr->AddPredicate(ReadAttributePredicate(tokeniser, token));
+			stepExpr->AddPredicate(ReadPredicate(tokeniser, token));
 			break;
 
 		case XPathToken::TOK_DBLSLASH:
@@ -77,7 +78,7 @@ unique_ptr<XmlStepExpr> XPathReader::ReadStepExpr(XPathTokeniser& tokeniser, XPa
 	return stepExpr;
 }
 
-unique_ptr<XmlAttributePredicate> XPathReader::ReadAttributePredicate(XPathTokeniser& tokeniser, XPathToken& token)
+unique_ptr<XmlPredicate> XPathReader::ReadPredicate(XPathTokeniser& tokeniser, XPathToken& token)
 {
 	assert(token.GetType() == XPathToken::TOK_LEFTSQUAREBRACKET);
 	
