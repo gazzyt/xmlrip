@@ -49,7 +49,6 @@ int XmlExpression::ProcessEndTag(const char* tagName)
 	{
 		// It does
 		m_matches.pop();
-		SetNextStepExpr();
 
 		if (matchIndex == m_stepExprs.size())
 		{
@@ -62,6 +61,7 @@ int XmlExpression::ProcessEndTag(const char* tagName)
 		else
 		{
 			// Only a partial match
+			SetNextStepExpr();
 			return NO_MATCH;
 		}
 	}

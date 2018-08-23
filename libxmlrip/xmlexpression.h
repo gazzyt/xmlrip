@@ -71,7 +71,6 @@ template<class T> int XmlExpression::ProcessStartTag(const char* tagName, const 
 		{
 			// We matched the last stepExpr
 			m_matchDepth = 0;
-			m_nextStepExpr = nullptr;
 			return (m_matchDepth);
 		}
 		else

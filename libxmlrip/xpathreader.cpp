@@ -1,7 +1,9 @@
 #include <cassert>
+#include <cctype>
 
 #include "xpathreader.h"
 #include "xmlattributepredicate.h"
+#include "xmlordinalpredicate.h"
 #include "stringutils.h"
 #include "exception/xpathexception.h"
 
@@ -119,68 +121,81 @@ unique_ptr<XmlPredicate> XPathReader::ReadPredicate(XPathTokeniser& tokeniser, X
 	}
 	else if (token.GetType() == XPathToken::TOK_STRING)
 	{
-		auto functionName = token.GetString();
-		auto functionNamePos = token.GetPosition();
-		
-		token = tokeniser.GetNextToken();
-
-		if (token.GetType() != XPathToken::TOK_LEFTBRACKET)
+		auto tokenText = token.GetString();
+		if (::isdigit(tokenText[0]))
 		{
-			throw XPathException("Expected '('", token.GetPosition());
-		}
+			unsigned int ordinal = ::atoi(tokenText.c_str());
 
-		// We got a function in the predicate. Is it one we know?
-		if (functionName != "starts-with")
+			token = tokeniser.GetNextToken();
+
+			if (token.GetType() != XPathToken::TOK_RIGHTSQUAREBRACKET)
+				throw XPathException("Expected ] token", token.GetPosition());
+
+			return make_unique<XmlOrdinalPredicate>(ordinal);
+		}
+		else
 		{
-			throw XPathException("Unknown function name: " + functionName, functionNamePos);
-		}
-		
-		token = tokeniser.GetNextToken();
-		
-		if (token.GetType() != XPathToken::TOK_AT)
-		{
-			throw XPathException("Expected '@'", token.GetPosition());
-		}
+			auto functionNamePos = token.GetPosition();
+			
+			token = tokeniser.GetNextToken();
 
-		token = tokeniser.GetNextToken();
-		
-		if (token.GetType() != XPathToken::TOK_STRING)
-		{
-			throw XPathException("Expected attribute name", token.GetPosition());
-		}
+			if (token.GetType() != XPathToken::TOK_LEFTBRACKET)
+			{
+				throw XPathException("Expected '('", token.GetPosition());
+			}
 
-		auto attributeName = token.GetString();
-		
-		token = tokeniser.GetNextToken();
-		
-		if (token.GetType() != XPathToken::TOK_COMMA)
-		{
-			throw XPathException("Expected ','", token.GetPosition());
-		}
+			// We got a function in the predicate. Is it one we know?
+			if (tokenText != "starts-with")
+			{
+				throw XPathException("Unknown function name: " + tokenText, functionNamePos);
+			}
+			
+			token = tokeniser.GetNextToken();
+			
+			if (token.GetType() != XPathToken::TOK_AT)
+			{
+				throw XPathException("Expected '@'", token.GetPosition());
+			}
 
-		token = tokeniser.GetNextToken();
-		
-		if (token.GetType() != XPathToken::TOK_STRING)
-		{
-			throw XPathException("Expected attribute value", token.GetPosition());
-		}
+			token = tokeniser.GetNextToken();
+			
+			if (token.GetType() != XPathToken::TOK_STRING)
+			{
+				throw XPathException("Expected attribute name", token.GetPosition());
+			}
 
-		auto attributeValue = token.GetString();
+			auto attributeName = token.GetString();
+			
+			token = tokeniser.GetNextToken();
+			
+			if (token.GetType() != XPathToken::TOK_COMMA)
+			{
+				throw XPathException("Expected ','", token.GetPosition());
+			}
 
-		token = tokeniser.GetNextToken();
-		
-		if (token.GetType() != XPathToken::TOK_RIGHTBRACKET)
-		{
-			throw XPathException("Expected ')'", token.GetPosition());
-		}
+			token = tokeniser.GetNextToken();
+			
+			if (token.GetType() != XPathToken::TOK_STRING)
+			{
+				throw XPathException("Expected attribute value", token.GetPosition());
+			}
 
-		token = tokeniser.GetNextToken();
+			auto attributeValue = token.GetString();
 
-		if (token.GetType() != XPathToken::TOK_RIGHTSQUAREBRACKET)
-			throw XPathException("Expected ] token", token.GetPosition());
+			token = tokeniser.GetNextToken();
+			
+			if (token.GetType() != XPathToken::TOK_RIGHTBRACKET)
+			{
+				throw XPathException("Expected ')'", token.GetPosition());
+			}
 
-		return make_unique<XmlAttributePredicate>(XmlAttributePredicate::MODE_STARTSWITH, move(attributeName), move(attributeValue));
-		
+			token = tokeniser.GetNextToken();
+
+			if (token.GetType() != XPathToken::TOK_RIGHTSQUAREBRACKET)
+				throw XPathException("Expected ] token", token.GetPosition());
+
+			return make_unique<XmlAttributePredicate>(XmlAttributePredicate::MODE_STARTSWITH, move(attributeName), move(attributeValue));
+		}		
 	}
 	else
 	{

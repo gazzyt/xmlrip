@@ -7,6 +7,7 @@
 
 #include "xpathreader.h"
 #include "xmlattributepredicate.h"
+#include "xmlordinalpredicate.h"
 #include "exception/xpathexception.h"
 
 using namespace std;
@@ -315,4 +316,17 @@ TEST(XPathReader, ReadStepExprReturnsStepExprForSimpleTagNameWithTwoAttributeFil
 	EXPECT_EQ("val", p0->GetValue());
 	EXPECT_EQ("attr2", p1->GetName());
 	EXPECT_EQ("val2", p1->GetValue());
+}
+
+TEST(XPathReader, ReadStepExprReturnsStepExprForSimpleTagNameWithOrdinalFilter) {
+    // Arrange
+	
+	// Act
+	auto pred = GetTestStepExpr("//simpletagname[5]");
+    
+	EXPECT_EQ("simpletagname", pred->GetTagName());
+	ASSERT_EQ(1U, pred->GetPredicates().size());
+	auto p0 = dynamic_cast<XmlOrdinalPredicate*>(pred->GetPredicates()[0].get());
+	ASSERT_NE(p0, nullptr);
+	EXPECT_EQ(5U, p0->GetOrdinal());
 }
