@@ -20,7 +20,7 @@ public:
 	const std::string& GetValue() const;
 
 	bool IsMatch(const char* name, const char* value) const noexcept;
-	virtual bool IsMatch(const LibXmlAttributeCollection& attributes) const noexcept;
+	virtual bool IsMatch(const LibXmlAttributeCollection& attributes) noexcept;
 
 private:
 	Mode m_mode;

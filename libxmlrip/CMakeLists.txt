@@ -18,6 +18,7 @@ set( BUILD_LIBXMLRIP_MANIFEST
     xmlelement.cpp
 	xmlattribute.cpp
 	xmlattributepredicate.cpp
+	xmlordinalpredicate.cpp
     xmlstepexpr.cpp
 	xpathtoken.cpp
 	xpathtokeniser.cpp
@@ -39,6 +40,7 @@ set( BUILD_LIBXMLRIP_MANIFEST_HEADERS
 	xmlattribute.h
 	xmlpredicate.h
 	xmlattributepredicate.h
+	xmlordinalpredicate.h
     xmlstepexpr.h
 	xpathtoken.h
 	xpathtokeniser.h

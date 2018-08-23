@@ -149,7 +149,7 @@ class ResetPredicateTester : public XmlPredicate
 public:
 	ResetPredicateTester() : m_resetCalls{0} {}
 	virtual void Reset() { ++m_resetCalls; }
-	virtual bool IsMatch(const LibXmlAttributeCollection& /*attributes*/) const noexcept { return false; };
+	virtual bool IsMatch(const LibXmlAttributeCollection& /*attributes*/) noexcept { return false; };
 	int m_resetCalls;
 };
 

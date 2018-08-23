@@ -7,7 +7,7 @@ class XmlPredicate
 {
 public:
 	virtual void Reset() {};
-	virtual bool IsMatch(const LibXmlAttributeCollection& attributes) const noexcept = 0;
+	virtual bool IsMatch(const LibXmlAttributeCollection& attributes) noexcept = 0;
 };
 
 

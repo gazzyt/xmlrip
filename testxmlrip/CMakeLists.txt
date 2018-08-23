@@ -33,6 +33,7 @@ set( BUILD_TEST_MANIFEST
 	xmlelement-test.cpp
 	xmlattribute-test.cpp
 	xmlattributepredicate-test.cpp
+	xmlordinalpredicate-test.cpp
 	libxmlattributecollection-test.cpp
 	libxmlattributecollection-iterator-test.cpp
 	libxmlutils-test.cpp

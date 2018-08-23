@@ -38,7 +38,7 @@ bool XmlAttributePredicate::IsMatch(const char* name, const char* value) const n
 	}
 }
 
-bool XmlAttributePredicate::IsMatch(const LibXmlAttributeCollection& attributes) const noexcept
+bool XmlAttributePredicate::IsMatch(const LibXmlAttributeCollection& attributes) noexcept
 {
 	for (auto attribute : attributes)
 	{
