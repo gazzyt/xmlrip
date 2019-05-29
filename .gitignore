@@ -2,5 +2,6 @@ build
 *.layout
 distribution
 .vs
+.vscode
 *.vsp
 *.vspx
